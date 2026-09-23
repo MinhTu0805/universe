@@ -1,424 +1,238 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đếm ngón tay bằng Camera</title>
-
-    <!-- MediaPipe -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Arial, Helvetica, sans-serif;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        h1 {
-            margin: 25px 10px 8px;
-            font-size: 32px;
-        }
-
-        .subtitle {
-            color: #cbd5e1;
-            margin-bottom: 20px;
-        }
-
-        .camera-box {
-            position: relative;
-            width: min(92vw, 900px);
-            aspect-ratio: 16 / 9;
-            background: black;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-        }
-
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1);
-        }
-
-        canvas {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            transform: scaleX(-1);
-        }
-
-        .result-box {
-            margin-top: 22px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 18px;
-            padding: 20px 45px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .result-title {
-            font-size: 18px;
-            color: #cbd5e1;
-            margin-bottom: 5px;
-        }
-
-        #fingerCount {
-            font-size: 70px;
-            font-weight: bold;
-            color: #22c55e;
-            line-height: 1;
-        }
-
-        #detail {
-            margin-top: 10px;
-            color: #94a3b8;
-        }
-
-        #status {
-            margin-top: 15px;
-            color: #fbbf24;
-            min-height: 24px;
-        }
-
-        button {
-            margin-top: 15px;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 10px;
-            background: #2563eb;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #1d4ed8;
-        }
-
-        .info {
-            max-width: 800px;
-            margin: 20px;
-            padding: 15px 20px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.05);
-            color: #cbd5e1;
-            text-align: center;
-            line-height: 1.6;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Đếm Ngón Tay — Nhận Diện Bàn Tay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12151d;
+    --panel:#191d28;
+    --line:#2a3040;
+    --text:#e7e9ee;
+    --dim:#8c93a6;
+    --gold:#e8b34c;
+    --sky:#5fa8d3;
+    --ok:#5fd39a;
+    --warn:#e0616b;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;}
+  html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px);}
+  body{
+    height:100%;margin:0;background:var(--bg);color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    display:flex;flex-direction:column;align-items:center;
+  }
+  header{
+    width:100%;max-width:640px;padding:18px 20px 10px;
+    display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  }
+  header h1{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:20px;margin:0;letter-spacing:-0.01em;
+  }
+  header p{margin:0;font-size:12px;color:var(--dim);}
+  .stage{
+    position:relative;width:100%;max-width:640px;
+    aspect-ratio:4/3;background:#000;overflow:hidden;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  }
+  video, canvas{
+    position:absolute;top:0;left:0;width:100%;height:100%;
+    object-fit:cover;transform:scaleX(-1);
+  }
+  video{opacity:0;}
+  .hud{
+    position:absolute;left:16px;bottom:16px;
+    background:rgba(18,21,29,0.72);backdrop-filter:blur(6px);
+    border:1px solid var(--line);border-radius:14px;
+    padding:12px 20px;display:flex;align-items:baseline;gap:10px;
+  }
+  .hud .label{font-size:12px;color:var(--dim);}
+  .hud .num{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:44px;color:var(--gold);line-height:1;min-width:1ch;
+  }
+  .hud .hand-tag{
+    position:absolute;top:-11px;right:14px;font-size:10px;
+    background:var(--panel);border:1px solid var(--line);
+    padding:2px 8px;border-radius:999px;color:var(--sky);
+  }
+  .status{
+    position:absolute;right:16px;top:16px;font-size:12px;
+    background:rgba(18,21,29,0.72);border:1px solid var(--line);
+    padding:6px 12px;border-radius:999px;color:var(--dim);
+  }
+  .status.ready{color:var(--ok);}
+  .status.error{color:var(--warn);}
+  footer{
+    width:100%;max-width:640px;padding:14px 20px 24px;
+    font-size:12px;color:var(--dim);line-height:1.5;
+  }
+  footer b{color:var(--text);font-weight:500;}
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#12151d; } /* keep dark stage regardless of system theme — camera UI reads best dark */
+  }
+</style>
 </head>
-
 <body>
 
-    <h1>🖐️ Đếm ngón tay</h1>
-    <div class="subtitle">Đưa bàn tay trước camera để hệ thống nhận diện</div>
+<header>
+  <h1>Đếm ngón tay</h1>
+  <p>Theo dõi bàn tay qua camera</p>
+</header>
 
-    <div class="camera-box">
-        <video id="video" autoplay playsinline></video>
-        <canvas id="canvas"></canvas>
-    </div>
+<div class="stage">
+  <video id="video" playsinline autoplay muted></video>
+  <canvas id="overlay"></canvas>
+  <div class="hud">
+    <span class="hand-tag" id="handTag" hidden>Tay phải</span>
+    <span class="label">Số ngón</span>
+    <span class="num" id="count">–</span>
+  </div>
+  <div class="status" id="status">Đang khởi động camera…</div>
+</div>
 
-    <div class="result-box">
-        <div class="result-title">TỔNG SỐ NGÓN TAY</div>
-        <div id="fingerCount">0</div>
-        <div id="detail">Chưa phát hiện bàn tay</div>
-    </div>
+<footer>
+  <b>Cách dùng:</b> cho phép truy cập camera, đưa một bàn tay vào khung hình, giữ các ngón tay tách rõ ràng để nhận diện chính xác hơn. Ứng dụng chạy hoàn toàn trên trình duyệt của bạn — không có hình ảnh nào được gửi đi đâu cả.
+</footer>
 
-    <div id="status">Đang khởi động camera...</div>
-
-    <button onclick="startCamera()">📷 Bật camera</button>
-
-    <div class="info">
-        Hệ thống có thể nhận diện tối đa 2 bàn tay và đếm từ 0 đến 10 ngón.
-        Hãy đưa bàn tay rõ ràng vào trước camera.
-    </div>
-
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1640029074/camera_utils.js" crossorigin="anonymous"></script>
 <script>
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+(function(){
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('overlay');
+  const ctx = canvas.getContext('2d');
+  const countEl = document.getElementById('count');
+  const statusEl = document.getElementById('status');
+  const handTag = document.getElementById('handTag');
 
-const fingerCountElement = document.getElementById("fingerCount");
-const detailElement = document.getElementById("detail");
-const statusElement = document.getElementById("status");
+  function setStatus(text, cls){
+    statusEl.textContent = text;
+    statusEl.className = 'status' + (cls ? ' ' + cls : '');
+  }
 
-let camera = null;
+  function resizeCanvas(){
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
 
+  // Distance between two normalized landmarks
+  function dist(a, b){
+    const dx = a.x - b.x, dy = a.y - b.y;
+    return Math.sqrt(dx*dx + dy*dy);
+  }
 
-/*
-    Kiểm tra khoảng cách giữa 2 điểm
-*/
-function distance(a, b) {
-    return Math.sqrt(
-        Math.pow(a.x - b.x, 2) +
-        Math.pow(a.y - b.y, 2)
-    );
-}
-
-
-/*
-    Đếm ngón tay của một bàn tay
-
-    Landmark:
-    Thumb:
-        4 = đầu ngón cái
-        3 = khớp gần đầu
-        2 = khớp giữa
-
-    Index:
-        8 = đầu
-        6 = khớp giữa
-
-    Middle:
-        12 = đầu
-        10 = khớp giữa
-
-    Ring:
-        16 = đầu
-        14 = khớp giữa
-
-    Pinky:
-        20 = đầu
-        18 = khớp giữa
-*/
-function countFingers(landmarks, handedness) {
-
+  // Returns 0-5 fingers extended for one hand's landmark set.
+  function countFingersForHand(lm){
     let count = 0;
 
-    // -----------------------------
-    // NGÓN TRỎ
-    // -----------------------------
-    if (
-        landmarks[8].y < landmarks[6].y &&
-        landmarks[6].y < landmarks[5].y
-    ) {
-        count++;
+    // Thumb: compare distance from tip/ip to the pinky-MCP anchor (17).
+    // Works regardless of left/right hand or mirroring.
+    const anchor = lm[17];
+    if (dist(lm[4], anchor) > dist(lm[3], anchor) * 1.05) count++;
+
+    // Other four fingers: tip above (smaller y) than pip joint = extended.
+    const pairs = [[8,6],[12,10],[16,14],[20,18]];
+    for (const [tip, pip] of pairs){
+      if (lm[tip].y < lm[pip].y) count++;
     }
-
-    // -----------------------------
-    // NGÓN GIỮA
-    // -----------------------------
-    if (
-        landmarks[12].y < landmarks[10].y &&
-        landmarks[10].y < landmarks[9].y
-    ) {
-        count++;
-    }
-
-    // -----------------------------
-    // NGÓN ÁP ÚT
-    // -----------------------------
-    if (
-        landmarks[16].y < landmarks[14].y &&
-        landmarks[14].y < landmarks[13].y
-    ) {
-        count++;
-    }
-
-    // -----------------------------
-    // NGÓN ÚT
-    // -----------------------------
-    if (
-        landmarks[20].y < landmarks[18].y &&
-        landmarks[18].y < landmarks[17].y
-    ) {
-        count++;
-    }
-
-    // -----------------------------
-    // NGÓN CÁI
-    // Dựa vào khoảng cách đầu ngón
-    // với khớp của ngón cái.
-    // -----------------------------
-    const thumbTip = landmarks[4];
-    const thumbJoint = landmarks[3];
-    const indexBase = landmarks[5];
-
-    const thumbTipDistance = distance(thumbTip, indexBase);
-    const thumbJointDistance = distance(thumbJoint, indexBase);
-
-    if (thumbTipDistance > thumbJointDistance * 1.15) {
-        count++;
-    }
-
     return count;
-}
+  }
 
+  function drawSkeleton(lm){
+    const W = canvas.width, H = canvas.height;
+    const connections = [
+      [0,1],[1,2],[2,3],[3,4],
+      [0,5],[5,6],[6,7],[7,8],
+      [5,9],[9,10],[10,11],[11,12],
+      [9,13],[13,14],[14,15],[15,16],
+      [13,17],[17,18],[18,19],[19,20],
+      [0,17]
+    ];
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = 'rgba(95,168,211,0.9)';
+    ctx.beginPath();
+    for (const [a,b] of connections){
+      ctx.moveTo(lm[a].x * W, lm[a].y * H);
+      ctx.lineTo(lm[b].x * W, lm[b].y * H);
+    }
+    ctx.stroke();
 
-/*
-    Khi MediaPipe phát hiện bàn tay
-*/
-function onResults(results) {
+    ctx.fillStyle = '#e8b34c';
+    for (const p of lm){
+      ctx.beginPath();
+      ctx.arc(p.x * W, p.y * H, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
 
-    // Kích thước canvas bằng video
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-
+  function onResults(results){
+    resizeCanvas();
+    ctx.save();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    let totalFingers = 0;
-    let handDetails = [];
-
-    if (
-        results.multiHandLandmarks &&
-        results.multiHandLandmarks.length > 0
-    ) {
-
-        for (let i = 0; i < results.multiHandLandmarks.length; i++) {
-
-            const landmarks = results.multiHandLandmarks[i];
-
-            // Xác định tay trái / phải
-            let handedness = "Unknown";
-
-            if (
-                results.multiHandedness &&
-                results.multiHandedness[i]
-            ) {
-                handedness =
-                    results.multiHandedness[i].label;
-            }
-
-            // Đếm ngón
-            const fingers = countFingers(
-                landmarks,
-                handedness
-            );
-
-            totalFingers += fingers;
-
-            handDetails.push(
-                `${handedness === "Left" ? "Tay trái" : "Tay phải"}: ${fingers} ngón`
-            );
-
-            // Vẽ các điểm bàn tay
-            drawConnectors(
-                ctx,
-                landmarks,
-                HAND_CONNECTIONS,
-                {
-                    color: "#00FF00",
-                    lineWidth: 3
-                }
-            );
-
-            drawLandmarks(
-                ctx,
-                landmarks,
-                {
-                    color: "#FF0000",
-                    lineWidth: 1,
-                    radius: 4
-                }
-            );
+    if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0){
+      let total = 0;
+      results.multiHandLandmarks.forEach((lm, i) => {
+        drawSkeleton(lm);
+        total += countFingersForHand(lm);
+        if (i === 0 && results.multiHandedness && results.multiHandedness[0]){
+          // Mirrored view, so flip the reported label for display.
+          const label = results.multiHandedness[0].label === 'Left' ? 'Tay phải' : 'Tay trái';
+          handTag.textContent = label;
+          handTag.hidden = false;
         }
-
-        fingerCountElement.textContent = totalFingers;
-
-        if (totalFingers === 0) {
-            detailElement.textContent = "Đã phát hiện bàn tay nhưng chưa giơ ngón";
-        } else {
-            detailElement.textContent =
-                handDetails.join(" | ");
-        }
-
-        statusElement.textContent =
-            "✅ Đang theo dõi chuyển động bàn tay";
-
+      });
+      if (results.multiHandLandmarks.length > 1) handTag.hidden = true;
+      countEl.textContent = total;
+      setStatus('Đang nhận diện', 'ready');
     } else {
-
-        fingerCountElement.textContent = "0";
-        detailElement.textContent =
-            "Chưa phát hiện bàn tay";
-
-        statusElement.textContent =
-            "🔎 Hãy đưa bàn tay vào trước camera";
+      countEl.textContent = '–';
+      handTag.hidden = true;
+      setStatus('Không thấy bàn tay — đưa tay vào khung hình', null);
     }
-}
+    ctx.restore();
+  }
 
-
-/*
-    Khởi tạo MediaPipe Hands
-*/
-const hands = new Hands({
-    locateFile: (file) => {
-        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-    }
-});
-
-
-hands.setOptions({
+  const hands = new Hands({
+    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/${file}`
+  });
+  hands.setOptions({
     maxNumHands: 2,
     modelComplexity: 1,
     minDetectionConfidence: 0.6,
     minTrackingConfidence: 0.6
-});
+  });
+  hands.onResults(onResults);
 
-
-hands.onResults(onResults);
-
-
-/*
-    Bật camera
-*/
-async function startCamera() {
-
-    try {
-
-        statusElement.textContent =
-            "⏳ Đang yêu cầu quyền truy cập camera...";
-
-        camera = new Camera(video, {
-            onFrame: async () => {
-                await hands.send({
-                    image: video
-                });
-            },
-
-            width: 1280,
-            height: 720
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+    .then((stream) => {
+      video.srcObject = stream;
+      video.onloadedmetadata = () => {
+        video.play();
+        resizeCanvas();
+        setStatus('Đang nhận diện', 'ready');
+        const camera = new Camera(video, {
+          onFrame: async () => { await hands.send({ image: video }); },
+          width: 640,
+          height: 480
         });
-
         camera.start();
-
-        statusElement.textContent =
-            "✅ Camera đã bật";
-
-    } catch (error) {
-
-        console.error(error);
-
-        statusElement.textContent =
-            "❌ Không thể mở camera. Hãy kiểm tra quyền camera.";
-    }
-}
-
-
-/*
-    Tự động thử bật camera
-*/
-window.addEventListener("load", () => {
-    startCamera();
-});
-
+      };
+    })
+    .catch((err) => {
+      setStatus('Không thể truy cập camera: ' + err.message, 'error');
+    });
+})();
 </script>
-
 </body>
 </html>

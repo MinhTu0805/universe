@@ -1,24 +1,241 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="dark">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5" />
-<meta name="theme-color" content="#101010" />
-<title>Nova AI v5</title>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nova AI v5</title>
+    <style>
+      :root {
+        --bg: #0d1117;
+        --panel: #111827;
+        --panel-2: #1f2937;
+        --text: #f3f4f6;
+        --muted: #9ca3af;
+        --line: rgba(255,255,255,0.12);
+        --blue: #1f8fff;
+        --blue-2: #3b82f6;
+        --green: #22c55e;
+      }
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        background: radial-gradient(circle at top, #111827 0%, var(--bg) 48%);
+        color: var(--text);
+      }
 
-<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.5/dist/purify.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@4.0.1/dist/pptxgen.bundle.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 32px 20px;
+      }
 
-<style>
+      .wrap {
+        width: min(100%, 1200px);
+        background: rgba(17, 24, 39, 0.88);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+        overflow: hidden;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(22, 30, 40, 0.9);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        font-size: 16px;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--blue), var(--blue-2));
+        color: white;
+        font-size: 20px;
+        font-weight: 800;
+        box-shadow: 0 10px 22px rgba(31, 143, 255, 0.35);
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 18px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease;
+        border: 1px solid transparent;
+        white-space: nowrap;
+      }
+
+      .action-btn:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+      }
+
+      .action-btn.primary {
+        background: linear-gradient(135deg, var(--blue), var(--blue-2));
+        color: white;
+        box-shadow: 0 10px 20px rgba(31, 143, 255, 0.25);
+      }
+
+      .action-btn.secondary {
+        background: rgba(255,255,255,0.04);
+        color: var(--text);
+        border-color: var(--line);
+      }
+
+      .action-btn.secondary:hover {
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(31, 143, 255, 0.3);
+      }
+
+      .content {
+        padding: 42px 28px 48px;
+      }
+
+      .hero {
+        text-align: center;
+        padding: 24px 12px 8px;
+      }
+
+      .eyebrow {
+        color: var(--muted);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      h1 {
+        margin: 16px 0 12px;
+        font-size: clamp(2rem, 5vw, 3.4rem);
+        letter-spacing: -0.05em;
+      }
+
+      p {
+        margin: 0 auto;
+        max-width: 720px;
+        color: var(--muted);
+        font-size: 1.02rem;
+        line-height: 1.7;
+      }
+
+      .cta-row {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-top: 28px;
+      }
+
+      @media (max-width: 640px) {
+        .topbar {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+        }
+
+        .top-actions {
+          justify-content: center;
+        }
+
+        .action-btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">N</div>
+          <div>Nova AI</div>
+        </div>
+
+        <div class="top-actions">
+          <a
+            class="action-btn primary"
+            href="https://www.mediafire.com/file/tkd9axxzcfd9w6o/Nova+Agent+Browser+v0.3.0.zip/file"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Tải extension Chrome cho Nova Agent Browser"
+          >
+            ⬇️ Tải Extension
+          </a>
+
+          <a
+            class="action-btn secondary"
+            href="https://vi.anotepad.com/notes/6tkrhq7d"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Mở ghi chú Notepad"
+          >
+            📝 Mở Notepad
+          </a>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="hero">
+          <div class="eyebrow">Tap Share - Wifi</div>
+          <h1>Nova Agent Browser</h1>
+          <p>
+            Trang này đã được cập nhật với nút tải extension Chrome và nút mở Notepad để truy cập nhanh hơn.
+          </p>
+
+          <div class="cta-row">
+            <a
+              class="action-btn primary"
+              href="https://www.mediafire.com/file/tkd9axxzcfd9w6o/Nova+Agent+Browser+v0.3.0.zip/file"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ⬇️ Tải Extension Chrome
+            </a>
+
+            <a
+              class="action-btn secondary"
+              href="https://vi.anotepad.com/notes/6tkrhq7d"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              📝 Mở Ghi chú
+            </a>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

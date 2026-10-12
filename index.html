@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="dark">
+<html lang="vi" data-theme="light">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5" />
-<meta name="theme-color" content="#212121" />
-<title>Nova AI</title>
+<meta name="theme-color" content="#ffffff" />
+<title>Noth</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -763,7 +763,7 @@ body{letter-spacing:-.006em}
 [data-theme="dark"] #sidebar{border-right-color:transparent}
 .brand{padding:4px 8px 10px;gap:10px}
 .logo{width:28px;height:28px;border-radius:8px;background:var(--tx);color:var(--bg);box-shadow:none}
-.logo svg{width:16px;height:16px}
+.logo svg{width:16px;height:16px;object-fit:contain}
 .brand h1{font-size:.96rem;font-weight:600;letter-spacing:-.02em}
 .brand small{display:none}
 #new-chat{justify-content:flex-start;gap:10px;border:0;background:transparent;padding:9px 10px;border-radius:10px;font-weight:500;font-size:.875rem;transform:none!important}
@@ -1095,8 +1095,8 @@ body{letter-spacing:-.006em}
 #send[aria-label^="Cập nhật"]{background:var(--ok);color:var(--on-ac)}
 @media(max-width:520px){.edit-mode{gap:8px;padding:9px}.edit-copy small{max-width:210px}.md{font-size:.97rem}}
 </style>
-<style id="nova-v9">
-/* ===== NOVA v9 — polish · icon motion · Chat/Build · sidebar toggle ===== */
+<style id="noth-v9">
+/* ===== NOTH v9 — polish · icon motion · Chat/Build · sidebar toggle ===== */
 :root{--spring:cubic-bezier(.34,1.56,.64,1);--ease-out:cubic-bezier(.22,1,.36,1)}
 .only-desk{display:grid}
 @media(max-width:900px){.only-desk{display:none!important}}
@@ -1108,11 +1108,11 @@ body{letter-spacing:-.006em}
 @keyframes ic-pop{0%{transform:scale(1)}45%{transform:scale(1.32)}100%{transform:scale(1)}}
 @keyframes ic-pulse{0%{transform:rotate(0) scale(1)}60%{transform:rotate(200deg) scale(1.18)}100%{transform:rotate(360deg) scale(1)}}
 @keyframes ic-wave{0%,100%{transform:scaleY(1)}30%{transform:scaleY(1.35)}60%{transform:scaleY(.8)}}
-@keyframes nova-orbit{to{transform:rotate(360deg)}}
-@keyframes nova-glow{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 5px color-mix(in oklch,var(--ac) 75%,transparent))}}
-@keyframes nova-breathe{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.12) rotate(10deg)}}
-.logo .ic-sparkle{animation:nova-breathe 5s ease-in-out infinite}
-.msg:has(.md.streaming) .avatar .ic-sparkle{animation:nova-orbit 2.8s linear infinite,nova-glow 1.8s ease-in-out infinite}
+@keyframes noth-orbit{to{transform:rotate(360deg)}}
+@keyframes noth-glow{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 5px color-mix(in oklch,var(--ac) 75%,transparent))}}
+@keyframes noth-breathe{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.12) rotate(10deg)}}
+.logo .ic-sparkle{animation:noth-breathe 5s ease-in-out infinite}
+.msg:has(.md.streaming) .avatar .ic-sparkle{animation:noth-orbit 2.8s linear infinite,noth-glow 1.8s ease-in-out infinite}
 button:hover .ic-nv-build,.mode-seg button:hover .ic-nv-build{animation:ic-wiggle .6s var(--ease-out)}
 button:hover .ic-nv-chat{animation:ic-pop .45s var(--ease-out)}
 button:hover .ic-nv-sidebar{transform:translateX(-2px) scale(1.06)}
@@ -1136,7 +1136,7 @@ body[data-app-mode=build] #composer{box-shadow:0 10px 32px -14px rgb(0 0 0/.4),0
 ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:10px;border:3px solid transparent;background-clip:content-box}
 @media(prefers-reduced-motion:reduce){.msg,.logo .ic-sparkle,.avatar .ic-sparkle{animation:none!important}}
 
-/* --- Chat / Build segmented control (giữa thanh Nova) --- */
+/* --- Chat / Build segmented control (giữa thanh Noth) --- */
 .mode-seg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;padding:3px;border-radius:12px;background:var(--s2);border:1px solid var(--line);isolation:isolate;z-index:3}
 .mode-seg .seg-thumb{position:absolute;z-index:-1;top:3px;bottom:3px;left:3px;width:calc((100% - 6px)/2);border-radius:9px;background:var(--bg);box-shadow:0 1px 3px rgb(0 0 0/.2),0 0 0 1px var(--line);transition:transform .38s var(--spring)}
 body[data-app-mode=build] .mode-seg .seg-thumb{transform:translateX(100%)}
@@ -1183,8 +1183,8 @@ body[data-app-mode=build] .mode-seg .seg-thumb{transform:translateX(100%)}
   @keyframes tyFade{0%,100%{opacity:.35}50%{opacity:1}}
 }
 </style>
-<style id="nova-v10">
-/* ===== NOVA v10 — giao diện tinh gọn: chuyển động thống nhất · không gradient loè loẹt · ThinkingOrb ===== */
+<style id="noth-v10">
+/* ===== NOTH v10 — giao diện tinh gọn: chuyển động thống nhất · không gradient loè loẹt · ThinkingOrb ===== */
 :root{
   /* hệ chuyển động thống nhất: một đường cong chuẩn, không nảy */
   --m-std:cubic-bezier(.2,0,0,1);
@@ -1308,8 +1308,13 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
 
   <aside id="sidebar">
     <div class="brand">
-      <div class="logo" data-i="sparkle"></div>
-      <div style="min-width:0"><h1>Nova AI</h1><small>Studio</small></div>
+      <div class="logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 652 610" aria-hidden="true">
+  <g fill="currentColor" fill-rule="nonzero" shape-rendering="geometricPrecision">
+    <path d="M 27.00,37.00 L 27.00,38.00 L 16.00,50.00 L 16.00,51.00 L 10.00,59.00 L 3.00,73.00 L 5.00,73.00 L 8.00,71.00 L 15.00,70.00 L 16.00,69.00 L 31.00,69.00 L 32.00,70.00 L 36.00,70.00 L 37.00,71.00 L 42.00,72.00 L 46.00,75.00 L 49.00,76.00 L 56.00,82.00 L 57.00,82.00 L 64.00,89.00 L 64.00,90.00 L 71.00,97.00 L 72.00,97.00 L 92.00,117.00 L 92.00,118.00 L 102.00,128.00 L 102.00,129.00 L 110.00,137.00 L 110.00,138.00 L 112.00,139.00 L 112.00,140.00 L 118.00,146.00 L 118.00,147.00 L 133.00,163.00 L 133.00,164.00 L 138.00,169.00 L 138.00,170.00 L 146.00,178.00 L 146.00,179.00 L 153.00,186.00 L 153.00,187.00 L 168.00,203.00 L 168.00,204.00 L 174.00,210.00 L 174.00,211.00 L 183.00,220.00 L 183.00,221.00 L 203.00,243.00 L 203.00,244.00 L 208.00,249.00 L 208.00,250.00 L 216.00,258.00 L 216.00,259.00 L 223.00,266.00 L 223.00,267.00 L 229.00,273.00 L 229.00,274.00 L 237.00,282.00 L 237.00,283.00 L 244.00,290.00 L 244.00,291.00 L 251.00,298.00 L 251.00,299.00 L 258.00,306.00 L 258.00,307.00 L 265.00,314.00 L 265.00,315.00 L 286.00,338.00 L 286.00,339.00 L 292.00,345.00 L 292.00,346.00 L 300.00,354.00 L 300.00,355.00 L 307.00,362.00 L 307.00,363.00 L 316.00,372.00 L 316.00,373.00 L 330.00,388.00 L 330.00,389.00 L 343.00,403.00 L 343.00,404.00 L 351.00,412.00 L 351.00,413.00 L 358.00,420.00 L 358.00,421.00 L 364.00,427.00 L 364.00,428.00 L 373.00,437.00 L 373.00,438.00 L 379.00,444.00 L 379.00,445.00 L 387.00,453.00 L 387.00,454.00 L 398.00,466.00 L 398.00,467.00 L 407.00,476.00 L 407.00,477.00 L 412.00,482.00 L 412.00,483.00 L 427.00,499.00 L 427.00,500.00 L 431.00,504.00 L 431.00,505.00 L 440.00,514.00 L 440.00,515.00 L 445.00,520.00 L 445.00,521.00 L 451.00,527.00 L 451.00,528.00 L 455.00,532.00 L 459.00,539.00 L 462.00,542.00 L 462.00,543.00 L 468.00,550.00 L 468.00,551.00 L 487.00,571.00 L 488.00,571.00 L 499.00,581.00 L 500.00,581.00 L 508.00,587.00 L 511.00,588.00 L 513.00,590.00 L 525.00,596.00 L 527.00,596.00 L 530.00,598.00 L 532.00,598.00 L 536.00,600.00 L 539.00,600.00 L 540.00,601.00 L 543.00,601.00 L 544.00,602.00 L 547.00,602.00 L 548.00,603.00 L 553.00,603.00 L 554.00,604.00 L 574.00,604.00 L 575.00,603.00 L 580.00,603.00 L 581.00,602.00 L 584.00,602.00 L 585.00,601.00 L 588.00,601.00 L 589.00,600.00 L 592.00,600.00 L 593.00,599.00 L 598.00,598.00 L 610.00,592.00 L 612.00,590.00 L 616.00,588.00 L 619.00,585.00 L 620.00,585.00 L 633.00,572.00 L 633.00,571.00 L 638.00,565.00 L 644.00,553.00 L 644.00,551.00 L 646.00,548.00 L 647.00,540.00 L 648.00,539.00 L 648.00,530.00 L 646.00,529.00 L 629.00,512.00 L 628.00,512.00 L 577.00,460.00 L 577.00,459.00 L 567.00,449.00 L 567.00,448.00 L 544.00,423.00 L 544.00,422.00 L 538.00,416.00 L 538.00,415.00 L 533.00,410.00 L 533.00,409.00 L 521.00,396.00 L 521.00,395.00 L 510.00,383.00 L 510.00,382.00 L 505.00,377.00 L 505.00,376.00 L 492.00,362.00 L 492.00,361.00 L 473.00,340.00 L 473.00,339.00 L 467.00,333.00 L 467.00,332.00 L 460.00,325.00 L 460.00,324.00 L 454.00,318.00 L 454.00,317.00 L 446.00,309.00 L 446.00,308.00 L 433.00,294.00 L 433.00,293.00 L 408.00,266.00 L 408.00,265.00 L 401.00,258.00 L 401.00,257.00 L 392.00,248.00 L 392.00,247.00 L 383.00,238.00 L 383.00,237.00 L 374.00,228.00 L 374.00,227.00 L 346.00,197.00 L 346.00,196.00 L 333.00,183.00 L 333.00,182.00 L 322.00,171.00 L 322.00,170.00 L 311.00,159.00 L 311.00,158.00 L 300.00,147.00 L 300.00,146.00 L 298.00,145.00 L 298.00,144.00 L 277.00,122.00 L 277.00,121.00 L 262.00,106.00 L 262.00,105.00 L 193.00,35.00 L 192.00,35.00 L 187.00,30.00 L 186.00,30.00 L 180.00,25.00 L 174.00,22.00 L 172.00,20.00 L 160.00,14.00 L 158.00,14.00 L 155.00,12.00 L 150.00,11.00 L 147.00,9.00 L 141.00,8.00 L 140.00,7.00 L 137.00,7.00 L 136.00,6.00 L 131.00,6.00 L 130.00,5.00 L 124.00,5.00 L 123.00,4.00 L 112.00,4.00 L 111.00,3.00 L 107.00,3.00 L 106.00,4.00 L 96.00,4.00 L 95.00,5.00 L 89.00,5.00 L 88.00,6.00 L 79.00,7.00 L 78.00,8.00 L 70.00,10.00 L 67.00,12.00 L 65.00,12.00 L 56.00,17.00 L 52.00,18.00 L 47.00,22.00 L 44.00,23.00 Z"/> <path d="M 54.00,143.00 L 53.00,144.00 L 49.00,144.00 L 48.00,145.00 L 45.00,145.00 L 39.00,148.00 L 37.00,148.00 L 33.00,150.00 L 31.00,152.00 L 28.00,153.00 L 25.00,156.00 L 24.00,156.00 L 15.00,165.00 L 15.00,166.00 L 10.00,172.00 L 6.00,180.00 L 6.00,182.00 L 4.00,186.00 L 4.00,189.00 L 3.00,190.00 L 3.00,193.00 L 2.00,194.00 L 2.00,553.00 L 3.00,554.00 L 3.00,557.00 L 4.00,558.00 L 4.00,561.00 L 5.00,562.00 L 6.00,567.00 L 11.00,577.00 L 17.00,584.00 L 17.00,585.00 L 28.00,595.00 L 29.00,595.00 L 34.00,599.00 L 42.00,603.00 L 44.00,603.00 L 48.00,605.00 L 52.00,605.00 L 53.00,606.00 L 57.00,606.00 L 58.00,607.00 L 77.00,607.00 L 78.00,606.00 L 82.00,606.00 L 83.00,605.00 L 87.00,605.00 L 88.00,604.00 L 90.00,604.00 L 104.00,597.00 L 110.00,592.00 L 111.00,592.00 L 118.00,585.00 L 118.00,584.00 L 124.00,577.00 L 129.00,567.00 L 129.00,565.00 L 130.00,564.00 L 130.00,562.00 L 132.00,558.00 L 132.00,555.00 L 133.00,554.00 L 133.00,545.00 L 134.00,544.00 L 134.00,535.00 L 133.00,534.00 L 133.00,520.00 L 134.00,519.00 L 134.00,478.00 L 133.00,477.00 L 133.00,467.00 L 134.00,466.00 L 134.00,457.00 L 133.00,456.00 L 133.00,267.00 L 132.00,266.00 L 132.00,259.00 L 131.00,258.00 L 131.00,253.00 L 130.00,252.00 L 129.00,242.00 L 128.00,241.00 L 127.00,234.00 L 126.00,233.00 L 126.00,231.00 L 125.00,230.00 L 125.00,228.00 L 124.00,227.00 L 122.00,219.00 L 118.00,212.00 L 118.00,210.00 L 113.00,200.00 L 111.00,198.00 L 107.00,190.00 L 105.00,188.00 L 101.00,181.00 L 97.00,177.00 L 97.00,176.00 L 89.00,167.00 L 89.00,166.00 L 68.00,145.00 L 67.00,145.00 L 65.00,143.00 Z"/> <path d="M 571.00,2.00 L 570.00,3.00 L 566.00,3.00 L 565.00,4.00 L 563.00,4.00 L 562.00,5.00 L 554.00,7.00 L 550.00,9.00 L 548.00,11.00 L 545.00,12.00 L 539.00,17.00 L 538.00,17.00 L 530.00,25.00 L 530.00,26.00 L 527.00,29.00 L 527.00,30.00 L 523.00,35.00 L 519.00,43.00 L 519.00,45.00 L 517.00,49.00 L 517.00,52.00 L 516.00,53.00 L 516.00,58.00 L 515.00,59.00 L 515.00,323.00 L 516.00,324.00 L 516.00,328.00 L 517.00,329.00 L 518.00,335.00 L 523.00,345.00 L 528.00,351.00 L 528.00,352.00 L 538.00,362.00 L 538.00,363.00 L 546.00,371.00 L 546.00,372.00 L 553.00,379.00 L 553.00,380.00 L 562.00,389.00 L 562.00,390.00 L 584.00,414.00 L 584.00,415.00 L 591.00,422.00 L 591.00,423.00 L 598.00,430.00 L 598.00,431.00 L 607.00,440.00 L 607.00,441.00 L 613.00,447.00 L 613.00,448.00 L 622.00,457.00 L 622.00,458.00 L 630.00,466.00 L 630.00,467.00 L 641.00,478.00 L 641.00,479.00 L 648.00,486.00 L 648.00,487.00 L 649.00,486.00 L 648.00,484.00 L 649.00,483.00 L 649.00,62.00 L 648.00,61.00 L 648.00,55.00 L 647.00,54.00 L 647.00,50.00 L 646.00,49.00 L 644.00,41.00 L 641.00,35.00 L 639.00,33.00 L 637.00,29.00 L 634.00,26.00 L 634.00,25.00 L 622.00,14.00 L 621.00,14.00 L 619.00,12.00 L 616.00,11.00 L 614.00,9.00 L 610.00,7.00 L 608.00,7.00 L 605.00,5.00 L 602.00,5.00 L 598.00,3.00 L 594.00,3.00 L 593.00,2.00 Z"/>
+  </g>
+</svg>
+</div>
+      <div style="min-width:0"><h1>Noth</h1></div>
       <button class="icon-btn only-mobile" style="margin-left:auto" id="sb-close" data-i="close"></button>
     </div>
     <button class="btn wide" id="new-chat"><span data-i="edit" style="display:flex"></span> Cuộc trò chuyện mới</button>
@@ -1327,7 +1332,7 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
     <header id="topbar">
       <button class="icon-btn only-mobile" id="sb-open" data-i="menu"></button>
       <button class="icon-btn only-desk" id="sb-toggle" title="Ẩn / mở thanh bên (Ctrl+B)" aria-label="Ẩn hoặc mở thanh bên" data-i="nv-sidebar"></button>
-      <div class="tb-title" id="model-pill"><b>Nova AI</b><span class="nm" id="model-name">gpt-4o-mini</span></div>
+      <div class="tb-title" id="model-pill"><b>Noth</b><span class="nm" id="model-name">gpt-4o-mini</span></div>
       <div class="mode-seg" id="mode-seg" role="tablist" aria-label="Chế độ"><i class="seg-thumb"></i><button role="tab" data-m="chat" title="Trò chuyện bình thường"><span data-i="nv-chat" style="display:flex"></span>Chat</button><button role="tab" data-m="build" title="Agent: đọc/sửa tệp, chạy lệnh, trả về tệp đã sửa"><span data-i="nv-build" style="display:flex"></span>Build</button></div>
       <div class="spacer"></div>
       <div class="pill stat num" id="tok-pill" title="Token của hội thoại này"><span data-i="gauge"></span><b id="tok-total">0</b> tok</div>
@@ -1369,7 +1374,7 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
           <button id="send" data-i="waveform" title="Trò chuyện trực tiếp"></button>
         </div>
       </div>
-      <div class="hint">Nova AI có thể mắc lỗi. Hãy kiểm tra các thông tin quan trọng.</div>
+      <div class="hint">Noth có thể mắc lỗi. Hãy kiểm tra các thông tin quan trọng.</div>
     </div>
 
     <input type="file" id="file-input" multiple hidden>
@@ -1529,10 +1534,10 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
       </div>
       <div class="pane" data-pane="ext">
         <div class="field"><label>Lấy API & tải Extension</label>
-          <div class="desc">Lấy API và cài extension để dùng đầy đủ tính năng của Nova.</div>
+          <div class="desc">Lấy API và cài extension để dùng đầy đủ tính năng của Noth.</div>
           <div class="data-grid" style="margin-top:10px">
             <a class="btn primary" href="https://vi.anotepad.com/notes/6tkrhq7d" target="_blank" rel="noopener" style="text-decoration:none"><span data-i="download" style="display:flex"></span> Lấy API</a>
-            <a class="btn" href="https://github.com/user-attachments/files/33321564/nova-agent-browser.zip" target="_blank" rel="noopener" style="text-decoration:none"><span data-i="key" style="display:flex"></span> Tải Extension</a>
+            <a class="btn" href="https://github.com/user-attachments/files/33333229/noth-agent-browser.zip" target="_blank" rel="noopener" style="text-decoration:none"><span data-i="key" style="display:flex"></span> Tải Extension</a>
           </div></div>
         <div class="field"><label>Thông báo</label>
           <div class="data-grid"><button class="btn" id="ext-show-notice"><span data-i="external" style="display:flex"></span> Mở lại thông báo</button></div>
@@ -1587,7 +1592,7 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
 
 <script>
 /* ============================================================
-   NOVA AI v6 — PART 1/4 : icons · state · theme
+   NOTH AI v6 — PART 1/4 : icons · state · theme
    ============================================================ */
 'use strict';
 
@@ -1670,7 +1675,7 @@ const paintIcons=root=>(root||document).querySelectorAll('[data-i]').forEach(e=>
 paintIcons();
 
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const LS='nova.ai.v5';
+const LS='noth.ai.v5';
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
 const PRESETS={
@@ -1724,7 +1729,7 @@ const SLIDE_THEMES={
   acc:'#B4642F',acc2:'#D9A441'}
 };
 
-const AGENT_CORE='[NGUYÊN TẮC CHUNG CỦA NOVA]\n'+
+const AGENT_CORE='[NGUYÊN TẮC CHUNG CỦA NOTH]\n'+
  '- Hiểu đúng ý định: xác định mục tiêu thật sự của người dùng, ngữ cảnh và định dạng đầu ra mong muốn trước khi trả lời. Nếu yêu cầu mơ hồ mà sai sẽ tốn công, hỏi lại 1 câu ngắn; nếu không, nêu giả định hợp lý rồi làm luôn.\n'+
  '- Tư duy trước khi viết: chia nhỏ vấn đề, cân nhắc phương án, tự kiểm tra lại số liệu, logic, code và các trường hợp biên trước khi chốt.\n'+
  '- Chủ động dùng công cụ khi có lợi: web_search/fetch_url cho thông tin mới hoặc cần kiểm chứng, terminal/calculator cho tính toán và chạy thử code. Không bịa số liệu, nguồn hay trích dẫn; nếu không chắc, nói rõ mức độ chắc chắn.\n'+
@@ -1749,14 +1754,14 @@ const AGENTS={
 const DEFAULTS={
  provider:'openai', base:PRESETS.openai.base, model:'gpt-4o-mini',
  keys:[], keyIdx:0, rotate:'onerror',
- system:'Bạn là Nova, trợ lý AI thông minh, chính xác và thẳng thắn. Trả lời bằng Markdown rõ ràng, dùng bảng và code block khi phù hợp, dùng LaTeX ($...$) cho công thức toán.',
+ system:'Bạn là Noth, trợ lý AI thông minh, chính xác và thẳng thắn. Trả lời bằng Markdown rõ ràng, dùng bảng và code block khi phù hợp, dùng LaTeX ($...$) cho công thức toán.',
  temp:0.7, max:4096, stream:true, showThink:true, autoFold:true, salvage:true,
  reasoning:'off', effort:'medium',
  useTools:true, geminiSafe:true, tavily:'', customTools:'', vision:true, imgMax:1400,
  enabledTools:{web_search:true,fetch_url:true,calculator:true,current_time:true},
  agent:'chat', agentNote:'', autoTitle:true, artifacts:true, slideCount:8, docCount:6, slideTheme:'auto',
  sttLang:'vi-VN', voice:'', rate:1, pitch:1, cleanRead:true, liveModel:'gemini-3.1-flash-live-preview', liveLen:'normal',
- usageStream:true, light:false, accent:'mono', enterSend:true, fontSize:16, width:768, totalTok:0
+ usageStream:true, light:true, accent:'mono', enterSend:true, fontSize:16, width:768, totalTok:0
 };
 
 let S=Object.assign({},DEFAULTS,JSON.parse(localStorage.getItem(LS+'.settings')||'{}'));
@@ -1840,7 +1845,7 @@ function applyTheme(){
 </script>
 <script>
 /* ============================================================
-   NOVA AI v6 — PART 2/4 : markdown · preview · tools · API · chat
+   NOTH AI v6 — PART 2/4 : markdown · preview · tools · API · chat
    ============================================================ */
 'use strict';
 
@@ -1850,7 +1855,7 @@ function download(name,data,type){
  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();
  setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast('Đã tải '+name,'ok');
 }
-const safeName=t=>(String(t||'').replace(/[^\w\sÀ-ỹ.-]/g,'').trim().replace(/\s+/g,'-').slice(0,48)||'nova');
+const safeName=t=>(String(t||'').replace(/[^\w\sÀ-ỹ.-]/g,'').trim().replace(/\s+/g,'-').slice(0,48)||'noth');
 
 /* ============================================================
    MARKDOWN
@@ -2291,7 +2296,7 @@ async function ddgApi(query){
 }
 /* TERMINAL ẢO */
 const VFS=new Map();
-const DIRS=new Set(),TERM={cwd:'/',env:{HOME:'/',USER:'nova',SHELL:'nova-sh'}};
+const DIRS=new Set(),TERM={cwd:'/',env:{HOME:'/',USER:'noth',SHELL:'noth-sh'}};
 const vpath=p=>{p=String(p||'').trim();const b=p.startsWith('/')?[]:TERM.cwd.split('/').filter(Boolean);for(const x of p.split('/')){if(!x||x==='.')continue;if(x==='..')b.pop();else b.push(x)}return '/'+b.join('/')};
 const isDir=d=>d==='/'||DIRS.has(d)||[...VFS.keys(),...DIRS].some(k=>k.startsWith(d+'/'));
 function splitTop(str,seps){const out=[];let q=null,cur='';for(let i=0;i<str.length;i++){const c=str[i];if(q){cur+=c;if(c===q)q=null;continue}if(c==='"'||c==="'"){q=c;cur+=c;continue}const sp=seps.find(x=>str.startsWith(x,i)&&!(x==='|'&&(str[i+1]==='|'||str[i-1]==='|')));if(sp){out.push(cur);cur='';i+=sp.length-1;continue}cur+=c}out.push(cur);return out.map(x=>x.trim()).filter(Boolean)}
@@ -2340,8 +2345,8 @@ async function termCmd(a,inp){
   case 'seq':{const v=pos.map(Number),lo=v.length>1?v[0]:1,hi=v.length>1?v[1]:v[0],st=v.length>2?v[2]:1,out=[];for(let i=lo;st>0?i<=hi:i>=hi;i+=st){out.push(i);if(out.length>2000)break}o=out.join('\n');break}
   case 'sleep':await new Promise(r=>setTimeout(r,Math.min(3000,(+pos[0]||0)*1000)));break;
   case 'date':o=new Date().toString();break;
-  case 'whoami':o=TERM.env.USER;break;case 'hostname':o='nova';break;
-  case 'uname':o=has('a')?'Nova-sh browser '+(navigator.platform||''):'Nova';break;
+  case 'whoami':o=TERM.env.USER;break;case 'hostname':o='noth';break;
+  case 'uname':o=has('a')?'Noth-sh browser '+(navigator.platform||''):'Noth';break;
   case 'base64':{const t=src().replace(/\n$/,'');try{o=has('d')?decodeURIComponent(escape(atob(t))):btoa(unescape(encodeURIComponent(t)))}catch(_){e='base64: dữ liệu không hợp lệ';x=1}break}
   case 'sha256sum':{const bf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(src().replace(/\n$/,'')));o=[...new Uint8Array(bf)].map(v=>v.toString(16).padStart(2,'0')).join('')+'  -';break}
   case 'uuidgen':o=crypto.randomUUID();break;
@@ -2378,7 +2383,7 @@ async function termRun(cmd){
 }
 const TOOLS={
  terminal:{icon:'terminal',label:'Terminal',
-  def:{name:'terminal',description:'Chạy lệnh trong terminal ảo của Nova (KHÔNG phải shell thật của máy người dùng). Dùng để chạy JavaScript (js <code> hoặc node -e "<code>", có console.log, hỗ trợ await), tính toán, thử code, xử lý văn bản và tệp ảo với pipe (|), > >>, cd/ls/cat/cp/mv/rm/mkdir/find/tree/grep/sed/awk/cut/tr/diff/sort/uniq/head/tail/wc/seq/base64/sha256sum/curl/zip/unzip, python/python3 (file.py hoặc -c), pip install, node file.js. Gõ help để xem đủ lệnh.',parameters:{type:'object',properties:{command:{type:'string'}},required:['command']}},
+  def:{name:'terminal',description:'Chạy lệnh trong terminal ảo của Noth (KHÔNG phải shell thật của máy người dùng). Dùng để chạy JavaScript (js <code> hoặc node -e "<code>", có console.log, hỗ trợ await), tính toán, thử code, xử lý văn bản và tệp ảo với pipe (|), > >>, cd/ls/cat/cp/mv/rm/mkdir/find/tree/grep/sed/awk/cut/tr/diff/sort/uniq/head/tail/wc/seq/base64/sha256sum/curl/zip/unzip, python/python3 (file.py hoặc -c), pip install, node file.js. Gõ help để xem đủ lệnh.',parameters:{type:'object',properties:{command:{type:'string'}},required:['command']}},
   async run({command}){return await termRun(command)}},
  web_search:{icon:'globe',label:'Tìm kiếm web',
   def:{name:'web_search',description:'Tìm kiếm thông tin trên Internet. Luôn trích dẫn nguồn dạng [tiêu đề](url).',
@@ -2567,7 +2572,7 @@ function headersFor(k){
  if(isAnthropicKey(k)){h['x-api-key']=k.key;h['anthropic-version']='2023-06-01';h['anthropic-dangerous-direct-browser-access']='true'}
  else{
   if(k.key)h['Authorization']='Bearer '+k.key;
-  if(/openrouter/.test(keyBase(k))){h['HTTP-Referer']=location.origin;h['X-Title']='Nova AI'}
+  if(/openrouter/.test(keyBase(k))){h['HTTP-Referer']=location.origin;h['X-Title']='Noth'}
  }
  return h;
 }
@@ -2821,7 +2826,7 @@ function msgEl(m,idx){
  }
  const ag=AGENTS[m.agent]&&m.agent!=='chat'?'<span class="tag mode">'+esc(AGENTS[m.agent].label)+'</span>':'';
  d.innerHTML='<div class="avatar">'+svg('sparkle')+'</div><div class="ai-body">'+
-  '<div class="ai-head">Nova <span class="tag">'+esc(m.model||S.model)+'</span>'+ag+'</div>'+
+  '<div class="ai-head">Noth <span class="tag">'+esc(m.model||S.model)+'</span>'+ag+'</div>'+
   '<div class="proc-slot"></div><div class="md"></div><div class="cont-slot"></div><div class="art-slot"></div><div class="meta-slot"></div>'+
   '<div class="acts-row"><button class="act" data-copy title="Sao chép">'+svg('copy')+
   '</button><button class="act" data-regen title="Tạo lại">'+svg('refresh')+
@@ -2895,7 +2900,7 @@ $('#to-bottom').onclick=()=>{stick=true;sc.scrollTo({top:sc.scrollHeight,behavio
 </script>
 <script>
 /* ============================================================
-   NOVA AI v6 — PART 3/4 : SLIDE ENGINE · ARTIFACTS · EXPORT
+   NOTH AI v6 — PART 3/4 : SLIDE ENGINE · ARTIFACTS · EXPORT
    ============================================================ */
 'use strict';
 
@@ -3256,7 +3261,7 @@ function deckHTML(art){
  const data=JSON.stringify(art.htmls).replace(/</g,'\\u003c');
  const notes=JSON.stringify((art.spec.slides||[]).map(s=>String(s.notes||''))).replace(/</g,'\\u003c');
  return '<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+
-  esc(art.spec.title||'Nova slides')+'</title><style>*{box-sizing:border-box;margin:0}html,body{height:100%}'+
+  esc(art.spec.title||'Noth slides')+'</title><style>*{box-sizing:border-box;margin:0}html,body{height:100%}'+
   'body{background:#0a0a0a;color:#f2f2f2;font-family:"Segoe UI",system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden}'+
   '#screen{flex:1;position:relative;overflow:hidden;background:#000;min-height:0}'+
   '#vp{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:center}'+
@@ -3298,8 +3303,8 @@ const hx=c=>String(c||'#111111').replace('#','').toUpperCase();
 async function exportPPTX(art){
  if(typeof PptxGenJS==='undefined')return toast('PptxGenJS chưa tải được','err');
  const t=deckTheme(art.spec),p=new PptxGenJS();
- p.layout='LAYOUT_WIDE';p.theme={headFontFace:'Inter',bodyFontFace:'Inter'};p.author='Nova AI';p.company='Nova AI Studio';
- p.title=art.spec.title||'Nova deck';p.subject=art.spec.subtitle||'';
+ p.layout='LAYOUT_WIDE';p.theme={headFontFace:'Inter',bodyFontFace:'Inter'};p.author='Noth';p.company='Noth';
+ p.title=art.spec.title||'Noth deck';p.subject=art.spec.subtitle||'';
  const FG=hx(t.fg),MUT=hx(t.mut),AC=hx(t.acc),AC2=hx(t.acc2),BG=hx(t.bg),CARD=hx(t.card),LINE=hx(t.dark?'#3A4658':t.line);
  const SH={type:'outer',color:'000000',opacity:t.dark?.5:.14,blur:10,offset:3,angle:90};
  const slides=art.spec.slides||[],total=slides.length;
@@ -3465,7 +3470,7 @@ async function exportPPTX(art){
   sl.addText(String(i+1)+' / '+total,{x:11.2,y:6.85,w:1.3,h:.4,fontSize:10,color:MUT,align:'right'});
   if(s.notes)sl.addNotes(String(s.notes));
  });
- const fileName=safeName(art.spec.title||'nova-slides')+'.pptx';
+ const fileName=safeName(art.spec.title||'noth-slides')+'.pptx';
  const TX={fade:'<p:fade/>',push:'<p:push dir="l"/>',wipe:'<p:wipe dir="l"/>',dissolve:'<p:dissolve/>',none:''}[S.pptxTrans||'fade'];
  let done=false;
  if(TX){
@@ -3562,19 +3567,19 @@ function exportXLSX(art){
   while(used[nm])nm=nm.slice(0,26)+'_'+(i+1);used[nm]=1;
   XLSX.utils.book_append_sheet(wb,ws,nm);
  });
- const fileName=safeName(art.spec.title||'nova-sheet')+'.xlsx';
+ const fileName=safeName(art.spec.title||'noth-sheet')+'.xlsx';
  XLSX.writeFile(wb,fileName,{compression:true});
  toast('Đã xuất '+fileName,'ok');
 }
 function exportDOC(art){
  const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'+
- '<head><meta charset="utf-8"><title>'+esc(art.title||'Nova doc')+'</title>'+
+ '<head><meta charset="utf-8"><title>'+esc(art.title||'Noth doc')+'</title>'+
  '<style>@page{size:A4;margin:2.2cm}body{font-family:"Calibri","Times New Roman",serif;font-size:12pt;line-height:1.55;color:#111}'+
  'h1{font-size:22pt;margin:0 0 12pt}h2{font-size:16pt;margin:18pt 0 8pt}h3{font-size:13pt;margin:14pt 0 6pt}'+
  'table{border-collapse:collapse;width:100%;margin:10pt 0}th,td{border:1px solid #999;padding:6pt}th{background:#eee}'+
  'code{font-family:Consolas,monospace;background:#f2f2f2;padding:1pt 3pt}blockquote{border-left:3px solid #bbb;margin:10pt 0;padding-left:12pt;color:#444}</style></head>'+
  '<body>'+md(art.markdown||'')+'</body></html>';
- download(safeName(art.title||'nova-doc')+'.doc','\ufeff'+html,'application/msword');
+ download(safeName(art.title||'noth-doc')+'.doc','\ufeff'+html,'application/msword');
 }
 function sheetCSV(sh){
  const q=v=>{const s=String(v==null?'':v).replace(/"/g,'""');return /[",\n]/.test(s)?'"'+s+'"':s};
@@ -3622,7 +3627,7 @@ function renderArtifact(el,m){
   slot.querySelector('[data-open]').onclick=()=>showSlides(a);
   slot.querySelector('[data-pptx]').onclick=()=>exportPPTX(a);
   slot.querySelector('[data-pdf]').onclick=()=>slidesPDF(a);
-  slot.querySelector('[data-html]').onclick=()=>download(safeName(a.spec.title||'nova-slides')+'.html',deckHTML(a),'text/html;charset=utf-8');
+  slot.querySelector('[data-html]').onclick=()=>download(safeName(a.spec.title||'noth-slides')+'.html',deckHTML(a),'text/html;charset=utf-8');
   return;
  }
  if(a.type==='sheet'){
@@ -3754,7 +3759,7 @@ function showDoc(art){
 </script>
 <script>
 /* ============================================================
-   NOVA AI v6 — PART 4/4 : PIPELINES · CHAT LOOP · COMPOSER · VOICE · SETTINGS
+   NOTH AI v6 — PART 4/4 : PIPELINES · CHAT LOOP · COMPOSER · VOICE · SETTINGS
    ============================================================ */
 'use strict';
 
@@ -4661,7 +4666,7 @@ function nativeBadge(){
  const el=$('#native-badge');if(!el)return;
  const r=mode.reasoning||'off';
  if(r==='off'){el.textContent='Suy luận đang tắt — mô hình trả lời trực tiếp.';return}
- el.innerHTML=nativeSupport()?'<span class="rs-ok">'+svg('circle-check')+'Model này hỗ trợ suy luận gốc (native reasoning).</span>':'Model không có suy luận gốc — Nova sẽ yêu cầu model suy nghĩ từng bước.';
+ el.innerHTML=nativeSupport()?'<span class="rs-ok">'+svg('circle-check')+'Model này hỗ trợ suy luận gốc (native reasoning).</span>':'Model không có suy luận gốc — Noth sẽ yêu cầu model suy nghĩ từng bước.';
 }
 const SWITCHES=[
  ['#s-stream','stream'],['#s-showthink','showThink'],['#s-salvage','salvage'],['#s-vision','vision'],
@@ -4735,11 +4740,11 @@ function wireSettings(){
  $('#d-md').onclick=()=>{
   if(!cur)return;
   const t='# '+cur.title+'\n\n'+cur.msgs.filter(visible).map(m=>
-   (m.role==='user'?'## 🧑 Bạn\n\n':'## ✨ Nova\n\n')+asText(m.content)).join('\n\n');
+   (m.role==='user'?'## 🧑 Bạn\n\n':'## ✨ Noth\n\n')+asText(m.content)).join('\n\n');
   download(safeName(cur.title)+'.md',t,'text/markdown;charset=utf-8');
  };
  $('#d-json').onclick=()=>{if(cur)download(safeName(cur.title)+'.json',JSON.stringify(cur,null,2),'application/json')};
- $('#d-all').onclick=()=>download('nova-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify({settings:S,chats},null,2),'application/json');
+ $('#d-all').onclick=()=>download('noth-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify({settings:S,chats},null,2),'application/json');
  $('#d-clear').onclick=()=>{
   if(!confirm('Xoá TOÀN BỘ hội thoại? Không thể hoàn tác.'))return;
   chats=[];saveC();newChat();toast('Đã xoá toàn bộ','ok');
@@ -4750,7 +4755,7 @@ function wireSettings(){
   importData(await f.text(),f.name);e.target.value='';
  };
  $('#d-import-text').onclick=()=>{
-  const t=prompt('Dán JSON (backup Nova hoặc một hội thoại):');
+  const t=prompt('Dán JSON (backup Noth hoặc một hội thoại):');
   if(t&&t.trim())importData(t,'paste');
  };
  /* đóng modal */
@@ -4934,8 +4939,8 @@ function init(){
 }
 init();
 </script>
-<script id="nova-v9-js">
-/* ===== NOVA v9 add-on — Chat/Build · công cụ Build · terminal mở rộng · nén ngữ cảnh ===== */
+<script id="noth-v9-js">
+/* ===== NOTH v9 add-on — Chat/Build · công cụ Build · terminal mở rộng · nén ngữ cảnh ===== */
 (()=>{
 const B64='\0b64:',BUILD=window.BUILD={touched:new Set(),out:null};
 const isBin=s=>typeof s==='string'&&s.startsWith(B64);
@@ -4996,7 +5001,7 @@ const BT={
  deliver:{icon:'download',verb:'Đã đóng gói kết quả',def:{name:'deliver',description:'BƯỚC CUỐI: trả kết quả cho người dùng. paths = các tệp/thư mục đã sửa hoặc tạo; as = "file" (một tệp), "folder" hoặc "zip" (nhiều tệp).',parameters:P({paths:{type:'array',items:S_},name:S_,as:S_},['paths'])},
   async run({paths,name,as}){const sel=new Set();for(const p of (Array.isArray(paths)?paths:[paths]).filter(Boolean).map(vpath)){if(VFS.has(p))sel.add(p);else for(const k of VFS.keys())if(k.startsWith(p+'/'))sel.add(k)}
    if(!sel.size)throw new Error('Không có tệp nào khớp paths');
-   BUILD.out={name:safeName(name||'nova-build'),as:as||(sel.size>1?'zip':'file'),files:[...sel]};return {ok:true,files:sel.size,as:BUILD.out.as}}}
+   BUILD.out={name:safeName(name||'noth-build'),as:as||(sel.size>1?'zip':'file'),files:[...sel]};return {ok:true,files:sel.size,as:BUILD.out.as}}}
 };
 BT.update_plan={icon:'list',verb:'Đã cập nhật kế hoạch',def:{name:'update_plan',description:'Ghi / cập nhật danh sách việc cần làm (hiện cho người dùng). Mỗi dòng một việc: "[x] ..." = đã làm xong, "[-] ..." = đang làm hoặc chưa làm. Luôn gửi lại TOÀN BỘ danh sách.',parameters:P({plan:S_},['plan'])},
  async run({plan}){const it=parsePlan(plan);if(!it.length)throw new Error('plan rỗng — mỗi dòng phải bắt đầu bằng "[x] " hoặc "[-] "');
@@ -5023,7 +5028,7 @@ window.compactCtx=async msgs=>{
 
 /* ---------- kết quả Build: thư mục / .zip / tệp ---------- */
 window.takeDeliverable=()=>{
- let o=BUILD.out;if(!o&&BUILD.touched.size)o={name:'nova-build',as:BUILD.touched.size>1?'zip':'file',files:[...BUILD.touched]};
+ let o=BUILD.out;if(!o&&BUILD.touched.size)o={name:'noth-build',as:BUILD.touched.size>1?'zip':'file',files:[...BUILD.touched]};
  BUILD.out=null;BUILD.touched.clear();if(!o)return null;
  let budget=700000;
  const files=o.files.filter(p=>VFS.has(p)).map(p=>{const t=VFS.get(p);const ok=t.length<=budget;if(ok)budget-=t.length;return {path:p,data:ok?t:null}});
@@ -5059,7 +5064,7 @@ const pyLoad=async()=>{if(PY)return PY;
  if(!window.loadPyodide)await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js';s.onload=ok;s.onerror=()=>no(new Error('Không tải được Pyodide (cần Internet)'));document.head.appendChild(s)});
  return PY=await loadPyodide();};
 async function pyRun(code,argv,pkgs){
- const py=await pyLoad(),root='/nova';let out='',err='',x=0;
+ const py=await pyLoad(),root='/noth';let out='',err='',x=0;
  py.setStdout({batched:s=>out+=s+'\n'});py.setStderr({batched:s=>err+=s+'\n'});
  const mk=p=>{let d='';for(const q of p.split('/').filter(Boolean)){d+='/'+q;try{py.FS.mkdir(d)}catch(_){}}};
  const rm=d=>{try{for(const n of py.FS.readdir(d)){if(n==='.'||n==='..')continue;const p=d+'/'+n;if(py.FS.isDir(py.FS.stat(p).mode)){rm(p);py.FS.rmdir(p)}else py.FS.unlink(p)}}catch(_){}};
@@ -5113,7 +5118,7 @@ window.extraCmd=async(c,a,pos,inp,has,src)=>{
    return {o:out.slice(0,300).join('\n'),x:out.length?1:0}}
   case 'stat':{const t=file(pos[0]);return {o:vpath(pos[0])+'\nsize: '+t.length+'\nlines: '+(isBin(t)?'-':L(t).length)+'\ntype: '+(isBin(t)?'binary':'text')}}
   case 'du':{let n=0;const k=vpath(pos[0]||'.');for(const [f,v] of VFS)if(f===k||f.startsWith(k==='/'?'/':k+'/'))n+=v.length;return {o:fmtB(n)+'\t'+k}}
-  case 'which':case 'type':return {o:pos.map(v=>/^(ls|cat|grep|sed|awk|cut|tr|diff|python3?|pip3?|node|js|unzip|zip|curl|echo|find|sort|uniq|head|tail|wc|tee|download)$/.test(v)?v+': lệnh dựng sẵn của nova-sh':v+': không tìm thấy').join('\n')};
+  case 'which':case 'type':return {o:pos.map(v=>/^(ls|cat|grep|sed|awk|cut|tr|diff|python3?|pip3?|node|js|unzip|zip|curl|echo|find|sort|uniq|head|tail|wc|tee|download)$/.test(v)?v+': lệnh dựng sẵn của noth-sh':v+': không tìm thấy').join('\n')};
   case 'tee':{const k=vpath(pos[0]||'out.txt'),t=inp||'';ensureDirs(k);VFS.set(k,has('a')?(VFS.get(k)||'')+t:t);touch(k);return {o:t}}
   case 'download':{const k=vpath(pos[0]);const v=file(pos[0]);download(k.split('/').pop(),new Blob([toData(v)]));return {o:'Đã tải '+k}}
   case 'unzip':{const f=pos[0];if(!f)return {e:'unzip: thiếu tệp',x:1};
@@ -5155,11 +5160,11 @@ $$('#mode-seg button').forEach(b=>b.addEventListener('click',()=>setAppMode(b.da
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==='b'){e.preventDefault();toggleSb()}});
 if(S.sbCollapsed)document.body.classList.add('sb-collapsed');
 setAppMode(cur&&cur.build?'build':'chat',true);
-try{const l=document.createElement('link');l.rel='icon';l.href='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#111"/><g transform="translate(3 3) scale(.75)">'+I.sparkle.replace('currentColor','#fff')+'</g></svg>');document.head.appendChild(l)}catch(_){}
+try{const l=document.createElement('link');l.rel='icon';l.href='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="652" height="610" viewBox="0 0 652 610" role="img" aria-labelledby="title"> <g fill="#111" fill-rule="nonzero" shape-rendering="geometricPrecision"> <path d="M 27.00,37.00 L 27.00,38.00 L 16.00,50.00 L 16.00,51.00 L 10.00,59.00 L 3.00,73.00 L 5.00,73.00 L 8.00,71.00 L 15.00,70.00 L 16.00,69.00 L 31.00,69.00 L 32.00,70.00 L 36.00,70.00 L 37.00,71.00 L 42.00,72.00 L 46.00,75.00 L 49.00,76.00 L 56.00,82.00 L 57.00,82.00 L 64.00,89.00 L 64.00,90.00 L 71.00,97.00 L 72.00,97.00 L 92.00,117.00 L 92.00,118.00 L 102.00,128.00 L 102.00,129.00 L 110.00,137.00 L 110.00,138.00 L 112.00,139.00 L 112.00,140.00 L 118.00,146.00 L 118.00,147.00 L 133.00,163.00 L 133.00,164.00 L 138.00,169.00 L 138.00,170.00 L 146.00,178.00 L 146.00,179.00 L 153.00,186.00 L 153.00,187.00 L 168.00,203.00 L 168.00,204.00 L 174.00,210.00 L 174.00,211.00 L 183.00,220.00 L 183.00,221.00 L 203.00,243.00 L 203.00,244.00 L 208.00,249.00 L 208.00,250.00 L 216.00,258.00 L 216.00,259.00 L 223.00,266.00 L 223.00,267.00 L 229.00,273.00 L 229.00,274.00 L 237.00,282.00 L 237.00,283.00 L 244.00,290.00 L 244.00,291.00 L 251.00,298.00 L 251.00,299.00 L 258.00,306.00 L 258.00,307.00 L 265.00,314.00 L 265.00,315.00 L 286.00,338.00 L 286.00,339.00 L 292.00,345.00 L 292.00,346.00 L 300.00,354.00 L 300.00,355.00 L 307.00,362.00 L 307.00,363.00 L 316.00,372.00 L 316.00,373.00 L 330.00,388.00 L 330.00,389.00 L 343.00,403.00 L 343.00,404.00 L 351.00,412.00 L 351.00,413.00 L 358.00,420.00 L 358.00,421.00 L 364.00,427.00 L 364.00,428.00 L 373.00,437.00 L 373.00,438.00 L 379.00,444.00 L 379.00,445.00 L 387.00,453.00 L 387.00,454.00 L 398.00,466.00 L 398.00,467.00 L 407.00,476.00 L 407.00,477.00 L 412.00,482.00 L 412.00,483.00 L 427.00,499.00 L 427.00,500.00 L 431.00,504.00 L 431.00,505.00 L 440.00,514.00 L 440.00,515.00 L 445.00,520.00 L 445.00,521.00 L 451.00,527.00 L 451.00,528.00 L 455.00,532.00 L 459.00,539.00 L 462.00,542.00 L 462.00,543.00 L 468.00,550.00 L 468.00,551.00 L 487.00,571.00 L 488.00,571.00 L 499.00,581.00 L 500.00,581.00 L 508.00,587.00 L 511.00,588.00 L 513.00,590.00 L 525.00,596.00 L 527.00,596.00 L 530.00,598.00 L 532.00,598.00 L 536.00,600.00 L 539.00,600.00 L 540.00,601.00 L 543.00,601.00 L 544.00,602.00 L 547.00,602.00 L 548.00,603.00 L 553.00,603.00 L 554.00,604.00 L 574.00,604.00 L 575.00,603.00 L 580.00,603.00 L 581.00,602.00 L 584.00,602.00 L 585.00,601.00 L 588.00,601.00 L 589.00,600.00 L 592.00,600.00 L 593.00,599.00 L 598.00,598.00 L 610.00,592.00 L 612.00,590.00 L 616.00,588.00 L 619.00,585.00 L 620.00,585.00 L 633.00,572.00 L 633.00,571.00 L 638.00,565.00 L 644.00,553.00 L 644.00,551.00 L 646.00,548.00 L 647.00,540.00 L 648.00,539.00 L 648.00,530.00 L 646.00,529.00 L 629.00,512.00 L 628.00,512.00 L 577.00,460.00 L 577.00,459.00 L 567.00,449.00 L 567.00,448.00 L 544.00,423.00 L 544.00,422.00 L 538.00,416.00 L 538.00,415.00 L 533.00,410.00 L 533.00,409.00 L 521.00,396.00 L 521.00,395.00 L 510.00,383.00 L 510.00,382.00 L 505.00,377.00 L 505.00,376.00 L 492.00,362.00 L 492.00,361.00 L 473.00,340.00 L 473.00,339.00 L 467.00,333.00 L 467.00,332.00 L 460.00,325.00 L 460.00,324.00 L 454.00,318.00 L 454.00,317.00 L 446.00,309.00 L 446.00,308.00 L 433.00,294.00 L 433.00,293.00 L 408.00,266.00 L 408.00,265.00 L 401.00,258.00 L 401.00,257.00 L 392.00,248.00 L 392.00,247.00 L 383.00,238.00 L 383.00,237.00 L 374.00,228.00 L 374.00,227.00 L 346.00,197.00 L 346.00,196.00 L 333.00,183.00 L 333.00,182.00 L 322.00,171.00 L 322.00,170.00 L 311.00,159.00 L 311.00,158.00 L 300.00,147.00 L 300.00,146.00 L 298.00,145.00 L 298.00,144.00 L 277.00,122.00 L 277.00,121.00 L 262.00,106.00 L 262.00,105.00 L 193.00,35.00 L 192.00,35.00 L 187.00,30.00 L 186.00,30.00 L 180.00,25.00 L 174.00,22.00 L 172.00,20.00 L 160.00,14.00 L 158.00,14.00 L 155.00,12.00 L 150.00,11.00 L 147.00,9.00 L 141.00,8.00 L 140.00,7.00 L 137.00,7.00 L 136.00,6.00 L 131.00,6.00 L 130.00,5.00 L 124.00,5.00 L 123.00,4.00 L 112.00,4.00 L 111.00,3.00 L 107.00,3.00 L 106.00,4.00 L 96.00,4.00 L 95.00,5.00 L 89.00,5.00 L 88.00,6.00 L 79.00,7.00 L 78.00,8.00 L 70.00,10.00 L 67.00,12.00 L 65.00,12.00 L 56.00,17.00 L 52.00,18.00 L 47.00,22.00 L 44.00,23.00 Z"/> <path d="M 54.00,143.00 L 53.00,144.00 L 49.00,144.00 L 48.00,145.00 L 45.00,145.00 L 39.00,148.00 L 37.00,148.00 L 33.00,150.00 L 31.00,152.00 L 28.00,153.00 L 25.00,156.00 L 24.00,156.00 L 15.00,165.00 L 15.00,166.00 L 10.00,172.00 L 6.00,180.00 L 6.00,182.00 L 4.00,186.00 L 4.00,189.00 L 3.00,190.00 L 3.00,193.00 L 2.00,194.00 L 2.00,553.00 L 3.00,554.00 L 3.00,557.00 L 4.00,558.00 L 4.00,561.00 L 5.00,562.00 L 6.00,567.00 L 11.00,577.00 L 17.00,584.00 L 17.00,585.00 L 28.00,595.00 L 29.00,595.00 L 34.00,599.00 L 42.00,603.00 L 44.00,603.00 L 48.00,605.00 L 52.00,605.00 L 53.00,606.00 L 57.00,606.00 L 58.00,607.00 L 77.00,607.00 L 78.00,606.00 L 82.00,606.00 L 83.00,605.00 L 87.00,605.00 L 88.00,604.00 L 90.00,604.00 L 104.00,597.00 L 110.00,592.00 L 111.00,592.00 L 118.00,585.00 L 118.00,584.00 L 124.00,577.00 L 129.00,567.00 L 129.00,565.00 L 130.00,564.00 L 130.00,562.00 L 132.00,558.00 L 132.00,555.00 L 133.00,554.00 L 133.00,545.00 L 134.00,544.00 L 134.00,535.00 L 133.00,534.00 L 133.00,520.00 L 134.00,519.00 L 134.00,478.00 L 133.00,477.00 L 133.00,467.00 L 134.00,466.00 L 134.00,457.00 L 133.00,456.00 L 133.00,267.00 L 132.00,266.00 L 132.00,259.00 L 131.00,258.00 L 131.00,253.00 L 130.00,252.00 L 129.00,242.00 L 128.00,241.00 L 127.00,234.00 L 126.00,233.00 L 126.00,231.00 L 125.00,230.00 L 125.00,228.00 L 124.00,227.00 L 122.00,219.00 L 118.00,212.00 L 118.00,210.00 L 113.00,200.00 L 111.00,198.00 L 107.00,190.00 L 105.00,188.00 L 101.00,181.00 L 97.00,177.00 L 97.00,176.00 L 89.00,167.00 L 89.00,166.00 L 68.00,145.00 L 67.00,145.00 L 65.00,143.00 Z"/> <path d="M 571.00,2.00 L 570.00,3.00 L 566.00,3.00 L 565.00,4.00 L 563.00,4.00 L 562.00,5.00 L 554.00,7.00 L 550.00,9.00 L 548.00,11.00 L 545.00,12.00 L 539.00,17.00 L 538.00,17.00 L 530.00,25.00 L 530.00,26.00 L 527.00,29.00 L 527.00,30.00 L 523.00,35.00 L 519.00,43.00 L 519.00,45.00 L 517.00,49.00 L 517.00,52.00 L 516.00,53.00 L 516.00,58.00 L 515.00,59.00 L 515.00,323.00 L 516.00,324.00 L 516.00,328.00 L 517.00,329.00 L 518.00,335.00 L 523.00,345.00 L 528.00,351.00 L 528.00,352.00 L 538.00,362.00 L 538.00,363.00 L 546.00,371.00 L 546.00,372.00 L 553.00,379.00 L 553.00,380.00 L 562.00,389.00 L 562.00,390.00 L 584.00,414.00 L 584.00,415.00 L 591.00,422.00 L 591.00,423.00 L 598.00,430.00 L 598.00,431.00 L 607.00,440.00 L 607.00,441.00 L 613.00,447.00 L 613.00,448.00 L 622.00,457.00 L 622.00,458.00 L 630.00,466.00 L 630.00,467.00 L 641.00,478.00 L 641.00,479.00 L 648.00,486.00 L 648.00,487.00 L 649.00,486.00 L 648.00,484.00 L 649.00,483.00 L 649.00,62.00 L 648.00,61.00 L 648.00,55.00 L 647.00,54.00 L 647.00,50.00 L 646.00,49.00 L 644.00,41.00 L 641.00,35.00 L 639.00,33.00 L 637.00,29.00 L 634.00,26.00 L 634.00,25.00 L 622.00,14.00 L 621.00,14.00 L 619.00,12.00 L 616.00,11.00 L 614.00,9.00 L 610.00,7.00 L 608.00,7.00 L 605.00,5.00 L 602.00,5.00 L 598.00,3.00 L 594.00,3.00 L 593.00,2.00 Z"/> </g> </svg>');document.head.appendChild(l)}catch(_){}
 })();
 </script>
-<!-- ===== NOVA v10 — ThinkingOrb (thinking-orbs) dưới dạng custom element <t-orb> ===== -->
-<script type="module" id="nova-v10-orb">
+<!-- ===== NOTH v10 — ThinkingOrb (thinking-orbs) dưới dạng custom element <t-orb> ===== -->
+<script type="module" id="noth-v10-orb">
 import React from 'https://esm.sh/react@18.3.1';
 import {createRoot} from 'https://esm.sh/react-dom@18.3.1/client?deps=react@18.3.1';
 import {ThinkingOrb} from 'https://esm.sh/thinking-orbs@0.3.2?deps=react@18.3.1';
@@ -5193,7 +5198,7 @@ if(!customElements.get('t-orb'))customElements.define('t-orb',TOrb);
 
 <!-- API & EXTENSION NOTICE -->
 <!-- API & EXTENSION NOTICE -->
-<style id="nova-notify-v2">
+<style id="noth-notify-v2">
 /* ===== Toast v2 ===== */
 #toasts{top:calc(62px + env(safe-area-inset-top));bottom:auto;left:50%;transform:translateX(-50%);width:min(420px,calc(100vw - 24px));gap:8px;align-items:stretch;flex-direction:column}
 #toasts .toast{pointer-events:auto;position:relative;overflow:hidden;display:flex;align-items:center;gap:10px;max-width:none;padding:9px 8px 9px 10px;border-radius:14px;
@@ -5273,15 +5278,15 @@ if(!customElements.get('t-orb'))customElements.define('t-orb',TOrb);
       <div class="xn-badge"><span data-i="puzzle" style="display:flex"></span></div>
       <div class="xn-kicker"><span data-i="bell" style="display:flex"></span>Thông báo</div>
       <h3 id="xn-title">Lấy API &amp; tải Extension</h3>
-      <p>Để dùng đầy đủ tính năng của Nova, hãy lấy API và cài đặt extension trình duyệt.</p>
+      <p>Để dùng đầy đủ tính năng của Noth, hãy lấy API và cài đặt extension trình duyệt.</p>
     </div>
     <div class="xn-steps">
       <a class="xn-step hl" href="https://vi.anotepad.com/notes/6tkrhq7d" target="_blank" rel="noopener">
         <span class="xn-si" data-i="key"></span>
-        <span class="xn-st"><b>Lấy API</b><small>Lấy khoá để Nova kết nối với mô hình AI</small></span>
+        <span class="xn-st"><b>Lấy API</b><small>Lấy khoá để Noth kết nối với mô hình AI</small></span>
         <span class="xn-go" data-i="arrow-up-right"></span>
       </a>
-      <a class="xn-step" href="https://github.com/user-attachments/files/33321564/nova-agent-browser.zip" target="_blank" rel="noopener">
+      <a class="xn-step" href="https://github.com/user-attachments/files/33333229/noth-agent-browser.zip" target="_blank" rel="noopener">
         <span class="xn-si" data-i="download"></span>
         <span class="xn-st"><b>Tải Extension</b><small>Cài tiện ích trình duyệt để mở khoá đầy đủ tính năng</small></span>
         <span class="xn-go" data-i="arrow-up-right"></span>
@@ -5291,9 +5296,9 @@ if(!customElements.get('t-orb'))customElements.define('t-orb',TOrb);
     <div class="xn-foot"><button class="btn ghost" id="ext-never">Không hiện lại</button><button class="btn primary" data-ext-close>Đã hiểu</button></div>
   </div>
 </div>
-<script id="nova-ext-notice-js">
+<script id="noth-ext-notice-js">
 (function(){
- var KEY='nova.ai.extNotice.hidden',m=document.getElementById('ext-notice');
+ var KEY='noth.ai.extNotice.hidden',m=document.getElementById('ext-notice');
  try{if(typeof paintIcons==='function')paintIcons(m)}catch(e){}
  function show(){m.classList.add('show')}
  function hide(){m.classList.remove('show')}

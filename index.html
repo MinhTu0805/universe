@@ -1473,18 +1473,26 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
       </div>
 
       <div class="pane" data-pane="voice">
-        <div class="field"><label>Ngôn ngữ nhận diện giọng nói</label>
-          <select id="s-sttlang"><option value="vi-VN">Tiếng Việt</option><option value="en-US">English (US)</option><option value="ja-JP">日本語</option><option value="ko-KR">한국어</option><option value="zh-CN">中文</option></select></div>
-        <div class="field"><label>Giọng đọc</label><select id="s-voice"></select></div>
+        <div class="field"><label>Ngôn ngữ nói / gợi ý nhận dạng</label>
+          <select id="s-sttlang"><option value="vi-VN">Tiếng Việt</option><option value="en-US">English (US)</option><option value="ja-JP">日本語</option><option value="ko-KR">한국어</option><option value="zh-CN">中文</option></select>
+          <div class="desc">Ngôn ngữ này được gửi kèm phiên Live; không cần dịch vụ SpeechRecognition của trình duyệt.</div></div>
+        <div class="field"><label>Mô hình Live (Gemini Live API)</label>
+          <select id="s-livemodel" aria-label="Chọn mô hình Live"></select>
+          <div class="desc" id="s-livemodel-status">Live dùng kết nối Gemini Live riêng, không phải endpoint chat thông thường.</div>
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+            <input type="text" id="s-livemodel-custom" placeholder="models/gemini-3.1-flash-live-preview" aria-label="Nhập ID mô hình Live tuỳ chỉnh">
+            <button class="btn sm" id="s-apply-livemodel">Dùng ID</button>
+          </div>
+          <button class="btn sm" id="s-refresh-livemodels" style="margin-top:8px">Tải danh sách model Live từ Gemini</button>
+        </div>
+        <div class="field"><label>Giọng đọc của trình duyệt (đọc văn bản thường)</label><select id="s-voice"></select>
+          <div class="desc">Live phát âm thanh trực tiếp từ mô hình; các tuỳ chọn giọng dưới đây chỉ áp dụng cho chức năng đọc văn bản thường.</div></div>
         <div class="row2">
           <div class="field"><label>Tốc độ — <span id="v-rate" class="num">1.0</span></label><input type="range" id="s-rate" min="0.6" max="1.8" step="0.05" value="1"></div>
           <div class="field"><label>Cao độ — <span id="v-pitch" class="num">1.0</span></label><input type="range" id="s-pitch" min="0.6" max="1.6" step="0.05" value="1"></div>
         </div>
-        <div class="field"><label>Thời gian im lặng để gửi (Live) — <span id="v-sil" class="num">1000</span>ms</label>
-          <input type="range" id="s-silence" min="500" max="2500" step="100" value="1000"></div>
         <div class="switch-row"><div><b>Bỏ qua code, bảng, Markdown khi đọc</b><small>Chỉ đọc phần văn xuôi</small></div><div class="switch on" id="s-cleanread"></div></div>
-        <div class="switch-row"><div><b>Live: tự đọc câu trả lời</b><small>Tắt nếu chỉ muốn đọc bằng mắt</small></div><div class="switch on" id="s-livespeak"></div></div>
-        <div class="field"><label>Độ dài trả lời khi Live</label>
+        <div class="field"><label>Độ dài lời đáp Live</label>
           <select id="s-livelen"><option value="short">Rất ngắn (1-2 câu)</option><option value="normal">Ngắn gọn (2-4 câu)</option><option value="full">Đầy đủ</option></select></div>
       </div>
 
@@ -1524,7 +1532,7 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
           <div class="desc">Lấy API và cài extension để dùng đầy đủ tính năng của Nova.</div>
           <div class="data-grid" style="margin-top:10px">
             <a class="btn primary" href="https://vi.anotepad.com/notes/6tkrhq7d" target="_blank" rel="noopener" style="text-decoration:none"><span data-i="download" style="display:flex"></span> Lấy API</a>
-            <a class="btn" href="https://github.com/user-attachments/files/33303775/nova-agent-browser.zip" target="_blank" rel="noopener" style="text-decoration:none"><span data-i="key" style="display:flex"></span> Tải Extension</a>
+            <a class="btn" href="https://github.com/user-attachments/files/33321564/nova-agent-browser.zip" target="_blank" rel="noopener" style="text-decoration:none"><span data-i="key" style="display:flex"></span> Tải Extension</a>
           </div></div>
         <div class="field"><label>Thông báo</label>
           <div class="data-grid"><button class="btn" id="ext-show-notice"><span data-i="external" style="display:flex"></span> Mở lại thông báo</button></div>
@@ -1551,7 +1559,10 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
   <div class="lv-aura"><i></i><i></i><i></i></div>
   <div class="live-top">
     <div class="lv-status"><span class="lv-dot"></span><span class="live-state" id="live-state">Đang kết nối</span></div>
-    <span class="lv-model" id="live-model"></span>
+    <div class="lv-model-wrap">
+      <select class="lv-model" id="live-model-select" aria-label="Chọn mô hình Live"></select>
+      <button class="lv-model-refresh" id="live-model-refresh" title="Tải danh sách model Live" aria-label="Tải danh sách model Live">↻</button>
+    </div>
     <button class="icon-btn lv-x" id="live-x" title="Đóng" data-i="close"></button>
   </div>
   <div class="lv-center">
@@ -1744,7 +1755,7 @@ const DEFAULTS={
  useTools:true, geminiSafe:true, tavily:'', customTools:'', vision:true, imgMax:1400,
  enabledTools:{web_search:true,fetch_url:true,calculator:true,current_time:true},
  agent:'chat', agentNote:'', autoTitle:true, artifacts:true, slideCount:8, docCount:6, slideTheme:'auto',
- sttLang:'vi-VN', voice:'', rate:1, pitch:1, cleanRead:true, liveSpeak:true, liveLen:'normal', silence:1000,
+ sttLang:'vi-VN', voice:'', rate:1, pitch:1, cleanRead:true, liveModel:'gemini-3.1-flash-live-preview', liveLen:'normal',
  usageStream:true, light:false, accent:'mono', enterSend:true, fontSize:16, width:768, totalTok:0
 };
 
@@ -4520,136 +4531,127 @@ $('#mic-btn').onclick=()=>{
 };
 
 /* ============================================================
-   36. LIVE MODE — trò chuyện giọng nói thời gian thực
+   36. LIVE MODE — Gemini Live API over native WebSocket/audio
    ============================================================ */
-const LV={on:false,rec:null,muted:false,busy:false,buffer:'',interim:'',timer:null,stream:null,actx:null,analyser:null,raf:0};
+const LIVE_MODEL_DEFAULTS=['gemini-3.1-flash-live-preview'];
+let liveModelCatalog=[...LIVE_MODEL_DEFAULTS];
+const LV={on:false,failed:false,muted:false,busy:false,connected:false,ws:null,key:null,
+ stream:null,ctx:null,source:null,processor:null,silentGain:null,analyser:null,raf:0,
+ playNodes:new Set(),playAt:0,turnInput:'',turnOutput:'',skipOutput:false,epoch:0,closing:false};
 const liveEl=$('#live'),liveState=$('#live-state'),liveSaid=$('#live-said'),liveReply=$('#live-reply');
-function setLiveState(t,on){liveState.textContent=t;liveState.classList.toggle('on',!!on);
- const st=/nghĩ/i.test(t)?'think':/đọc/i.test(t)?'speak':/nghe/i.test(t)?'listen':'idle';liveEl.dataset.st=st;const lo=document.getElementById('live-orb');if(lo)lo.setAttribute('state',{think:'working',speak:'composing',listen:'listening'}[st]||'breathing')}
+const liveModelHeader=$('#live-model-select'),liveModelSetting=$('#s-livemodel');
+const normalizeLiveModel=v=>String(v||'').trim().replace(/^models\//i,'');
+const isLiveModelName=v=>/(live|native-audio)/i.test(normalizeLiveModel(v))&&!/(transcrib|translat)/i.test(normalizeLiveModel(v));
+function setLiveState(t,on){
+ liveState.textContent=t;liveState.classList.toggle('on',!!on);
+ const st=/nghĩ|think/i.test(t)?'think':/(nghe|nhận giọng)/i.test(t)?'listen':/(nói|phát|đọc|trả lời)/i.test(t)?'speak':'idle';
+ liveEl.dataset.st=st;const lo=document.getElementById('live-orb');
+ if(lo)lo.setAttribute('state',{think:'working',speak:'composing',listen:'listening'}[st]||'breathing');
+}
+function geminiLiveKeys(){return (S.keys||[]).filter(k=>k.on!==false&&k.key&&isGeminiKey(k)&&/generativelanguage\.googleapis\.com/i.test(keyBase(k)))}
+function getGeminiLiveKey(){const keys=geminiLiveKeys(),active=activeKey();return keys.find(k=>active&&k.id===active.id)||keys.find(k=>k.state!=='dead')||keys[0]||null}
+function syncLiveModelSelectors(){
+ const model=normalizeLiveModel(S.liveModel||LIVE_MODEL_DEFAULTS[0]);S.liveModel=model;
+ const all=[...new Set([...LIVE_MODEL_DEFAULTS,...liveModelCatalog,model].map(normalizeLiveModel).filter(Boolean))];
+ for(const sel of [liveModelHeader,liveModelSetting]){if(!sel)continue;const prev=sel.value;sel.innerHTML=all.map(m=>'<option value="'+esc(m)+'">'+esc(m)+'</option>').join('');sel.value=model}
+ const custom=$('#s-livemodel-custom');if(custom)custom.value=model;
+}
+function commitLiveModel(value,restart){
+ const model=normalizeLiveModel(value);
+ if(!isLiveModelName(model)){toast('Chỉ chọn mô hình Gemini có hỗ trợ Live (tên chứa “live” hoặc “native-audio”).','err');syncLiveModelSelectors();return false}
+ const changed=model!==normalizeLiveModel(S.liveModel);S.liveModel=model;saveS();syncLiveModelSelectors();
+ if(changed&&restart&&LV.on)restartLiveSession();return true;
+}
+async function refreshLiveModels(){
+ const key=getGeminiLiveKey();if(!key){const msg='Cần API key Google Gemini trực tiếp (generativelanguage.googleapis.com) để tải danh sách.';const st=$('#s-livemodel-status');if(st)st.textContent=msg;toast(msg,'err');syncLiveModelSelectors();return}
+ const status=$('#s-livemodel-status');if(status)status.textContent='Đang tải mô hình Live từ Google…';
+ try{
+  let token='',models=[];
+  for(let page=0;page<4;page++){
+   const u=new URL('https://generativelanguage.googleapis.com/v1beta/models');u.searchParams.set('pageSize','100');if(token)u.searchParams.set('pageToken',token);
+   const r=await fetch(u.toString(),{headers:{'x-goog-api-key':key.key}});
+   if(!r.ok){let detail='HTTP '+r.status;try{const j=await r.json();detail=j.error?.message||detail}catch(_){}throw new Error(detail)}
+   const j=await r.json();models.push(...(j.models||[]).map(m=>normalizeLiveModel(m.name)).filter(isLiveModelName));token=j.nextPageToken||'';if(!token)break;
+  }
+  liveModelCatalog=[...new Set([...LIVE_MODEL_DEFAULTS,...models])].sort((a,b)=>a.localeCompare(b));syncLiveModelSelectors();
+  if(status)status.textContent=models.length?('Đã tải '+models.length+' mô hình Live. Chọn một model hoặc nhập ID tuỳ chỉnh.'):'Không tìm thấy mô hình Live trong danh sách của key này; có thể nhập ID thủ công.';
+  toast(models.length?'Đã tải danh sách mô hình Live':'Không có model Live khả dụng trong danh sách key này',models.length?'ok':'err');
+ }catch(e){if(status)status.textContent='Không tải được danh sách: '+String(e.message||e).slice(0,130)+' · Có thể nhập model ID thủ công.';toast('Không tải được model Live: '+String(e.message||e).slice(0,100),'err')}
+}
+function appendTranscript(previous,next){const a=String(previous||'').trim(),b=String(next||'').trim();if(!b)return a;if(!a)return b;if(a===b||a.endsWith(b))return a;if(b.startsWith(a))return b;return(a+' '+b).replace(/\s+/g,' ').trim()}
+function historyForLive(){return(cur?.msgs||[]).filter(m=>!m.hidden&&!m.err&&(m.role==='user'||m.role==='assistant')).slice(-12).map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:asText(m.content).slice(0,5000)}]})).filter(t=>t.parts[0].text.trim())}
+function liveSystemInstruction(){
+ const len={short:'Giữ câu trả lời rất ngắn, tối đa 2 câu.',normal:'Trả lời gọn trong khoảng 2-4 câu.',full:'Trả lời đầy đủ nhưng mạch lạc.'}[S.liveLen]||'';
+ return[S.system||'',S.agentNote||'','[GEMINI LIVE VOICE] Trò chuyện bằng giọng nói tự nhiên, thân thiện và rõ ràng. Ưu tiên tiếng Việt nếu người dùng nói tiếng Việt. '+len+' Không đọc markdown, bảng, URL hoặc ký hiệu rườm rà thành lời. Nếu nghe chưa rõ, hỏi lại ngắn gọn. Hôm nay là '+new Date().toLocaleDateString('vi-VN')+'.'].filter(Boolean).join('\n\n')
+}
+function bytesToBase64(bytes){let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(i+0x8000,bytes.length)));return btoa(binary)}
+function downsampleToPCM16(input,fromRate,toRate=16000){const ratio=fromRate/toRate,length=Math.floor(input.length/ratio);if(length<=0)return new Int16Array(0);const output=new Int16Array(length);for(let i=0;i<length;i++){const pos=i*ratio,left=Math.floor(pos),frac=pos-left,sample=(input[left]||0)*(1-frac)+(input[Math.min(left+1,input.length-1)]||0)*frac,clamped=Math.max(-1,Math.min(1,sample));output[i]=clamped<0?clamped*0x8000:clamped*0x7fff}return output}
+function sendLiveAudio(floatSamples){if(!LV.on||LV.muted||!LV.connected||!LV.ws||LV.ws.readyState!==WebSocket.OPEN)return;const pcm=downsampleToPCM16(floatSamples,LV.ctx.sampleRate,16000);if(!pcm.length)return;try{LV.ws.send(JSON.stringify({realtimeInput:{audio:{data:bytesToBase64(new Uint8Array(pcm.buffer)),mimeType:'audio/pcm;rate=16000'}}}))}catch(e){handleLiveFailure(e)}}
+function queueLiveAudio(data,mimeType){
+ if(LV.skipOutput||!LV.ctx||!data)return;
+ try{const raw=atob(data),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);const usable=bytes.length-(bytes.length%2);if(!usable)return;
+  const samples=new Int16Array(bytes.buffer,bytes.byteOffset,usable/2),rate=+(String(mimeType||'').match(/rate=(\d+)/i)||[])[1]||24000,buffer=LV.ctx.createBuffer(1,samples.length,rate),channel=buffer.getChannelData(0);
+  for(let i=0;i<samples.length;i++)channel[i]=samples[i]/32768;const node=LV.ctx.createBufferSource();node.buffer=buffer;node.connect(LV.ctx.destination);LV.playNodes.add(node);
+  const when=Math.max(LV.ctx.currentTime+0.025,LV.playAt||0);LV.playAt=when+buffer.duration;node.onended=()=>{LV.playNodes.delete(node);if(LV.on&&!LV.busy&&!LV.playNodes.size)setLiveState(LV.muted?'Đã tắt mic':'Đang nghe…',!LV.muted)};node.start(when);setLiveState('Đang nói…',true);
+ }catch(e){console.warn('Live audio playback failed',e)}
+}
+function stopLivePlayback(){for(const n of LV.playNodes){try{n.onended=null;n.stop()}catch(_){}}LV.playNodes.clear();LV.playAt=0}
+function commitLiveTurn(){const input=LV.turnInput.trim(),output=LV.turnOutput.trim();if(cur&&(input||output)){if(input)cur.msgs.push({id:uid(),role:'user',content:input,ts:Date.now(),live:true});if(output)cur.msgs.push({id:uid(),role:'assistant',content:output,model:S.liveModel,agent:'chat',timeline:[],ts:Date.now(),live:true});cur.ts=Date.now();registerCurrentChat();saveC();renderList();renderThread();paintKeyUI()}LV.turnInput='';LV.turnOutput=''}
+function handleLiveMessage(data){
+ if(!data||!LV.on)return;if(data.error){handleLiveFailure(new Error(data.error.message||JSON.stringify(data.error)));return}const sc=data.serverContent;if(!sc)return;
+ if(sc.interrupted){stopLivePlayback();LV.busy=false;commitLiveTurn();LV.skipOutput=false;setLiveState(LV.muted?'Đã tắt mic':'Đang nghe…',!LV.muted);return}
+ if(sc.interimInputTranscription?.text){liveSaid.textContent=appendTranscript(LV.turnInput,sc.interimInputTranscription.text);liveSaid.classList.add('interim');setLiveState('Đang nhận giọng nói…',true)}
+ if(sc.inputTranscription?.text){if(!LV.turnInput)liveReply.textContent='';LV.turnInput=appendTranscript(LV.turnInput,sc.inputTranscription.text);liveSaid.textContent=LV.turnInput;liveSaid.classList.remove('interim');LV.busy=true;setLiveState('Đang nghĩ…')}
+ if(sc.outputTranscription?.text){LV.turnOutput=appendTranscript(LV.turnOutput,sc.outputTranscription.text);liveReply.textContent=LV.turnOutput;liveReply.scrollTop=liveReply.scrollHeight}
+ if(sc.modelTurn?.parts){LV.busy=true;for(const part of sc.modelTurn.parts){const blob=part.inlineData||part.inline_data;if(blob?.data&&/^audio\//i.test(blob.mimeType||blob.mime_type||''))queueLiveAudio(blob.data,blob.mimeType||blob.mime_type)}}
+ if(sc.generationComplete)LV.busy=false;
+ if(sc.turnComplete){LV.busy=false;LV.skipOutput=false;commitLiveTurn();if(!LV.playNodes.size)setLiveState(LV.muted?'Đã tắt mic':'Đang nghe…',!LV.muted)}
+}
+function cleanLiveResources(){cancelAnimationFrame(LV.raf);LV.raf=0;stopLivePlayback();if(LV.processor){LV.processor.onaudioprocess=null;try{LV.processor.disconnect()}catch(_){}}if(LV.source)try{LV.source.disconnect()}catch(_){}if(LV.silentGain)try{LV.silentGain.disconnect()}catch(_){}if(LV.stream)for(const t of LV.stream.getTracks())t.stop();if(LV.ctx)try{LV.ctx.close()}catch(_){}LV.processor=LV.source=LV.silentGain=LV.analyser=LV.stream=LV.ctx=null;LV.connected=false;LV.busy=false}
+function handleLiveFailure(error){
+ if(!LV.on||LV.failed)return;LV.failed=true;LV.connected=false;LV.busy=false;
+ const msg=String(error?.message||error||'Kết nối Live bị gián đoạn').replace(/AIza[\w-]+/g,'[API key]').slice(0,220);
+ setLiveState('Live gặp lỗi');liveSaid.textContent='Không thể tiếp tục phiên Live.';liveReply.textContent=msg;
+ const skip=$('#live-skip');skip.innerHTML=svg('refresh');skip.title='Thử kết nối lại';skip.setAttribute('aria-label','Thử kết nối lại');skip.nextElementSibling.textContent='Thử lại';
+ const ws=LV.ws;LV.ws=null;cleanLiveResources();try{ws&&ws.close()}catch(_){}
+}
+async function connectLive(epoch){
+ const key=getGeminiLiveKey();if(!key)throw new Error('Chưa có API key Google Gemini trực tiếp. Thêm key Gemini trong Cài đặt → API Key.');LV.key=key;liveReply.textContent='Đang kết nối Gemini Live…';setLiveState('Đang kết nối…');
+ const model=normalizeLiveModel(S.liveModel||LIVE_MODEL_DEFAULTS[0]),url='wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key='+encodeURIComponent(key.key),ws=new WebSocket(url);LV.ws=ws;
+ await new Promise((resolve,reject)=>{let done=false;const timeout=setTimeout(()=>finish(new Error('Hết thời gian chờ Gemini Live phản hồi thiết lập.')),20000);const finish=err=>{if(done)return;done=true;clearTimeout(timeout);err?reject(err):resolve()};
+  ws.onopen=()=>{if(epoch!==LV.epoch||!LV.on){finish(new Error('Phiên Live đã bị đóng.'));return}const setup={setup:{model:'models/'+model,generationConfig:{responseModalities:['AUDIO']},inputAudioTranscription:{languageCodes:[S.sttLang||'vi-VN']},outputAudioTranscription:{},systemInstruction:{parts:[{text:liveSystemInstruction()}]}}};try{ws.send(JSON.stringify(setup))}catch(e){finish(e)}};
+  ws.onmessage=event=>{let data;try{data=JSON.parse(event.data)}catch(_){return}if(data.setupComplete){finish();return}if(!done){if(data.error)finish(new Error(data.error.message||'Gemini Live từ chối thiết lập phiên.'));return}handleLiveMessage(data)};
+  ws.onerror=()=>finish(new Error('Không kết nối được Gemini Live qua WebSocket. Kiểm tra mạng, key và quyền truy cập model.'));
+  ws.onclose=event=>{if(!done)finish(new Error('Gemini Live đóng kết nối trước khi hoàn tất thiết lập (mã '+(event.code||'—')+').'));else if(LV.on&&LV.ws===ws&&!LV.closing)handleLiveFailure(new Error('Kết nối Gemini Live đã đóng (mã '+(event.code||'—')+').'))};
+ });
+ if(epoch!==LV.epoch||!LV.on||LV.ws!==ws)return;
+ const history=historyForLive();if(history.length)ws.send(JSON.stringify({clientContent:{turns:history,turnComplete:false}}));
+ const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1}});if(epoch!==LV.epoch||!LV.on||LV.ws!==ws){stream.getTracks().forEach(t=>t.stop());return}LV.stream=stream;
+ const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error('Trình duyệt không hỗ trợ Web Audio API.');LV.ctx=new AC();await LV.ctx.resume();
+ LV.source=LV.ctx.createMediaStreamSource(stream);LV.processor=LV.ctx.createScriptProcessor(4096,1,1);LV.silentGain=LV.ctx.createGain();LV.silentGain.gain.value=0;LV.analyser=LV.ctx.createAnalyser();LV.analyser.fftSize=256;
+ LV.source.connect(LV.processor);LV.source.connect(LV.analyser);LV.processor.connect(LV.silentGain);LV.silentGain.connect(LV.ctx.destination);
+ LV.processor.onaudioprocess=e=>{if(epoch===LV.epoch&&LV.on&&!LV.muted&&LV.connected)sendLiveAudio(e.inputBuffer.getChannelData(0))};
+ const buf=new Uint8Array(LV.analyser.frequencyBinCount),orbs=$$('#live .orb');const animate=()=>{if(!LV.on||epoch!==LV.epoch||!LV.analyser)return;LV.analyser.getByteFrequencyData(buf);let sum=0;for(const v of buf)sum+=v;const amp=Math.min(1.15,.55+(sum/buf.length/255)*2.6);orbs.forEach(o=>o.style.setProperty('--amp',amp.toFixed(3)));liveEl.style.setProperty('--amp',amp.toFixed(3));LV.raf=requestAnimationFrame(animate)};
+ LV.connected=true;LV.failed=false;LV.muted=false;LV.raf=requestAnimationFrame(animate);liveReply.textContent='';$('#live-mute').classList.remove('muted');$('#live-mute').innerHTML=svg('mic');$('#live-mute').title='Tắt mic';$('#live-mute').setAttribute('aria-label','Tắt mic');$('#live-mute').setAttribute('aria-pressed','false');
+ const retry=$('#live-skip');retry.innerHTML=svg('skip');retry.title='Bỏ qua phần trả lời';retry.setAttribute('aria-label','Bỏ qua phần trả lời');retry.nextElementSibling.textContent='Bỏ qua';setLiveState('Đang nghe…',true);liveSaid.textContent='Nói tự nhiên, Gemini Live đang nghe…';liveSaid.classList.add('interim');
+}
 function openLive(){
- if(LV.on)return;
- if(!cur)newChat(true);
- LV.on=true;LV.muted=false;LV.buffer='';
- liveEl.classList.add('show');liveEl.classList.remove('thinking');
- liveReply.textContent='';liveSaid.textContent='Nói gì đó đi…';liveSaid.classList.add('interim');
- $('#live-mute').classList.remove('muted');$('#live-mute').innerHTML=svg('mic');
- $('#live-mute').title='Tắt mic';$('#live-mute').setAttribute('aria-label','Tắt mic');$('#live-mute').setAttribute('aria-pressed','false');
- {const lm=$('#live-model');if(lm)lm.textContent=S.model||''}
- setLiveState('Đang nghe…',true);
- startMicAmp();startLiveRec();
+ if(LV.on)return;if(!cur)newChat(true);
+ if(!getGeminiLiveKey()){toast('Live chỉ dùng Gemini Live model và cần API key Gemini trực tiếp.','err');openSettings('keys');return}
+ if(!navigator.mediaDevices?.getUserMedia||!window.WebSocket){toast('Trình duyệt cần hỗ trợ microphone và WebSocket để dùng Live.','err');return}
+ LV.on=true;LV.failed=false;LV.muted=false;LV.busy=false;LV.skipOutput=false;LV.turnInput='';LV.turnOutput='';LV.epoch++;liveEl.classList.add('show');liveEl.classList.remove('thinking');syncLiveModelSelectors();liveReply.textContent='';liveSaid.textContent='Đang kết nối Gemini Live…';liveSaid.classList.add('interim');
+ const epoch=LV.epoch;connectLive(epoch).catch(e=>{if(LV.on&&epoch===LV.epoch)handleLiveFailure(e)});
 }
-function closeLive(){
- LV.on=false;LV.buffer='';clearTimeout(LV.timer);
- try{LV.rec&&LV.rec.stop()}catch(e){}
- LV.rec=null;
- if('speechSynthesis' in window)speechSynthesis.cancel();
- cancelAnimationFrame(LV.raf);
- if(LV.stream)LV.stream.getTracks().forEach(t=>t.stop());
- if(LV.actx)LV.actx.close().catch(()=>{});
- LV.stream=LV.actx=LV.analyser=null;
- liveEl.classList.remove('show','thinking');
-}
-async function startMicAmp(){
- try{
-  LV.stream=await navigator.mediaDevices.getUserMedia({audio:true});
-  LV.actx=new (window.AudioContext||window.webkitAudioContext)();
-  const src=LV.actx.createMediaStreamSource(LV.stream);
-  LV.analyser=LV.actx.createAnalyser();LV.analyser.fftSize=256;
-  src.connect(LV.analyser);
-  const buf=new Uint8Array(LV.analyser.frequencyBinCount);
-  const orbs=$$('#live .orb');
-  const loop=()=>{
-   if(!LV.on||!LV.analyser)return;
-   LV.analyser.getByteFrequencyData(buf);
-   let s=0;for(const v of buf)s+=v;
-   const amp=Math.min(1.15,.55+(s/buf.length/255)*2.6);
-   orbs.forEach(o=>o.style.setProperty('--amp',amp.toFixed(3)));liveEl.style.setProperty('--amp',amp.toFixed(3));
-   LV.raf=requestAnimationFrame(loop);
-  };
-  loop();
- }catch(e){/* mic bị chặn — STT vẫn thử chạy */}
-}
-function startLiveRec(){
- const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR){
-  setLiveState('Không hỗ trợ STT');
-  liveSaid.textContent='Trình duyệt này không hỗ trợ nhận diện giọng nói — hãy dùng Chrome/Edge.';
-  liveSaid.classList.remove('interim');
-  return;
- }
- try{LV.rec&&LV.rec.stop()}catch(e){}
- const rec=LV.rec=new SR();
- rec.lang=S.sttLang||'vi-VN';rec.continuous=true;rec.interimResults=true;
- rec.onresult=e=>{
-  if(LV.muted||LV.busy)return;
-  let fin='',inter='';
-  for(let i=e.resultIndex;i<e.results.length;i++){
-   const t=e.results[i][0].transcript;
-   if(e.results[i].isFinal)fin+=t;else inter+=t;
-  }
-  if(fin)LV.buffer=(LV.buffer+' '+fin).trim();
-  LV.interim=inter.trim();
-  const show=(LV.buffer+' '+inter).trim();
-  if(show){liveSaid.textContent=show;liveSaid.classList.toggle('interim',!fin)}
-  clearTimeout(LV.timer);
-  if(show)LV.timer=setTimeout(liveSend,Math.max(900,+S.silence||1000));
- };
- rec.onerror=e=>{
-  if(e.error==='not-allowed'||e.error==='service-not-allowed'){setLiveState('Mic bị chặn');liveSaid.textContent='Hãy cho phép micro rồi mở lại Live.'}
-  else if(e.error==='network'){setLiveState('Lỗi mạng nhận giọng');liveSaid.textContent='Không kết nối được dịch vụ nhận diện giọng nói của trình duyệt — kiểm tra mạng.'}
-  else if(e.error==='audio-capture'){setLiveState('Không thấy micro')}
- };
- rec.onend=()=>{if(LV.on&&!LV.muted&&!LV.busy){if((LV.buffer+' '+(LV.interim||'')).trim()){liveSend();return}try{rec.start()}catch(e){}}};
- try{rec.start()}catch(e){}
- setLiveState('Đang nghe…',true);
-}
-async function liveSend(){
- const text=(LV.buffer+' '+(LV.interim||'')).trim();
- LV.buffer='';LV.interim='';clearTimeout(LV.timer);
- if(!text||LV.busy||!LV.on)return;
- if(!healthyKeys().length){liveReply.textContent='Chưa có API key — mở Cài đặt → API Key để thêm.';setLiveState('Thiếu API key');return}
- LV.busy=true;liveEl.classList.add('thinking');setLiveState('Đang nghĩ…');
- try{LV.rec&&LV.rec.stop()}catch(e){}
- liveSaid.classList.remove('interim');liveSaid.textContent=text;
- liveReply.textContent='';
- const lenGuide={short:'Trả lời cực ngắn, tối đa 2 câu.',normal:'Trả lời ngắn gọn, 2-4 câu.',full:'Trả lời đầy đủ nhưng mạch lạc.'}[S.liveLen]||'';
- const hist=cur?cur.msgs.filter(x=>!x.hidden&&!x.err&&(x.role==='user'||x.role==='assistant')).slice(-10).map(x=>apiMsg(x)):[];
- const msgs=[{role:'system',content:(S.system||'')+(S.agentNote?'\n\n'+S.agentNote:'')+'\n\n[LIVE VOICE] Bạn đang trò chuyện bằng giọng nói theo thời gian thực như một người bạn thông minh, ấm áp. Hôm nay là '+new Date().toLocaleDateString('vi-VN')+'. '+lenGuide+' Nói tự nhiên như văn nói: câu ngắn, mở đầu bằng ý chính, không markdown, không bảng, không emoji, không đọc URL. Viết số và ký hiệu theo cách đọc được. Câu nghe chưa rõ (do nhận diện giọng nói sai) thì đoán ý hợp lý nhất hoặc hỏi lại một câu ngắn. Khi phù hợp, kết thúc bằng một câu hỏi gợi mở ngắn để cuộc trò chuyện tiếp diễn.'},...hist,{role:'user',content:text}];
- const t0=Date.now();
- try{
-  const r=await callModel(msgs,{onText:d=>{liveReply.textContent+=d;liveReply.scrollTop=liveReply.scrollHeight}},{tools:false,plan:{mode:'off'}});
-  const out=(r.content||'').trim()||'(không có phản hồi)';
-  liveReply.textContent=out;
-  if(cur){
-   cur.msgs.push({id:uid(),role:'user',content:text,ts:Date.now()});
-   const am={id:uid(),role:'assistant',content:out,model:S.model,agent:'chat',timeline:[],ms:Date.now()-t0,ts:Date.now()};
-   if(r.usage){am.usage={in:r.usage.in,out:r.usage.out,total:(r.usage.in||0)+(r.usage.out||0)};addUsage(r.key,r.usage.in,r.usage.out)}
-   cur.msgs.push(am);cur.ts=Date.now();registerCurrentChat();saveC();renderList();renderThread();paintKeyUI();
-  }
-  if(S.liveSpeak&&LV.on){
-   setLiveState('Đang đọc…');
-   await speakOnce(speakable(out));
-  }
- }catch(e){
-  liveReply.textContent='Lỗi: '+String(e&&e.message||e).slice(0,160);
- }finally{
-  LV.busy=false;liveEl.classList.remove('thinking');
-  if(LV.on){setLiveState('Đang nghe…',true);if(!LV.muted)startLiveRec()}
- }
-}
-$('#live-mute').onclick=()=>{
- LV.muted=!LV.muted;
- $('#live-mute').classList.toggle('muted',LV.muted);
- $('#live-mute').innerHTML=svg(LV.muted?'mic-off':'mic');
- $('#live-mute').title=LV.muted?'Bật mic':'Tắt mic';
- $('#live-mute').setAttribute('aria-label',$('#live-mute').title);
- $('#live-mute').setAttribute('aria-pressed',String(LV.muted));
- if(LV.muted){try{LV.rec&&LV.rec.stop()}catch(e){};setLiveState('Đã tắt mic')}
- else if(!LV.busy)startLiveRec();
-};
-$('#live-skip').onclick=()=>{if('speechSynthesis' in window)speechSynthesis.cancel();if(LV.on&&!LV.busy){setLiveState('Đang nghe…',true);if(!LV.muted)startLiveRec()}};
-$('#live-end').onclick=closeLive;
-$('#live-x').onclick=closeLive;
+function closeLive(){LV.on=false;LV.failed=false;LV.epoch++;LV.closing=true;const ws=LV.ws;LV.ws=null;cleanLiveResources();try{ws&&ws.close()}catch(_){}LV.key=null;LV.closing=false;liveEl.classList.remove('show','thinking')}
+function restartLiveSession(){if(!LV.on)return;LV.epoch++;const epoch=LV.epoch,ws=LV.ws;LV.ws=null;cleanLiveResources();try{ws&&ws.close()}catch(_){}LV.failed=false;LV.turnInput='';LV.turnOutput='';LV.skipOutput=false;liveSaid.textContent='Đang kết nối lại bằng '+normalizeLiveModel(S.liveModel)+'…';liveReply.textContent='';connectLive(epoch).catch(e=>{if(LV.on&&epoch===LV.epoch)handleLiveFailure(e)})}
+function applySelectedLiveModel(value){if(commitLiveModel(value,true))toast('Mô hình Live: '+normalizeLiveModel(S.liveModel),'ok')}
+for(const sel of [liveModelHeader,liveModelSetting])if(sel)sel.addEventListener('change',e=>applySelectedLiveModel(e.target.value));
+$('#live-model-refresh').innerHTML=svg('refresh');$('#live-model-refresh').onclick=refreshLiveModels;$('#s-refresh-livemodels').onclick=refreshLiveModels;
+$('#s-apply-livemodel').onclick=()=>{const v=$('#s-livemodel-custom').value;if(commitLiveModel(v,true))toast('Đã chọn mô hình Live: '+normalizeLiveModel(S.liveModel),'ok')};
+$('#s-livemodel-custom').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#s-apply-livemodel').click()}});
+$('#live-mute').onclick=()=>{if(!LV.connected||!LV.ws||LV.ws.readyState!==WebSocket.OPEN)return;LV.muted=!LV.muted;$('#live-mute').classList.toggle('muted',LV.muted);$('#live-mute').innerHTML=svg(LV.muted?'mic-off':'mic');$('#live-mute').title=LV.muted?'Bật mic':'Tắt mic';$('#live-mute').setAttribute('aria-label',$('#live-mute').title);$('#live-mute').setAttribute('aria-pressed',String(LV.muted));if(LV.muted){try{LV.ws.send(JSON.stringify({realtimeInput:{audioStreamEnd:true}}))}catch(_){}setLiveState('Đã tắt mic')}else{if(LV.ctx)LV.ctx.resume();setLiveState('Đang nghe…',true)}};
+$('#live-skip').onclick=()=>{if(LV.failed){closeLive();openLive();return}LV.skipOutput=true;stopLivePlayback();setLiveState(LV.muted?'Đã tắt mic':'Đang nghe…',!LV.muted)};
+$('#live-end').onclick=closeLive;$('#live-x').onclick=closeLive;
 </script>
 <script>
 /* ============================================================
@@ -4664,7 +4666,7 @@ function nativeBadge(){
 const SWITCHES=[
  ['#s-stream','stream'],['#s-showthink','showThink'],['#s-salvage','salvage'],['#s-vision','vision'],
  ['#s-autotitle','autoTitle'],['#s-artifact','artifacts'],['#s-tools','useTools'],['#s-geminisafe','geminiSafe'],
- ['#s-cleanread','cleanRead'],['#s-livespeak','liveSpeak'],['#s-usagestream','usageStream'],
+ ['#s-cleanread','cleanRead'],['#s-usagestream','usageStream'],
  ['#s-light','light',()=>applyTheme()],['#s-enter','enterSend'],['#s-autofold','autoFold']
 ];
 function syncSwitches(){SWITCHES.forEach(([id,k])=>{const el=$(id);if(el)el.classList.toggle('on',!!S[k])})}
@@ -4702,8 +4704,8 @@ function wireSettings(){
  $('#s-voice').onchange=e=>{S.voice=e.target.value;saveS()};
  $('#s-rate').addEventListener('input',e=>{S.rate=+e.target.value;$('#v-rate').textContent=S.rate.toFixed(2);saveS()});
  $('#s-pitch').addEventListener('input',e=>{S.pitch=+e.target.value;$('#v-pitch').textContent=S.pitch.toFixed(2);saveS()});
- $('#s-silence').addEventListener('input',e=>{S.silence=+e.target.value;$('#v-sil').textContent=S.silence;saveS()});
  $('#s-livelen').onchange=e=>{S.liveLen=e.target.value;saveS()};
+ $('#s-livemodel').onchange=e=>commitLiveModel(e.target.value,true);
  $('#s-fs').addEventListener('input',e=>{S.fontSize=+e.target.value;$('#v-fs').textContent=S.fontSize;applyFs(S.fontSize);saveS()});
  $('#s-w').addEventListener('input',e=>{S.width=+e.target.value;$('#v-w').textContent=S.width;document.documentElement.style.setProperty('--maxw',S.width+'px');saveS()});
  /* keys */
@@ -4870,11 +4872,10 @@ function loadSettingsUI(){
  $('#s-slidetheme').value=S.slideTheme||'auto';
  $('#s-slidecount').value=S.slideCount;$('#s-doccount').value=S.docCount;$('#s-agentnote').value=S.agentNote||'';
  $('#s-tavily').value=S.tavily||'';$('#s-customtools').value=S.customTools||'';
- $('#s-sttlang').value=S.sttLang||'vi-VN';renderVoices();
+ $('#s-sttlang').value=S.sttLang||'vi-VN';syncLiveModelSelectors();renderVoices();
  $('#s-rate').value=S.rate;$('#v-rate').textContent=(+S.rate).toFixed(2);
  $('#s-pitch').value=S.pitch;$('#v-pitch').textContent=(+S.pitch).toFixed(2);
- $('#s-silence').value=S.silence;$('#v-sil').textContent=S.silence;
- $('#s-livelen').value=S.liveLen||'normal';
+ $('#s-livelen').value=S.liveLen||'normal';$('#s-livemodel-custom').value=normalizeLiveModel(S.liveModel||LIVE_MODEL_DEFAULTS[0]);
  $('#s-fs').value=S.fontSize;$('#v-fs').textContent=S.fontSize;
  $('#s-w').value=S.width;$('#v-w').textContent=S.width;
  syncSwitches();renderKeys();renderToolToggles();renderAcc();renderUsage();
@@ -5254,6 +5255,16 @@ if(!customElements.get('t-orb'))customElements.define('t-orb',TOrb);
 @keyframes xn-float{50%{transform:translateY(-3px)}}
 @media (max-width:520px){#ext-notice{place-items:end center;padding:0}#ext-notice .modal.xn{width:100%;border-radius:22px 22px 0 0}}
 @media (prefers-reduced-motion:reduce){#toasts .toast,#toasts .t-bar,.xn-badge{animation:none!important}}
+
+/* Gemini Live API model selector and responsive controls */
+#live .lv-model-wrap{display:flex;align-items:center;justify-content:center;gap:6px;flex:1;min-width:0}
+#live .live-top .lv-model{display:block!important;appearance:none;width:auto;max-width:min(46vw,380px);min-width:0;padding:9px 30px 9px 12px;border:1px solid rgb(255 255 255/.14);border-radius:999px;background:rgb(255 255 255/.07);color:#f4f5f8;font:inherit;font-size:.76rem;text-align:center;cursor:pointer}
+#live .lv-model option{background:#17181d;color:#f4f5f8}
+#live .lv-model-refresh{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid rgb(255 255 255/.12);background:rgb(255 255 255/.07);color:#fff;font-size:1.15rem;cursor:pointer}
+#live .lv-model-refresh:hover{background:rgb(255 255 255/.16)}
+#live .lv-model-refresh svg{width:16px;height:16px}
+#live .lv-model:disabled{opacity:.65}
+@media(max-width:640px){#live .live-top{gap:6px}#live .live-top .lv-model{max-width:42vw;padding:8px 8px;font-size:.68rem}#live .lv-model-refresh{width:30px;height:30px}}
 </style>
 <div class="overlay" id="ext-notice" role="dialog" aria-modal="true" aria-labelledby="xn-title">
   <div class="modal xn">
@@ -5265,12 +5276,12 @@ if(!customElements.get('t-orb'))customElements.define('t-orb',TOrb);
       <p>Để dùng đầy đủ tính năng của Nova, hãy lấy API và cài đặt extension trình duyệt.</p>
     </div>
     <div class="xn-steps">
-      <a class="xn-step hl" href="https://github.com/user-attachments/files/33303775/nova-agent-browser.zip" target="_blank" rel="noopener">
+      <a class="xn-step hl" href="https://vi.anotepad.com/notes/6tkrhq7d" target="_blank" rel="noopener">
         <span class="xn-si" data-i="key"></span>
         <span class="xn-st"><b>Lấy API</b><small>Lấy khoá để Nova kết nối với mô hình AI</small></span>
         <span class="xn-go" data-i="arrow-up-right"></span>
       </a>
-      <a class="xn-step" href="https://vi.anotepad.com/notes/6tkrhq7d" target="_blank" rel="noopener">
+      <a class="xn-step" href="https://github.com/user-attachments/files/33321564/nova-agent-browser.zip" target="_blank" rel="noopener">
         <span class="xn-si" data-i="download"></span>
         <span class="xn-st"><b>Tải Extension</b><small>Cài tiện ích trình duyệt để mở khoá đầy đủ tính năng</small></span>
         <span class="xn-go" data-i="arrow-up-right"></span>

@@ -7,6 +7,7 @@
 <title>Noth</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
@@ -1357,6 +1358,7 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
 .nv-plan li.done .pl-d{animation:pl-pop .35s var(--m-emph,ease) both}
 @keyframes pl-pop{from{transform:scale(.4);opacity:0}}
 </style>
+<style>#composer-wrap #ai-disclaimer,#main:has(#hero) #composer-wrap #ai-disclaimer{display:block!important;visibility:visible!important;max-width:var(--maxw);margin:8px auto 0;text-align:center;font-size:.72rem;color:var(--tx3)}</style>
 </head>
 <body>
 <div id="app">
@@ -1384,7 +1386,7 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
     </div>
   </aside>
 
-  <main id="main"><div id="hero-fx" aria-hidden="true"><div class="hf-aurora"><i></i><i></i><i></i></div><div class="hf-floor"></div><div class="hf-cube c1"><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="hf-cube c2"><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="hf-cube c3"><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="hf-vignette"></div></div>
+  <main id="main"><div id="hero-fx" aria-hidden="true"><div class="hf-aurora"><i></i><i></i><i></i></div><div class="hf-floor"></div><div class="hf-cw w1"><div class="hf-cube c1"><b></b><b></b><b></b><b></b><b></b><b></b></div><i class="hf-shadow"></i></div><div class="hf-cw w2"><div class="hf-cube c2"><b></b><b></b><b></b><b></b><b></b><b></b></div><i class="hf-shadow"></i></div><div class="hf-cw w3"><div class="hf-cube c3"><b></b><b></b><b></b><b></b><b></b><b></b></div><i class="hf-shadow"></i></div><div class="hf-cw w4"><div class="hf-cube c4"><b></b><b></b><b></b><b></b><b></b><b></b></div><i class="hf-shadow"></i></div><div class="hf-vignette"></div></div>
     <header id="topbar">
       <button class="icon-btn only-mobile" id="sb-open" data-i="menu"></button>
       <button class="icon-btn only-desk" id="sb-toggle" title="Ẩn / mở thanh bên (Ctrl+B)" aria-label="Ẩn hoặc mở thanh bên" data-i="nv-sidebar"></button>
@@ -1430,7 +1432,7 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
           <button id="send" data-i="waveform" title="Trò chuyện trực tiếp"></button>
         </div>
       </div>
-      <div class="hint">Noth có thể mắc lỗi. Hãy kiểm tra các thông tin quan trọng.</div>
+      <div class="hint" id="ai-disclaimer">AI có thể mắc lỗi. Hãy kiểm tra thông tin quan trọng.</div>
     </div>
 
     <input type="file" id="file-input" multiple hidden>
@@ -1592,8 +1594,14 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
         <div class="field"><label>Lấy API & tải Extension</label>
           <div class="desc">Lấy API và cài extension để dùng đầy đủ tính năng của Noth.</div>
           <div class="data-grid" style="margin-top:10px">
-            <a class="btn primary" href="https://vi.anotepad.com/notes/6tkrhq7d" target="_blank" rel="noopener" style="text-decoration:none"><span data-i="download" style="display:flex"></span> Lấy API</a>
-            <a class="btn" href="https://github.com/user-attachments/files/33333229/noth-agent-browser.zip" target="_blank" rel="noopener" style="text-decoration:none"><span data-i="key" style="display:flex"></span> Tải Extension</a>
+            <a class="btn primary" href="https://pastefy.app/p3y6OR9U" target="_blank" rel="noopener" style="text-decoration:none"><span data-i="download" style="display:flex"></span> Lấy API</a>
+            <a class="btn" href="https://github.com/user-attachments/files/33390961/noth-agent-browser.zip" target="_blank" rel="noopener" style="text-decoration:none"><span data-i="key" style="display:flex"></span> Tải Extension</a>
+          </div>
+          <div class="desc">Mật khẩu xem API Key: <b>1234</b></div></div>
+        <div class="field"><label>Báo lỗi</label>
+          <div class="desc">Gặp lỗi? Gửi mô tả lỗi tại đây để được xem và sửa.</div>
+          <div class="data-grid" style="margin-top:10px">
+            <a class="btn" href="https://vi.anotepad.com/notes/6tkrhq7d" target="_blank" rel="noopener" style="text-decoration:none"><span data-i="external" style="display:flex"></span> Gửi lỗi</a>
           </div></div>
         <div class="field"><label>Thông báo</label>
           <div class="data-grid"><button class="btn" id="ext-show-notice"><span data-i="external" style="display:flex"></span> Mở lại thông báo</button></div>
@@ -2840,7 +2848,7 @@ const STARTERS=[
  {i:'doc',t:'Soạn tài liệu',d:'Xuất Word chỉnh sửa được',p:'Viết tài liệu hướng dẫn onboarding nhân viên mới cho công ty công nghệ 50 người.',a:'doc'}
 ];
 const HERO='<div id="hero"><div class="hero-mark">'+svg('logo')+'</div>'+
- '<h2 class="hx-title">Hôm nay làm gì?</h2><p class="hx-sub">Hỏi bất cứ điều gì — tìm web, đọc tệp, tạo slide, bảng tính, tài liệu.</p>'+
+ '<h2 class="hx-title" aria-label="Hôm nay làm gì?"><span class="hx-line"><span class="hx-type" aria-hidden="true">Hôm nay làm gì?</span><i class="hx-caret" aria-hidden="true"></i></span></h2><p class="hx-sub">Hỏi bất cứ điều gì — tìm web, đọc tệp, tạo slide, bảng tính, tài liệu.</p>'+
  '<div class="starter-h">Bắt đầu nhanh</div><div class="starters">'+
  STARTERS.map(s=>'<button class="starter" data-p="'+esc(s.p)+'" data-a="'+s.a+'"><span class="si">'+svg(s.i)+
   '</span><span style="min-width:0"><b>'+s.t+'</b><span>'+s.d+'</span></span><span class="go">'+svg('arrow-right')+'</span></button>').join('')+
@@ -5436,14 +5444,19 @@ if(!customElements.get('t-orb'))customElements.define('t-orb',TOrb);
       <p>Để dùng đầy đủ tính năng của Noth, hãy lấy API và cài đặt extension trình duyệt.</p>
     </div>
     <div class="xn-steps">
-      <a class="xn-step hl" href="https://vi.anotepad.com/notes/6tkrhq7d" target="_blank" rel="noopener">
+      <a class="xn-step hl" href="https://pastefy.app/p3y6OR9U" target="_blank" rel="noopener">
         <span class="xn-si" data-i="key"></span>
-        <span class="xn-st"><b>Lấy API</b><small>Lấy khoá để Noth kết nối với mô hình AI</small></span>
+        <span class="xn-st"><b>Lấy API</b><small>Lấy khoá để Noth kết nối với mô hình AI · Mật khẩu: <b>1234</b></small></span>
         <span class="xn-go" data-i="arrow-up-right"></span>
       </a>
-      <a class="xn-step" href="https://github.com/user-attachments/files/33333229/noth-agent-browser.zip" target="_blank" rel="noopener">
+      <a class="xn-step" href="https://github.com/user-attachments/files/33390961/noth-agent-browser.zip" target="_blank" rel="noopener">
         <span class="xn-si" data-i="download"></span>
         <span class="xn-st"><b>Tải Extension</b><small>Cài tiện ích trình duyệt để mở khoá đầy đủ tính năng</small></span>
+        <span class="xn-go" data-i="arrow-up-right"></span>
+      </a>
+    <a class="xn-step" href="https://vi.anotepad.com/notes/6tkrhq7d" target="_blank" rel="noopener">
+        <span class="xn-si" data-i="info"></span>
+        <span class="xn-st"><b>Gửi lỗi</b><small>Gặp lỗi? Gửi mô tả để được xem và sửa</small></span>
         <span class="xn-go" data-i="arrow-up-right"></span>
       </a>
     </div>
@@ -5466,6 +5479,119 @@ if(!customElements.get('t-orb'))customElements.define('t-orb',TOrb);
  if(b)b.onclick=function(){var s=document.getElementById('settings-modal');if(s)s.classList.remove('show');show()};
  var hidden=false;try{hidden=localStorage.getItem(KEY)==='1'}catch(e){}
  if(!hidden)setTimeout(show,600);
+})();
+</script>
+<style id="nv-up-v12">/* ===== v12: khối lập phương thật ===== */
+.hf-cw{position:absolute;width:var(--s);height:var(--s);perspective:700px;animation:hf-float 7s ease-in-out infinite alternate}
+.hf-cw.w1{left:9%;top:18%;--s:78px}
+.hf-cw.w2{right:10%;top:24%;--s:56px;animation-delay:-3s}
+.hf-cw.w3{left:18%;bottom:26%;--s:40px;animation-delay:-5s}
+.hf-cw.w4{right:20%;bottom:20%;--s:30px;animation-delay:-1.5s}
+.hf-cw .hf-cube{position:absolute;left:0!important;top:0!important;right:auto!important;bottom:auto!important;display:block!important;margin:0;width:var(--s);height:var(--s);opacity:1;
+  transform-style:preserve-3d;animation:hf-spin3 var(--d,24s) linear infinite}
+.hf-cw.w2 .hf-cube{--d:19s;animation-direction:reverse}
+.hf-cw.w3 .hf-cube{--d:16s}
+.hf-cw.w4 .hf-cube{--d:13s;animation-direction:reverse}
+.hf-cw .hf-cube b{position:absolute;inset:0;border-radius:3px;backdrop-filter:none;-webkit-backdrop-filter:none;
+  --h:calc(var(--s)/2);
+  border:1px solid rgb(255 255 255/.55);
+  box-shadow:inset 0 0 0 1px rgb(124 92 246/.18),inset 0 0 calc(var(--s)*.35) rgb(255 255 255/.25);
+  background:linear-gradient(140deg,var(--f1),var(--f2));
+  animation:hf-assemble 1.6s cubic-bezier(.2,.9,.25,1.15) both;animation-delay:calc(var(--k)*.09s + .15s)}
+/* mỗi mặt một độ sáng khác nhau → ra khối thật */
+.hf-cw .hf-cube b:nth-child(1){--k:0;--f1:#c4b5fd;--f2:#a5b4fc;--t:translateZ(var(--h))}
+.hf-cw .hf-cube b:nth-child(2){--k:1;--f1:#7c6cf0;--f2:#5b7cf0;--t:rotateY(180deg) translateZ(var(--h))}
+.hf-cw .hf-cube b:nth-child(3){--k:2;--f1:#a78bfa;--f2:#818cf8;--t:rotateY(90deg) translateZ(var(--h))}
+.hf-cw .hf-cube b:nth-child(4){--k:3;--f1:#8b7cf6;--f2:#60a5fa;--t:rotateY(-90deg) translateZ(var(--h))}
+.hf-cw .hf-cube b:nth-child(5){--k:4;--f1:#ede9fe;--f2:#c7d2fe;--t:rotateX(90deg) translateZ(var(--h))}
+.hf-cw .hf-cube b:nth-child(6){--k:5;--f1:#6d5ce8;--f2:#4f6fe0;--t:rotateX(-90deg) translateZ(var(--h))}
+.hf-cw .hf-cube b{transform:var(--t);opacity:.92}
+.hf-cw.w2 .hf-cube b{--f1:#99f6e4;--f2:#7dd3fc}
+.hf-cw.w2 .hf-cube b:nth-child(2),.hf-cw.w2 .hf-cube b:nth-child(6){--f1:#2dd4bf;--f2:#38bdf8}
+.hf-cw.w2 .hf-cube b:nth-child(3),.hf-cw.w2 .hf-cube b:nth-child(4){--f1:#5eead4;--f2:#60a5fa}
+.hf-cw.w2 .hf-cube b:nth-child(5){--f1:#f0fdfa;--f2:#ccfbf1}
+.hf-cw.w4 .hf-cube b{--f1:#fbcfe8;--f2:#c4b5fd}
+.hf-cw.w4 .hf-cube b:nth-child(2),.hf-cw.w4 .hf-cube b:nth-child(6){--f1:#f472b6;--f2:#a78bfa}
+@keyframes hf-assemble{
+  0%{opacity:0;transform:var(--t) translateZ(calc(var(--s)*1.8)) rotate(35deg) scale(.6)}
+  60%{opacity:.92}
+  100%{opacity:.92;transform:var(--t)}}
+@keyframes hf-spin3{from{transform:rotateX(-24deg) rotateY(0deg) rotateZ(8deg)}to{transform:rotateX(-24deg) rotateY(360deg) rotateZ(8deg)}}
+.hf-shadow{position:absolute;left:10%;right:10%;top:calc(100% + var(--s)*.45);height:calc(var(--s)*.18);border-radius:50%;
+  background:radial-gradient(closest-side,rgb(76 29 149/.22),transparent);filter:blur(4px);animation:hf-shad 7s ease-in-out infinite alternate;animation-delay:inherit}
+@keyframes hf-shad{from{transform:scale(1.1);opacity:.9}to{transform:scale(.75);opacity:.5}}
+[data-theme="dark"] .hf-cw .hf-cube b{border-color:rgb(255 255 255/.28);opacity:.8}
+/* parallax nhẹ theo chuột */
+#hero-fx .hf-cw{translate:calc(var(--px,0)*var(--z,14px)) calc(var(--py,0)*var(--z,14px))}
+.hf-cw.w1{--z:22px}.hf-cw.w2{--z:-16px}.hf-cw.w3{--z:10px}.hf-cw.w4{--z:-8px}
+@media (max-width:760px){
+  .hf-cw.w1{left:5%;top:9%;--s:54px}.hf-cw.w2{right:6%;top:13%;--s:40px}
+  .hf-cw.w3{left:8%;bottom:30%;--s:28px}.hf-cw.w4{display:none}}
+
+/* ===== v12: tiêu đề gõ chữ, không phát sáng ===== */
+#hero h2.hx-title{font-family:"Be Vietnam Pro",Inter,system-ui,sans-serif;font-weight:700;letter-spacing:-.03em;
+  font-size:clamp(1.85rem,4.6vw,2.9rem);line-height:1.18;min-height:1.18em;
+  background:none!important;-webkit-background-clip:border-box;background-clip:border-box;
+  color:var(--tx)!important;-webkit-text-fill-color:currentColor;text-shadow:none;filter:none;
+  animation:hx-in .9s var(--m-emph) both!important;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;max-width:100%}
+#hero .hx-type{white-space:pre-wrap}
+#hero .hx-type em{font-style:normal;color:#6d4fe0}
+[data-theme="dark"] #hero .hx-type em{color:#b4a1ff}
+#hero .hx-caret{display:inline-block;width:.07em;min-width:3px;height:.95em;margin-left:.08em;border-radius:2px;background:#6d4fe0;
+  animation:hx-blink 1s steps(1) infinite;vertical-align:middle}
+[data-theme="dark"] #hero .hx-caret{background:#b4a1ff}
+#hero h2.hx-title.typing .hx-caret{animation:none}
+@keyframes hx-blink{50%{opacity:0}}
+#hero>p.hx-sub{font-family:Inter,system-ui,sans-serif}
+@media (prefers-reduced-motion:reduce){.hf-cw,.hf-cw *{animation:none!important}#hero .hx-caret{display:none}}
+
+/* ===== v12: topbar trong suốt trên nền hero + không cắt chữ Noth ===== */
+#main:has(#hero) #topbar{background:transparent!important;border-bottom:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+#main:has(#hero) #topbar::before,#main:has(#hero) #topbar::after{display:none!important}
+#topbar .tb-title{flex:0 0 auto!important;overflow:visible!important}
+#topbar .tb-title b{overflow:visible!important;text-overflow:clip!important}
+@media (max-width:760px){
+  #topbar{gap:2px}
+  #topbar .tb-title{padding:6px 2px;font-size:1rem}
+  #topbar.seg-flow .mode-seg{margin-left:4px}
+  #topbar .mode-seg button{padding-left:10px!important;padding-right:10px!important}
+}
+@media (max-width:380px){#topbar .mode-seg button span[data-i]{display:none!important}}
+#hero h2.hx-title{margin-bottom:12px}
+#hero>p.hx-sub{max-width:54ch}
+.hf-shadow{top:calc(100% + var(--s)*.28)}
+@media (max-width:760px){#hero h2.hx-title{min-height:2.36em;align-content:center;font-size:clamp(1.75rem,7.6vw,2.2rem);text-align:center}}
+#hero .hx-line{display:block;text-align:center;max-width:100%}#hero .hx-caret{vertical-align:-.1em}
+</style>
+<script id="nv-up-v12-js">(()=>{
+const PH=['Hôm nay làm gì?','Biến ý tưởng thành <em>sự thật</em>','Viết, tính, thiết kế — <em>cùng nhau</em>','Hỏi gì cũng được','Từ bản nháp đến <em>hoàn thiện</em>'];
+const red=matchMedia('(prefers-reduced-motion: reduce)');
+let run=0;
+function start(h){
+  if(h.dataset.ty)return;h.dataset.ty=1;const el=h.querySelector('.hx-type');if(!el)return;
+  if(red.matches){el.textContent=PH[0];return}
+  const id=++run;let i=0;
+  const parse=t=>{const out=[];let em=false;t.replace(/<em>|<\/em>|[\s\S]/gu,m=>{if(m==='<em>')em=true;else if(m==='</em>')em=false;else out.push([m,em]);return''});return out};
+  const render=(arr,n)=>{let html='',open=false;for(let k=0;k<n;k++){const [c,e]=arr[k];if(e&&!open){html+='<em>';open=true}if(!e&&open){html+='</em>';open=false}html+=c.replace(/[&<>]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[x]))}if(open)html+='</em>';el.innerHTML=html};
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  (async()=>{
+    let arr=parse(PH[0]);render(arr,arr.length);h.setAttribute('aria-label',PH[0].replace(/<\/?em>/g,''));
+    await sleep(2600);
+    while(id===run&&h.isConnected){
+      h.classList.add('typing');
+      for(let n=arr.length;n>=0;n--){if(!h.isConnected)return;render(arr,n);await sleep(28)}
+      await sleep(260);i=(i+1)%PH.length;arr=parse(PH[i]);
+      for(let n=1;n<=arr.length;n++){if(!h.isConnected)return;render(arr,n);await sleep(55+Math.random()*45)}
+      h.classList.remove('typing');
+      await sleep(2600);
+    }
+  })();
+}
+const scan=()=>document.querySelectorAll('#hero h2.hx-title').forEach(start);
+new MutationObserver(scan).observe(document.body,{childList:true,subtree:true});scan();
+/* parallax khối theo chuột */
+const fx=document.getElementById('hero-fx');
+if(fx&&!red.matches)addEventListener('pointermove',e=>{fx.style.setProperty('--px',(e.clientX/innerWidth-.5).toFixed(3));fx.style.setProperty('--py',(e.clientY/innerHeight-.5).toFixed(3))},{passive:true});
 })();
 </script>
 </body>

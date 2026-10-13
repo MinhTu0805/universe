@@ -696,9 +696,6 @@ button:hover .ic-external,button:hover .ic-play,.sb-row:hover .ic-external,.sb-r
 .ts.live .dot{animation:tsp 1s ease-in-out infinite}@keyframes tsp{50%{transform:scale(1.18)}}
 .gen-wait{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 0}
 .gen{display:inline-flex;align-items:center;justify-content:center;position:relative}
-.gen.orb{width:28px;height:28px}
-.gen.orb i{position:absolute;inset:4px;border-radius:50%;background:conic-gradient(from 0deg,var(--ac),#b478ff,#ff7ac8,#ffb86b,var(--ac));box-shadow:inset -3px -4px 8px rgb(0 0 0/.22),inset 3px 3px 7px rgb(255 255 255/.55);animation:orbspin 2.4s linear infinite,orbmorph 3.2s ease-in-out infinite}
-.gen.orb b{position:absolute;inset:-4px;border-radius:50%;background:radial-gradient(circle,color-mix(in oklch,var(--ac) 50%,transparent),transparent 68%);animation:orbpulse 1.8s ease-in-out infinite}
 .gen.wave{gap:3px;height:24px}
 .gen.wave i{width:3px;height:100%;border-radius:3px;background:linear-gradient(var(--ac),#b478ff);transform:scaleY(.3);animation:wavebar 1s ease-in-out infinite}
 .gen.wave i:nth-child(2){animation-delay:.12s}.gen.wave i:nth-child(3){animation-delay:.24s}.gen.wave i:nth-child(4){animation-delay:.36s}.gen.wave i:nth-child(5){animation-delay:.48s}
@@ -719,23 +716,13 @@ button:hover .ic-external,button:hover .ic-play,.sb-row:hover .ic-external,.sb-r
 .tk-cur .dot{position:absolute;left:4px;top:1px;z-index:1;width:20px;height:20px;box-sizing:border-box;border-radius:50%;border:1.5px solid var(--line2);background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--tx2);animation:tsp 1s ease-in-out infinite}
 .tk-cur .dot svg{width:11px;height:11px}
 .tk-cur .dot.tool{color:var(--ac);border-color:var(--ac);background:color-mix(in oklch,var(--ac) 12%,var(--bg))}
-.gen.orb{width:30px;height:30px;position:relative;inset:auto;opacity:1;filter:none;transform:none;transition:none;background:none;border-radius:0;flex:none} /* tránh trùng class .orb của Live */
-.gen.orb i{inset:3px;background:conic-gradient(from 0deg,#3b82f6,#8b5cf6,#ec4899,#f97316,#14b8a6,#3b82f6);
-  box-shadow:inset -3px -4px 8px rgb(0 0 0/.28),0 0 0 1px color-mix(in oklch,var(--tx) 14%,transparent),0 3px 12px rgb(124 58 237/.45)}
-.gen.orb::after{content:'';position:absolute;inset:3px;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle at 32% 28%,rgb(255 255 255/.8),rgb(255 255 255/0) 40%);animation:orbmorph 3.2s ease-in-out infinite}
-.gen.orb b{inset:-6px;background:radial-gradient(circle,rgb(139 92 246/.42),rgb(236 72 153/.16) 45%,transparent 70%)}
-.md.streaming>:last-child:not(.gen-wait)::after{content:'';display:inline-block;vertical-align:-1px;width:13px;height:13px;margin-left:7px;border-radius:50%;
-  background:conic-gradient(from 0deg,#3b82f6,#8b5cf6,#ec4899,#f97316,#14b8a6,#3b82f6);
-  box-shadow:inset -2px -2px 4px rgb(0 0 0/.25),0 0 0 1px color-mix(in oklch,var(--tx) 12%,transparent),0 0 10px 2px rgb(139 92 246/.5);
-  animation:orbcur 1.6s linear infinite,orbmorph 2.4s ease-in-out infinite}
 @keyframes orbcur{0%{transform:rotate(0) scale(.85)}50%{transform:rotate(180deg) scale(1.12)}100%{transform:rotate(360deg) scale(.85)}}
 .cont-slot:empty{display:none}
 .cont-slot{margin:10px 0 2px}
 .cont-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 15px 7px 12px;border-radius:999px;border:1px solid var(--line2);background:var(--s1);color:var(--tx);font:inherit;font-size:.85rem;font-weight:560;cursor:pointer;transition:background .15s,transform .15s}
 .cont-btn:hover{background:var(--s2)}.cont-btn:active{transform:scale(.97)}
 .cont-btn svg{width:14px;height:14px}
-@media (prefers-reduced-motion:reduce){.gen.orb::after,.tk-cur .dot{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.tk-cur .dot{animation:none!important}}
 
 /* =====================================================================
    V7 · PRO SKIN — phong cách ChatGPT / Gemini / Grok (gọn, trung tính)
@@ -976,11 +963,8 @@ body{letter-spacing:-.006em}
 #live .orb.r2{opacity:.14}#live .orb.r3{opacity:.08}
 #live .orb-core{width:52%;background:#0b0c12;box-shadow:0 0 80px -6px rgb(124 58 237/.7),inset 0 0 0 1px rgb(255 255 255/.08);overflow:hidden;
   transform:scale(calc(.9 + var(--amp) * .14));transition:transform .1s linear}
-.lv-blob{position:absolute;inset:-10%;border-radius:50%;background:conic-gradient(from 0deg,#3b82f6,#8b5cf6,#ec4899,#f97316,#14b8a6,#3b82f6);filter:blur(6px);animation:orbspin 6s linear infinite,orbmorph 5s ease-in-out infinite}
-.lv-blob.b2{inset:14%;background:conic-gradient(from 180deg,#22d3ee,#6366f1,#d946ef,#22d3ee);mix-blend-mode:screen;opacity:.75;animation-duration:4s,3.6s;animation-direction:reverse,normal}
 .lv-shine{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 26%,rgb(255 255 255/.55),transparent 38%)}
-#live[data-st="think"] .lv-blob{animation-duration:1.6s,2.2s}
-#live[data-st="think"] .orb-core{animation:pulse 1.2s ease-in-out infinite}
+#live[data-st="think"] #live[data-st="think"] .orb-core{animation:pulse 1.2s ease-in-out infinite}
 #live[data-st="speak"] .orb-core{animation:lvspeak .9s ease-in-out infinite}
 @keyframes lvspeak{0%,100%{transform:scale(.94)}50%{transform:scale(1.06)}}
 #live.thinking .orb-core{animation:pulse 1.2s ease-in-out infinite}
@@ -996,8 +980,7 @@ body{letter-spacing:-.006em}
 #live .lbtn.muted{background:#fff;color:#111}
 #live .lbtn.end{width:66px;height:66px;background:#ef4444;border-color:transparent;box-shadow:0 8px 28px -6px rgb(239 68 68/.6)}
 #live .lbtn.end:hover{background:#dc2626}
-@media (prefers-reduced-motion:reduce){#live .lv-aura i,.lv-blob{animation:none!important}}
-
+@media (prefers-reduced-motion:reduce){#live .lv-aura i,
 /* ---- MOBILE ---- */
 @media (max-width:760px){
   #topbar{height:52px;padding:0 6px 0 4px}
@@ -1278,6 +1261,75 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
 .rail::before{background:var(--line2)!important}
 
 </style>
+
+<style id="noth-v12-hero">
+/* ===== NOTH v12 — màn hình Trò chuyện mới: gradient chuyển màu + chiều sâu 3D (ẩn khi bắt đầu trò chuyện) ===== */
+#main{isolation:isolate}
+#hero-fx{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden;opacity:0;visibility:hidden;
+  transition:opacity .55s var(--m-std),visibility 0s linear .55s,transform .55s var(--m-std);transform:scale(1.04)}
+#main:has(#hero) #hero-fx{opacity:1;visibility:visible;transform:none;transition:opacity .8s var(--m-std),visibility 0s,transform 1.2s var(--m-emph)}
+#main:not(:has(#hero)) #hero-fx *{animation-play-state:paused!important}
+/* lớp gradient chuyển màu & chạy */
+.hf-aurora{position:absolute;inset:-25%;filter:blur(70px) saturate(1.25);opacity:.26;animation:hf-hue 18s linear infinite}
+.hf-aurora i{position:absolute;border-radius:42% 58% 63% 37%/45% 41% 59% 55%;mix-blend-mode:normal}
+.hf-aurora i:nth-child(1){width:46%;height:52%;left:12%;top:8%;background:linear-gradient(135deg,#6366f1,#22d3ee);animation:hf-a 16s var(--m-std) infinite alternate}
+.hf-aurora i:nth-child(2){width:40%;height:46%;right:10%;top:18%;background:linear-gradient(135deg,#ec4899,#8b5cf6);animation:hf-b 19s var(--m-std) infinite alternate}
+.hf-aurora i:nth-child(3){width:44%;height:40%;left:30%;bottom:6%;background:linear-gradient(135deg,#14b8a6,#3b82f6);animation:hf-c 22s var(--m-std) infinite alternate}
+[data-theme="light"] .hf-aurora{opacity:.32;filter:blur(80px) saturate(1.1)}
+@keyframes hf-hue{to{filter:blur(70px) saturate(1.25) hue-rotate(360deg)}}
+@keyframes hf-a{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(18%,12%) rotate(40deg) scale(1.15)}100%{transform:translate(-8%,22%) rotate(80deg) scale(.95)}}
+@keyframes hf-b{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(-22%,16%) rotate(-50deg) scale(1.1)}100%{transform:translate(-6%,-12%) rotate(-90deg) scale(1.2)}}
+@keyframes hf-c{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(14%,-18%) rotate(60deg) scale(.9)}100%{transform:translate(-18%,-6%) rotate(120deg) scale(1.1)}}
+/* sàn lưới 3D chạy về phía trước */
+.hf-floor{position:absolute;left:-50%;right:-50%;bottom:-4%;height:78%;transform-origin:50% 100%;
+  transform:perspective(600px) rotateX(60deg);
+  background-image:linear-gradient(color-mix(in oklch,var(--tx) 18%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in oklch,var(--tx) 18%,transparent) 1px,transparent 1px);
+  background-size:56px 56px;animation:hf-grid 3.2s linear infinite;
+  -webkit-mask-image:linear-gradient(to top,#000 0%,rgb(0 0 0/.55) 45%,transparent 92%);mask-image:linear-gradient(to top,#000 0%,rgb(0 0 0/.55) 45%,transparent 92%)}
+[data-theme="light"] .hf-floor{opacity:.7}
+@keyframes hf-grid{to{background-position:0 56px,0 0}}
+/* khối kính 3D bay lơ lửng (không phải orb) */
+.hf-cube{position:absolute;width:var(--s,70px);height:var(--s,70px);transform-style:preserve-3d;animation:hf-spin var(--d,22s) linear infinite,hf-float 7s ease-in-out infinite alternate}
+.hf-cube b{position:absolute;inset:0;border-radius:14px;border:1px solid color-mix(in oklch,var(--tx) 22%,transparent);
+  background:linear-gradient(135deg,color-mix(in oklch,#8b5cf6 22%,transparent),color-mix(in oklch,#22d3ee 14%,transparent));backdrop-filter:blur(2px)}
+.hf-cube b:nth-child(1){transform:translateZ(calc(var(--s,70px)/2))}
+.hf-cube b:nth-child(2){transform:rotateY(180deg) translateZ(calc(var(--s,70px)/2))}
+.hf-cube b:nth-child(3){transform:rotateY(90deg) translateZ(calc(var(--s,70px)/2))}
+.hf-cube b:nth-child(4){transform:rotateY(-90deg) translateZ(calc(var(--s,70px)/2))}
+.hf-cube b:nth-child(5){transform:rotateX(90deg) translateZ(calc(var(--s,70px)/2))}
+.hf-cube b:nth-child(6){transform:rotateX(-90deg) translateZ(calc(var(--s,70px)/2))}
+.hf-cube.c1{left:11%;top:20%;--s:64px;--d:26s}
+.hf-cube.c2{right:12%;top:28%;--s:46px;--d:18s;animation-delay:-4s,-2s}
+.hf-cube.c3{left:20%;bottom:30%;--s:34px;--d:15s;animation-delay:-9s,-5s;opacity:.8}
+@keyframes hf-spin{from{transform:rotateX(0) rotateY(0) rotateZ(0)}to{transform:rotateX(360deg) rotateY(720deg) rotateZ(360deg)}}
+@keyframes hf-float{from{translate:0 -10px}to{translate:0 14px}}
+.hf-vignette{position:absolute;inset:0;background:radial-gradient(85% 75% at 50% 40%,transparent 50%,color-mix(in oklch,var(--bg) 75%,transparent) 100%)}
+/* tiêu đề gradient chạy */
+#hero{perspective:900px}
+#hero h2.hx-title{font-weight:650;letter-spacing:-.035em;font-size:clamp(1.9rem,4.4vw,2.7rem);line-height:1.12;
+  background:linear-gradient(100deg,var(--tx) 0%,var(--tx) 30%,#8b5cf6 42%,#3b82f6 52%,#14b8a6 62%,var(--tx) 74%,var(--tx) 100%);background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+  animation:hx-in .9s var(--m-emph) both,hx-flow 7s linear .9s infinite}
+@keyframes hx-flow{from{background-position:100% 0}to{background-position:-200% 0}}
+@keyframes hx-in{from{opacity:0;transform:translateY(18px) rotateX(38deg);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+#hero>p.hx-sub{display:block;color:var(--tx2);font-size:.98rem;margin:0 0 22px;max-width:46ch;animation:hx-in .9s var(--m-emph) .12s both}
+#hero .starters{perspective:1000px}
+#hero .starter{transform-style:preserve-3d;animation:hx-card .8s var(--m-emph) both;
+  transition:transform .35s var(--m-std),box-shadow .35s var(--m-std),border-color .35s var(--m-std)!important;
+  transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0);
+  background:color-mix(in oklch,var(--bg) 72%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3)}
+#hero .starter:nth-child(1){animation-delay:.18s}#hero .starter:nth-child(2){animation-delay:.26s}#hero .starter:nth-child(3){animation-delay:.34s}#hero .starter:nth-child(4){animation-delay:.42s}
+#hero .starter:hover{box-shadow:0 18px 40px -18px rgb(99 102 241/.55),0 0 0 1px color-mix(in oklch,#8b5cf6 45%,var(--line))!important;transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(14px)}
+#hero .starter .si{transform:translateZ(22px);transition:transform .35s var(--m-std)}
+#hero .starter::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),color-mix(in oklch,#8b5cf6 22%,transparent),transparent 60%)}
+#hero .starter:hover::before{opacity:1}
+#hero .starter{position:relative;overflow:hidden}
+@keyframes hx-card{from{opacity:0;transform:perspective(800px) translateY(26px) rotateX(-28deg)}to{opacity:1;transform:perspective(800px)}}
+#main:has(#hero) #composer{animation:hx-in .9s var(--m-emph) .2s both}
+@media (prefers-reduced-motion:reduce){#hero-fx *,#hero h2.hx-title,#hero .starter,#hero>p.hx-sub,#main:has(#hero) #composer{animation:none!important}}
+@media (max-width:760px){.hf-cube.c1{left:4%;top:12%}.hf-cube.c2{right:4%;top:16%}.hf-cube.c3{display:none}.hf-aurora{opacity:.45}}
+</style>
 <style id="nv-fix-v11">
 /* tên không bị ô chế độ che */
 #topbar .tb-title{flex:0 1 auto;min-width:0;overflow:hidden}
@@ -1332,7 +1384,7 @@ t-orb:not(:defined)::before,t-orb:empty::before{content:'';position:absolute;ins
     </div>
   </aside>
 
-  <main id="main">
+  <main id="main"><div id="hero-fx" aria-hidden="true"><div class="hf-aurora"><i></i><i></i><i></i></div><div class="hf-floor"></div><div class="hf-cube c1"><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="hf-cube c2"><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="hf-cube c3"><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="hf-vignette"></div></div>
     <header id="topbar">
       <button class="icon-btn only-mobile" id="sb-open" data-i="menu"></button>
       <button class="icon-btn only-desk" id="sb-toggle" title="Ẩn / mở thanh bên (Ctrl+B)" aria-label="Ẩn hoặc mở thanh bên" data-i="nv-sidebar"></button>
@@ -1792,7 +1844,7 @@ function orbState(ic,tool,name){
  if(/time|clock/.test(k))return 'connecting';
  return tool?'connecting':'working';
 }
-const GENS={orb:'<span class="gen orb"><b></b><i></i></span>',wave:'<span class="gen wave"><i></i><i></i><i></i><i></i><i></i></span>',ring:'<span class="gen ring"><i></i></span>',dots:TYPING};
+const GENS={orb:TYPING,wave:'<span class="gen wave"><i></i><i></i><i></i><i></i><i></i></span>',ring:'<span class="gen ring"><i></i></span>',dots:TYPING};
 const genHTML=()=>TYPING; /* v10: ThinkingOrb thay cho ba chấm */
 const fmtN=n=>n>=1e6?(n/1e6).toFixed(2)+'M':n>=1000?(n/1000).toFixed(n>=1e4?0:1)+'k':String(n||0);
 const fmtB=b=>b>=1048576?(b/1048576).toFixed(1)+' MB':b>=1024?Math.round(b/1024)+' KB':(b||0)+' B';
@@ -2788,15 +2840,24 @@ const STARTERS=[
  {i:'doc',t:'Soạn tài liệu',d:'Xuất Word chỉnh sửa được',p:'Viết tài liệu hướng dẫn onboarding nhân viên mới cho công ty công nghệ 50 người.',a:'doc'}
 ];
 const HERO='<div id="hero"><div class="hero-mark">'+svg('logo')+'</div>'+
- '<h2>Hôm nay làm gì?</h2><p>Gắn API key của bạn rồi trò chuyện với bất kỳ mô hình nào. Tìm web, đọc ảnh và tệp, tạo slide PPTX, bảng tính XLSX và tài liệu Word chỉnh sửa được.</p>'+
+ '<h2 class="hx-title">Hôm nay làm gì?</h2><p class="hx-sub">Hỏi bất cứ điều gì — tìm web, đọc tệp, tạo slide, bảng tính, tài liệu.</p>'+
  '<div class="starter-h">Bắt đầu nhanh</div><div class="starters">'+
  STARTERS.map(s=>'<button class="starter" data-p="'+esc(s.p)+'" data-a="'+s.a+'"><span class="si">'+svg(s.i)+
   '</span><span style="min-width:0"><b>'+s.t+'</b><span>'+s.d+'</span></span><span class="go">'+svg('arrow-right')+'</span></button>').join('')+
  '</div></div>';
 const visible=m=>m.role!=='system'&&m.role!=='tool'&&!m.hidden;
+function heroTilt(){
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches||matchMedia('(hover: none)').matches)return;
+ document.querySelectorAll('#hero .starter').forEach(b=>{
+  b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+   b.style.setProperty('--ry',((x-.5)*14).toFixed(2)+'deg');b.style.setProperty('--rx',((.5-y)*12).toFixed(2)+'deg');
+   b.style.setProperty('--mx',(x*100).toFixed(1)+'%');b.style.setProperty('--my',(y*100).toFixed(1)+'%')});
+  b.addEventListener('pointerleave',()=>{b.style.setProperty('--rx','0deg');b.style.setProperty('--ry','0deg')});
+ });
+}
 function renderThread(){
  const t=$('#thread');t.innerHTML='';
- if(!cur||!cur.msgs.filter(visible).length){t.innerHTML=HERO;bindStarters();return}
+ if(!cur||!cur.msgs.filter(visible).length){t.innerHTML=HERO;bindStarters();heroTilt();return}
  cur.msgs.forEach((m,i)=>{if(visible(m))t.appendChild(msgEl(m,i))});
  scrollBottom(true);paintKeyUI();
 }
@@ -2916,23 +2977,23 @@ $('#to-bottom').onclick=()=>{stick=true;sc.scrollTo({top:sc.scrollHeight,behavio
 const ACC_HEX={mono:'#111111',slate:'#64748B',blue:'#2563EB',indigo:'#4F46E5',violet:'#7C3AED',magenta:'#C026D3',
  rose:'#E11D48',orange:'#EA580C',amber:'#D97706',lime:'#65A30D',emerald:'#059669',teal:'#0D9488',cyan:'#0891B2'};
 /* theme 'auto' — bám theo accent hiện tại của app */
-function autoDeckTheme(){
- const dark=!S.light, acc=ACC_HEX[S.accent]||ACC_HEX.mono;
+function autoDeckTheme(mode){
+ const dark=mode==='dark', acc=ACC_HEX[S.accent]||ACC_HEX.mono;
  const base=SLIDE_THEMES[dark?'modern-dark':'tech-clean'];
  return Object.assign({},base,{id:'auto',name:'Theo accent',acc,acc2:acc});
 }
 function deckTheme(spec){
  let id=(spec&&spec.themeId)||'';
- if(id==='auto')return withDeckTitle(autoDeckTheme(),spec);
+ if(id==='auto')return withDeckTitle(autoDeckTheme(spec&&spec.cmode),spec);
  if(!SLIDE_THEMES[id]){
   if(S.slideTheme&&SLIDE_THEMES[S.slideTheme])id=S.slideTheme;
   else if(spec&&spec.theme)id=spec.theme==='dark'?'modern-dark':'tech-clean';
   else id='auto';
  }
- if(id==='auto')return withDeckTitle(autoDeckTheme(),spec);
+ if(id==='auto')return withDeckTitle(autoDeckTheme(spec&&spec.cmode),spec);
  return withDeckTitle(Object.assign({},SLIDE_THEMES[id]),spec);
 }
-function withDeckTitle(t,spec){t.deckTitle=(spec&&spec.title)||'';
+function withDeckTitle(t,spec){t.deckTitle=(spec&&spec.title)||'';t.cmode=(spec&&spec.cmode)||'auto';
  const d=spec&&spec.design;
  if(d){if(!d.fixed)['bg','fg','mut','acc','acc2','card'].forEach(k=>{const v=hexCol(d[k],null);if(v)t[k]=v});
   if(FFONT[d.font])t.font=d.font;if(FFONT[d.hfont])t.hfont=d.hfont;if(d.style)t.style=String(d.style).slice(0,80);
@@ -3216,8 +3277,51 @@ function applyFree(s,j,th){
  if(els.length<2||!els.some(e=>e.t==='text'))return false;
  s.layout='free';s.els=els;
  s.bg=Array.isArray(j.bg)?j.bg.slice(0,3).map(c=>col(c,th.bg)):col(j.bg,th.bg);
+ if(th.cmode&&th.cmode!=='auto'){const want=th.cmode==='dark',bad=c=>(lum(c)<140)!==want;
+  if(Array.isArray(s.bg)?s.bg.some(bad):bad(s.bg))s.bg=th.bg;
+  /* khối lớn sai tông → đổi sang màu thẻ */
+  els.forEach(e=>{if((e.t==='rect'||e.t==='ellipse')&&e.w*e.h>1280*720*.18&&(e.op==null||e.op>.4)&&bad(e.fill)){e.fill=th.card;delete e.fill2}});
+ }
+ tidyFree(els,s,th);
  if(j.notes)s.notes=String(j.notes).slice(0,700);
  return true;
+}
+/* v12: dọn bố cục — ảnh gọn khung, chữ không đè ảnh, chữ không đè nhau, tương phản đủ */
+function tidyFree(els,s,th){
+ const A=e=>e.w*e.h,ov=(a,b)=>Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x))*Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));
+ const full=e=>e.t==='img'&&e.w>=1100&&e.h>=620;
+ const imgs=els.filter(e=>e.t==='img'),texts=els.filter(e=>e.t==='text');
+ // 1) ảnh không tràn nền: kéo gọn vào canvas, bo góc nhẹ
+ imgs.forEach(e=>{if(full(e)){e.x=0;e.y=0;e.w=1280;e.h=720;e.r=0;return}
+  const vB=e.y<=8||e.y+e.h>=712,hB=e.x<=8||e.x+e.w>=1272;
+  if(vB&&e.h>=560){e.y=0;e.h=720;e.r=0;if(e.x+e.w>=1240){e.w=Math.min(e.w,1280-Math.max(0,e.x));e.x=1280-e.w}else if(e.x<=40){e.w=Math.min(e.x+e.w,1280);e.x=0}else{e.x=Math.max(0,Math.min(e.x,1280-e.w))}return}
+  if(hB&&e.w>=1000){e.x=0;e.w=1280;e.r=0;e.y=Math.max(0,Math.min(e.y,720-e.h));return}
+  const m=48;e.w=Math.min(e.w,1280-2*m);e.h=Math.min(e.h,720-2*m);
+  e.x=Math.max(m,Math.min(e.x,1280-m-e.w));e.y=Math.max(m,Math.min(e.y,720-m-e.h));if(!e.r)e.r=20;
+ });
+ // 2) chữ chồng lên ảnh (không phải ảnh nền) → đẩy chữ sang vùng trống hoặc biến ảnh thành lớp nền có dim
+ texts.forEach(t=>{imgs.forEach(im=>{
+  const o=ov(t,im);if(!o)return;
+  if(full(im)||o>=A(t)*.92){im.dim=Math.max(im.dim||0,.45);t.color='#FFFFFF';t.shadow=true;return}
+  const gap=40,L=im.x-gap-t.x,R=(t.x+t.w)-(im.x+im.w+gap),T=im.y-gap-t.y,B=(t.y+t.h)-(im.y+im.h+gap);
+  const opts=[];
+  if(im.x>t.x&&L>=200)opts.push(()=>{t.w=L});
+  if(im.x+im.w<t.x+t.w&&R>=200)opts.push(()=>{const nx=im.x+im.w+gap;t.w=t.x+t.w-nx;t.x=nx});
+  if(im.y>t.y&&T>=t.size*1.4)opts.push(()=>{t.h=T});
+  if(im.y+im.h<t.y+t.h&&720-(im.y+im.h+gap)-40>=t.size*1.4)opts.push(()=>{const ny=im.y+im.h+gap;t.h=Math.min(t.y+t.h-ny,720-40-ny);t.y=ny});
+  if(opts.length){opts[0]();fitText(t)}
+  else{im.dim=Math.max(im.dim||0,.5);t.color='#FFFFFF';t.shadow=true}
+ })});
+ // 3) chữ đè chữ → đẩy khối dưới xuống, hết chỗ thì thu nhỏ
+ const ts=texts.slice().sort((a,b)=>a.y-b.y);
+ for(let i=0;i<ts.length;i++)for(let k=i+1;k<ts.length;k++){const a=ts[i],b=ts[k];
+  if(ov(a,b)>Math.min(A(a),A(b))*.04){const ny=a.y+a.h+12;if(ny+Math.min(b.h,b.size*b.lh*1.2)<=704){b.h=Math.min(b.h,704-ny);b.y=ny;fitText(b)}else{a.h=Math.max(a.size*a.lh,b.y-12-a.y);fitText(a)}}}
+ // 4) tương phản chữ với nền ngay bên dưới
+ const bgOf=t=>{let c=Array.isArray(s.bg)?s.bg[0]:s.bg;const idx=els.indexOf(t);
+  for(let i=0;i<idx;i++){const e=els[i];if(e===t||!ov(t,e)||ov(t,e)<A(t)*.5)continue;
+   if(e.t==='img')c=(e.dim||0)>=.35?'#000000':null;else if((e.op==null||e.op>.6)&&e.fill)c=e.fill}return c};
+ const cr=(a,b)=>{const L=x=>{const h=hexCol(x,'#808080').slice(1),f=i=>{const v=parseInt(h.slice(i,i+2),16)/255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};return .2126*f(0)+.7152*f(2)+.0722*f(4)};const p=L(a),q=L(b);return (Math.max(p,q)+.05)/(Math.min(p,q)+.05)};
+ texts.forEach(t=>{const b=bgOf(t);if(!b)return;if(cr(t.color,b)<(t.size>=40?3:4.5)){const dk=lum(b)<140;t.color=cr(th.fg,b)>=4.5?th.fg:(dk?'#FFFFFF':'#111827')}});
 }
 function freeBody(s,t){
  const bg=Array.isArray(s.bg)?'linear-gradient(135deg,'+s.bg.join(',')+')':(s.bg||t.bg);
@@ -3245,8 +3349,10 @@ function slideFreePrompt(s,i,total,deck,th,notes,prev){
  (s.img?'\nẢnh minh hoạ gợi ý (từ khoá): '+s.img:'')+
  '\n\nHỆ THỐNG THIẾT KẾ CỦA DECK (bắt buộc nhất quán): phong cách "'+(th.style||'hiện đại, tối giản')+'"; nền '+th.bg+', chữ chính '+th.fg+', chữ phụ '+th.mut+', nhấn chính '+th.acc+', nhấn phụ '+th.acc2+', mặt thẻ '+th.card+'; font tiêu đề '+(th.hfont||th.font||'Montserrat')+', font nội dung '+(th.font||'Inter')+'.'+
  (prev&&prev.length?'\nCác slide trước đã dùng bố cục: '+prev.slice(-3).join(' | ')+' → slide này PHẢI có bố cục khác hẳn.':'')+
- '\n\nBạn là art director đẳng cấp (Apple keynote, Pitch.com, Behance). TỰ DO sáng tạo bố cục, KHÔNG dùng mẫu có sẵn. Chọn cách trình bày hợp nhất với nội dung: chữ khổng lồ + khoảng trắng, số liệu siêu lớn kèm chú thích, ảnh tràn nền có lớp tối (dim) và chữ đè lên, ảnh nửa slide + văn bản, lưới thẻ bất đối xứng (bento), dòng thời gian/quy trình có số thứ tự lớn, so sánh 2 cột tương phản, trích dẫn lớn…'+
+ (th.cmode==='light'?'\nCHẾ ĐỘ SÁNG (người dùng yêu cầu): "bg" PHẢI đúng màu nền sáng '+th.bg+' (hoặc gradient rất nhạt), mọi khối/thẻ dùng màu sáng, chữ màu đậm. TUYỆT ĐỐI không dùng nền tối, không phủ khối màu tối lớn.':th.cmode==='dark'?'\nCHẾ ĐỘ TỐI (người dùng yêu cầu): nền tối '+th.bg+', chữ sáng.':'\n"bg" dùng đúng nền của hệ thiết kế ('+th.bg+'), không tự đổi sang tông khác.')+
+ '\n\nBạn là art director đẳng cấp (Apple keynote, Pitch.com, Behance). TỰ DO sáng tạo bố cục, KHÔNG dùng mẫu có sẵn — nhưng phải chỉn chu như designer chuyên nghiệp. Chọn cách trình bày hợp nhất với nội dung: chữ lớn + khoảng trắng, số liệu siêu lớn kèm chú thích, ảnh bo góc chiếm 40-55% một bên + khối văn bản bên còn lại, ảnh tràn nền (x0 y0 w1280 h720) có dim và chữ đè lên (chỉ cho bìa/slide chuyển chương), lưới thẻ bất đối xứng (bento), dòng thời gian/quy trình có số thứ tự lớn, so sánh 2 cột tương phản, trích dẫn lớn…'+
  '\nNGUYÊN TẮC: (1) một điểm nhấn thị giác chính, phân cấp rõ: tiêu đề 44-84px đậm, nội dung 20-26px, chú thích 16-18px; (2) lưới & căn lề chặt chẽ, lề ngoài 64-80px, khoảng cách đều nhau (bội số 8px); (3) nhiều khoảng trắng, tối đa ~45 từ chữ thường mỗi slide; (4) màu nhấn dùng tiết chế cho số liệu, đường kẻ, chi tiết nhỏ; (5) tương phản chữ/nền cao, chữ trên ảnh phải có dim 0.35-0.6 hoặc khối màu đặc phía dưới; (6) có thể thêm chi tiết trang trí tinh tế: đường kẻ mảnh, hình tròn mờ op 0.08-0.2 tràn mép, số thứ tự lớn mờ, nhãn nhỏ viết hoa ls 2-4; (7) phần lớn slide nội dung nên có ảnh minh hoạ thật (t:"img") liên quan trực tiếp nội dung; (8) dùng số liệu thật từ tư liệu, không bịa.'+
+ '\nQUY TẮC ẢNH & BỐ CỤC (bắt buộc, lỗi thường gặp): (a) trước khi đặt phần tử, chia canvas thành các VÙNG KHÔNG CHỒNG NHAU (vd vùng chữ x64-600, vùng ảnh x660-1216) — chữ KHÔNG được đè lên ảnh, trừ ảnh tràn nền toàn slide có dim ≥0.45 và chữ trắng; (b) ảnh không tràn mép thì nằm gọn trong lề 48-80px, bo góc r 16-28, cạnh ảnh thẳng hàng với khối chữ (cùng y trên hoặc căn giữa theo chiều dọc); (c) khe giữa ảnh và chữ ≥40px; (d) tối đa 2 ảnh mỗi slide, cùng kích thước nếu đặt cạnh nhau; (e) các thẻ/khối cùng hàng phải cùng y, cùng h, khoảng cách đều; (f) khung chữ đủ rộng cho nội dung, không để chữ tràn hay đè lên nhau; (g) không đặt phần tử trang trí che chữ/ảnh.'+
  '\n\nCHỈ trả JSON: {"bg":"#hex" hoặc ["#hex","#hex"],"notes":"lời thuyết trình 2-3 câu","layoutName":"mô tả bố cục 4-8 từ","els":[...]}. Phần tử els (thứ tự lớp dưới → trên):\n'+
  '{"t":"rect"|"ellipse","x":0,"y":0,"w":100,"h":100,"fill":"#hex" hoặc ["#hex","#hex"] (gradient),"r":16,"line":"#hex","lw":1,"shadow":true,"op":1,"rot":0}\n'+
  '{"t":"text","x":0,"y":0,"w":600,"h":100,"text":"nội dung (\\n xuống dòng; có thể dùng • đầu dòng hoặc emoji làm icon)","size":40,"bold":true,"color":"#hex","align":"left|center|right","valign":"top|middle|bottom","lh":1.2,"ls":0,"upper":false,"font":"Inter|Montserrat|Roboto|Poppins|Georgia|Playfair Display","shadow":false}\n'+
@@ -3790,16 +3896,29 @@ const SLIDE_LAYOUTS=['title','section','bullets','two','compare','stats','metric
 function imgUrl(s){if(s.imgSrc)return s.imgSrc;const q=String(s.img||'').replace(/[^\w\s,-]/g,'').trim().split(/[\s,]+/).filter(Boolean).slice(0,3).join(',')||'abstract,minimal';return 'https://loremflickr.com/960/960/'+encodeURIComponent(q)+'?lock='+(String(s.title||'').length+1)}
 async function fetchImg(u){try{const c=new AbortController(),t=setTimeout(()=>c.abort(),8000);const r=await fetch(u,{signal:c.signal});clearTimeout(t);if(!r.ok)return null;const b=await r.blob();return await new Promise(ok=>{const f=new FileReader();f.onload=()=>ok(f.result);f.onerror=()=>ok(null);f.readAsDataURL(b)})}catch(e){return null}}
 
-function slideOutlinePrompt(topic,n){
- const fixed=S.slideTheme&&S.slideTheme!=='auto'&&SLIDE_THEMES[S.slideTheme]?SLIDE_THEMES[S.slideTheme]:null;
+/* v12: nhận biết người dùng muốn chế độ sáng / tối */
+function slideColorMode(t){
+ t=String(t||'').toLowerCase();
+ const L=/((^|[^a-z])light[\s-]*(mode|theme)|(^|[^a-z])light($|[^a-z])|nền\s*(màu\s*)?(sáng|trắng|be|kem|pastel)|chế\s*độ\s*sán|giao\s*diện\s*sáng|tông\s*(màu\s*)?(sáng|trắng|pastel)|màu\s*sáng|sáng\s*màu|sáng\s*sủa|chủ\s*đề\s*sáng|phông\s*(nền\s*)?(sáng|trắng)|(kiểu|bản|phong\s*cách|theme|mode|slide)\s*sáng)/u;
+ const D=/((^|[^a-z])dark[\s-]*(mode|theme)|(^|[^a-z])dark($|[^a-z])|nền\s*(màu\s*)?(tối|đen)|chế\s*độ\s*tối|giao\s*diện\s*tối|tông\s*(màu\s*)?(tối|đen)|màu\s*tối|tối\s*màu|chủ\s*đề\s*tối|phông\s*(nền\s*)?(tối|đen)|(kiểu|bản|phong\s*cách|theme|mode|slide)\s*tối)/u;
+ const l=L.test(t),d=D.test(t);
+ return l&&!d?'light':d&&!l?'dark':'auto';
+}
+function lum(hex){const h=String(hexCol(hex,'#808080')).replace('#','');return parseInt(h.slice(0,2),16)*.299+parseInt(h.slice(2,4),16)*.587+parseInt(h.slice(4,6),16)*.114}
+function slideOutlinePrompt(topic,n,cmode){
+ let fixed=S.slideTheme&&S.slideTheme!=='auto'&&SLIDE_THEMES[S.slideTheme]?SLIDE_THEMES[S.slideTheme]:null;
+ if(fixed&&cmode&&cmode!=='auto'&&(cmode==='dark')!==!!fixed.dark)fixed=null; /* yêu cầu của người dùng ưu tiên hơn theme mặc định */
+ const modeRule=cmode==='light'?'- NGƯỜI DÙNG YÊU CẦU CHẾ ĐỘ SÁNG: "bg" và "card" BẮT BUỘC là màu sáng (độ sáng cao: trắng, trắng ngà, kem, xám rất nhạt, pastel rất nhạt), "fg" màu đậm (gần đen/xanh than), "mut" xám đậm vừa. Không slide nào được dùng nền tối, kể cả bìa và slide kết (bìa có thể dùng ảnh sáng hoặc khối màu nhấn nhạt).\n'
+  :cmode==='dark'?'- NGƯỜI DÙNG YÊU CẦU CHẾ ĐỘ TỐI: "bg" và "card" là màu tối, "fg" màu sáng.\n'
+  :'- Chế độ màu: KHÔNG mặc định nền tối. Chọn sáng hay tối theo tính chất chủ đề; phần lớn chủ đề (giáo dục, kinh doanh, báo cáo, sức khoẻ, du lịch, ẩm thực, sản phẩm, đội nhóm…) dùng NỀN SÁNG sạch, chuyên nghiệp. Chỉ dùng nền tối khi chủ đề thật sự hợp (điện ảnh, gaming, vũ trụ, an ninh mạng, đêm, sang trọng tối).\n';
  return 'Bạn là Creative Director của một studio thiết kế thuyết trình hàng đầu. Lên kế hoạch bộ slide về: "'+topic+'"\n'+
  'Yêu cầu:\n'+
  '- Đúng '+n+' slide, mạch kể chuyện rõ ràng: mở đầu gây chú ý → bối cảnh/vấn đề → nội dung chính (số liệu, ví dụ, so sánh, quy trình) → kết luận/kêu gọi hành động. Slide đầu là bìa, slide cuối là kết.\n'+
- '- KHÔNG dùng mẫu bố cục có sẵn. Mỗi slide có "visual": ý tưởng bố cục riêng, cụ thể, hợp nội dung (vd: "ảnh tràn nền phải 55%, số liệu khổng lồ bên trái", "bento 4 thẻ bất đối xứng có icon emoji", "dòng thời gian ngang 4 mốc trên nền tối"). Hai slide liền nhau không trùng bố cục.\n'+
+ '- KHÔNG dùng mẫu bố cục có sẵn. Mỗi slide có "visual": ý tưởng bố cục riêng, cụ thể, hợp nội dung (vd: "ảnh bo góc chiếm nửa phải, số liệu lớn bên trái", "bento 4 thẻ bất đối xứng có icon emoji", "dòng thời gian ngang 4 mốc"). Hai slide liền nhau không trùng bố cục.\n'+modeRule+
  '- "points": 2-5 ý/số liệu cụ thể, súc tích cho slide (ưu tiên số liệu thật từ tư liệu).\n'+
  '- "img": 2-4 từ khoá TIẾNG ANH cụ thể cho ảnh minh hoạ thật (để "" nếu slide không cần ảnh). Ít nhất một nửa số slide có ảnh.\n'+
  (fixed?'- Bảng màu BẮT BUỘC theo giao diện người dùng đã chọn "'+fixed.name+'": bg '+fixed.bg+', fg '+fixed.fg+', mut '+fixed.mut+', acc '+fixed.acc+', acc2 '+fixed.acc2+', card '+fixed.card+'.\n':
- '- Thiết kế "design" (hệ nhận diện) cho cả deck theo tính chất chủ đề: màu hex bg (nền), fg (chữ chính), mut (chữ phụ), acc (nhấn chính), acc2 (nhấn phụ), card (mặt thẻ); tương phản fg/bg cao. Tránh màu mặc định nhàm chán, hãy chọn bảng màu có cá tính phù hợp chủ đề.\n')+
+ '- Thiết kế "design" (hệ nhận diện) cho cả deck theo tính chất chủ đề: màu hex bg (nền), fg (chữ chính), mut (chữ phụ), acc (nhấn chính), acc2 (nhấn phụ), card (mặt thẻ); tương phản fg/bg cao (≥ 7:1), card khác bg nhẹ. Tránh màu mặc định nhàm chán, hãy chọn bảng màu có cá tính phù hợp chủ đề.\n')+
  '- font (nội dung) và hfont (tiêu đề) chọn từ: Inter | Montserrat | Roboto | Poppins | Georgia | Playfair Display. "style": phong cách 4-10 từ (vd: "editorial sang trọng, nhiều khoảng trắng").\n'+
  '- Ngôn ngữ nội dung: tiếng Việt (trừ khi yêu cầu khác).\n'+
  'CHỈ trả về JSON thuần (không markdown, không giải thích):\n'+
@@ -3908,21 +4027,37 @@ async function research(m,el,topic){
 }
 async function pipeSlide(m,el,body,topic){
  const n=Math.max(3,Math.min(30,+S.slideCount||8));
+ const cmode=slideColorMode(topic);
  body.innerHTML='';
  const R=await research(m,el,topic);
  const e1=pushArt(m,el,{label:'Lên ý tưởng, hệ thiết kế & dàn ý',state:'run'});
  const r0=await agentCall(m,el,[
   {role:'system',content:'Bạn là Creative Director kiêm chuyên gia kể chuyện bằng slide. Chỉ trả về JSON hợp lệ.'},
-  {role:'user',content:slideOutlinePrompt(R.full,n)}],{max:Math.max(3200,+S.max||0)});
+  {role:'user',content:slideOutlinePrompt(R.full,n,cmode)}],{max:Math.max(3200,+S.max||0)});
  usageMerge(m,r0);
  const spec=jsonLoose(r0.content);
  if(!spec||!Array.isArray(spec.slides)||spec.slides.length<2)throw new Error('AI trả về dàn ý không hợp lệ — thử lại hoặc đổi model');
  spec.title=String(spec.title||topic).slice(0,80);
  spec.subtitle=String(spec.subtitle||'');
- const fixedTheme=S.slideTheme&&S.slideTheme!=='auto'&&SLIDE_THEMES[S.slideTheme]?S.slideTheme:null;
+ let fixedTheme=S.slideTheme&&S.slideTheme!=='auto'&&SLIDE_THEMES[S.slideTheme]?S.slideTheme:null;
+ if(fixedTheme&&cmode!=='auto'&&(cmode==='dark')!==!!SLIDE_THEMES[fixedTheme].dark)fixedTheme=null;
+ spec.cmode=cmode;
  spec.themeId=fixedTheme||(SLIDE_THEMES[spec.themeId]?spec.themeId:'auto');
  if(spec.design&&typeof spec.design==='object'){const d=spec.design;spec.design={bg:d.bg,fg:d.fg,mut:d.mut,acc:d.acc,acc2:d.acc2,card:d.card,font:d.font,hfont:d.hfont,style:String(d.style||'').slice(0,80),fixed:!!fixedTheme}}
  else spec.design=null;
+ /* v12: ép đúng chế độ sáng/tối người dùng yêu cầu nếu AI chọn sai */
+ if(cmode!=='auto'&&!fixedTheme){
+  const want=cmode==='dark',d=spec.design||(spec.design={});
+  const isDark=c=>lum(c)<140;
+  if(!d.bg||isDark(d.bg)!==want){
+   const base=SLIDE_THEMES[want?'modern-dark':'tech-clean'];
+   d.bg=want?base.bg:'#FFFFFF';d.card=want?base.card:'#F4F6FA';d.fg=want?base.fg:'#111827';d.mut=want?base.mut:'#4B5563';
+  }
+  if(d.card&&isDark(d.card)!==want)d.card=want?'#151D2E':'#F4F6FA';
+  if(!d.fg||isDark(d.fg)===want)d.fg=want?'#EEF3FB':'#111827';
+  if(!d.mut||isDark(d.mut)===want)d.mut=want?'#93A3BA':'#4B5563';
+  if(want===false){['acc','acc2'].forEach(k=>{if(d[k]&&lum(d[k])>200)d[k]=k==='acc'?'#2563EB':'#7C3AED'})}
+ }
  spec.slides=spec.slides.slice(0,30).map(normalizeSlide);
  spec.slides[0].layout='title';
  if(spec.slides.length>2)spec.slides[spec.slides.length-1].layout='end';
@@ -4080,6 +4215,7 @@ async function chatAnswer(m,el,body,cont){
  if(gem())messages=flattenTools(messages);
  let content='',think='',thinkStart=0,round=0,lastKey=null;
  let pend=false,pendP=false,thinkEntry=null;
+ if(mode.app==='build'&&window.BUILD){BUILD.plan=null;BUILD._planNudged=false;BUILD._deliverNag=false}
  const paint=()=>{pend=false;body.innerHTML=md(pre+content);scrollBottom()};
  const cb={
   onText:d=>{content+=d;m._live=pre+content;if(!m._ans){m._ans=true;if(thinkEntry&&!thinkEntry.done){thinkEntry.done=true;if(thinkStart)m.thinkTime=Math.max(1,Math.round((Date.now()-thinkStart)/1000))}renderProcess(el,m,true)}if(!pend){pend=true;requestAnimationFrame(paint)}},
@@ -4132,6 +4268,13 @@ async function chatAnswer(m,el,body,cont){
     else messages.push({role:'tool',tool_call_id:t.id||('call_'+uid()),name:t.function.name,content:resultText});
     renderProcess(el,m,true);
    }
+   round++;continue;
+  }
+  /* v12: AI định kết thúc nhưng Planning còn việc [-] → nhắc cập nhật Planning trước khi chốt */
+  if(mode.app==='build'&&window.BUILD&&BUILD.plan&&BUILD.plan.some(x=>!x.done)&&!BUILD._planNudged&&round<40&&!(controller&&controller.signal.aborted)){
+   BUILD._planNudged=true;
+   messages.push(apiMsg({role:'assistant',content:txt||'(đã xong phần việc)'}));
+   messages.push({role:'user',content:'[HỆ THỐNG] Bạn sắp kết thúc nhưng Planning vẫn còn '+BUILD.plan.filter(x=>!x.done).length+' việc chưa đánh dấu: '+BUILD.plan.filter(x=>!x.done).map(x=>'"'+x.text+'"').join(', ')+'. Gọi update_plan NGAY với TOÀN BỘ danh sách, đổi các việc đã hoàn thành thành "[x] ..." (việc thật sự chưa làm thì làm nốt rồi mới đánh dấu). Nếu chưa deliver thì deliver. Sau đó viết lại phần tóm tắt cuối cho người dùng.'});
    round++;continue;
   }
   break;
@@ -5006,17 +5149,21 @@ const BT={
   async run({path}){const k=vpath(path);let n=VFS.delete(k)?1:0;for(const f of [...VFS.keys()])if(f.startsWith(k+'/')){VFS.delete(f);n++}DIRS.delete(k);BUILD.touched.delete(k);return {ok:n>0,deleted:n}}},
  unzip:{icon:'folder',verb:'Đã giải nén',def:{name:'unzip',description:'Giải nén tệp .zip trong không gian làm việc vào thư mục to (mặc định: cùng tên bỏ đuôi .zip).',parameters:P({path:S_,to:S_},['path'])},
   async run({path,to}){const dest=vpath(to||String(path).replace(/\.zip$/i,'')||'/work'),names=await unzipTo(path,dest);return {extracted_to:dest,files:names.length,list:names.slice(0,80)}}},
- deliver:{icon:'download',verb:'Đã đóng gói kết quả',def:{name:'deliver',description:'BƯỚC CUỐI: trả kết quả cho người dùng. paths = các tệp/thư mục đã sửa hoặc tạo; as = "file" (một tệp), "folder" hoặc "zip" (nhiều tệp).',parameters:P({paths:{type:'array',items:S_},name:S_,as:S_},['paths'])},
-  async run({paths,name,as}){const sel=new Set();for(const p of (Array.isArray(paths)?paths:[paths]).filter(Boolean).map(vpath)){if(VFS.has(p))sel.add(p);else for(const k of VFS.keys())if(k.startsWith(p+'/'))sel.add(k)}
+ deliver:{icon:'download',verb:'Đã đóng gói kết quả',def:{name:'deliver',description:'BƯỚC CUỐI (chỉ gọi SAU KHI đã update_plan đánh dấu mọi việc là [x]): trả kết quả cho người dùng. paths = các tệp/thư mục đã sửa hoặc tạo; as = "file" (một tệp), "folder" hoặc "zip" (nhiều tệp).',parameters:P({paths:{type:'array',items:S_},name:S_,as:S_},['paths'])},
+  async run({paths,name,as}){
+   if(BUILD.plan&&BUILD.plan.some(x=>!x.done)&&!BUILD._deliverNag){BUILD._deliverNag=true;
+    throw new Error('Planning chưa cập nhật: còn '+BUILD.plan.filter(x=>!x.done).length+' việc chưa đánh dấu [x] ('+BUILD.plan.filter(x=>!x.done).map(x=>x.text).slice(0,6).join(' | ')+'). Gọi update_plan gửi lại TOÀN BỘ danh sách, đổi các việc đã làm xong thành "[x] ...", rồi gọi lại deliver.')}
+   const sel=new Set();for(const p of (Array.isArray(paths)?paths:[paths]).filter(Boolean).map(vpath)){if(VFS.has(p))sel.add(p);else for(const k of VFS.keys())if(k.startsWith(p+'/'))sel.add(k)}
    if(!sel.size)throw new Error('Không có tệp nào khớp paths');
    BUILD.out={name:safeName(name||'noth-build'),as:as||(sel.size>1?'zip':'file'),files:[...sel]};return {ok:true,files:sel.size,as:BUILD.out.as}}}
 };
 BT.update_plan={icon:'list',verb:'Đã cập nhật kế hoạch',def:{name:'update_plan',description:'Ghi / cập nhật danh sách việc cần làm (hiện cho người dùng). Mỗi dòng một việc: "[x] ..." = đã làm xong, "[-] ..." = đang làm hoặc chưa làm. Luôn gửi lại TOÀN BỘ danh sách.',parameters:P({plan:S_},['plan'])},
  async run({plan}){const it=parsePlan(plan);if(!it.length)throw new Error('plan rỗng — mỗi dòng phải bắt đầu bằng "[x] " hoặc "[-] "');
-  return {ok:true,done:it.filter(x=>x.done).length,total:it.length,next:(it.find(x=>!x.done)||{}).text||null}}};
+  BUILD.plan=it;const left=it.filter(x=>!x.done);
+  return {ok:true,reminder:left.length?'Còn '+left.length+' việc [-]. Làm xong việc nào phải gọi update_plan đổi thành [x] ngay; trước deliver mọi việc phải [x].':'Kế hoạch đã hoàn tất — có thể deliver.',done:it.filter(x=>x.done).length,total:it.length,next:(it.find(x=>!x.done)||{}).text||null}}};
 for(const k in BT){BT[k].build=true;BT[k].label=BT[k].def.name;TOOLS[k]=BT[k]}
 
-window.BUILD_SYS='[CHẾ ĐỘ BUILD — AGENT KỸ SƯ]\nBạn chạy như một agent có không gian làm việc ảo (tệp đính kèm ở /uploads). Công cụ: list_files, search_files, read_file(path,start,end), edit_file, edit_lines, write_file, delete_path, unzip, terminal (ls, grep, sed, awk, diff, python, node, zip, unzip…), update_plan, deliver.\nKẾ HOẠCH: ngay sau khi đọc xong tệp/nắm cấu trúc, gọi update_plan({plan}) ghi các việc cần làm, mỗi dòng một việc theo đúng định dạng "[-] việc" (đang làm hoặc chưa làm) hoặc "[x] việc" (đã làm xong). Làm xong việc nào thì gọi update_plan lại với toàn bộ danh sách, đổi việc đó thành "[x] ...". Trước khi deliver, mọi việc phải là [x].\nQuy trình: (1) list_files / unzip để nắm cấu trúc; (2) search_files định vị, rồi read_file CHỈ đoạn cần sửa (±30 dòng), không đọc cả tệp lớn; (3) sửa bằng edit_file/edit_lines, thay đổi nhỏ nhất, không viết lại phần không liên quan; (4) kiểm tra lại vùng đã sửa và chạy thử bằng terminal khi có thể; (5) CUỐI CÙNG bắt buộc gọi deliver({paths,name,as}) để trả thư mục/tệp đã sửa (.zip nếu nhiều tệp, hoặc .py/.html… nếu một tệp), rồi tóm tắt ngắn: đã đổi gì, ở tệp nào.\nKhông dán lại toàn bộ code vào câu trả lời nếu đã giao tệp. Công cụ báo lỗi thì đọc thông báo, chỉnh tham số rồi thử lại.';
+window.BUILD_SYS='[CHẾ ĐỘ BUILD — AGENT KỸ SƯ]\nBạn chạy như một agent có không gian làm việc ảo (tệp đính kèm ở /uploads). Công cụ: list_files, search_files, read_file(path,start,end), edit_file, edit_lines, write_file, delete_path, unzip, terminal (ls, grep, sed, awk, diff, python, node, zip, unzip…), update_plan, deliver.\nKẾ HOẠCH: ngay sau khi đọc xong tệp/nắm cấu trúc, gọi update_plan({plan}) ghi các việc cần làm, mỗi dòng một việc theo đúng định dạng "[-] việc" (đang làm hoặc chưa làm) hoặc "[x] việc" (đã làm xong). Làm xong việc nào thì gọi update_plan lại NGAY với toàn bộ danh sách, đổi việc đó thành "[x] ...". BẮT BUỘC CẬP NHẬT PLANNING Ở CUỐI: sau khi kiểm tra xong, gọi update_plan lần cuối với TẤT CẢ các dòng là [x] (kể cả bước kiểm tra/đóng gói), RỒI mới deliver, rồi mới viết tóm tắt. Không bao giờ kết thúc lượt trả lời khi Planning còn dòng [-] — người dùng nhìn Planning để biết việc đã xong hay chưa.\nQuy trình: (1) list_files / unzip để nắm cấu trúc; (2) search_files định vị, rồi read_file CHỈ đoạn cần sửa (±30 dòng), không đọc cả tệp lớn; (3) sửa bằng edit_file/edit_lines, thay đổi nhỏ nhất, không viết lại phần không liên quan; (4) kiểm tra lại vùng đã sửa và chạy thử bằng terminal khi có thể; (5) CUỐI CÙNG bắt buộc gọi deliver({paths,name,as}) để trả thư mục/tệp đã sửa (.zip nếu nhiều tệp, hoặc .py/.html… nếu một tệp), rồi tóm tắt ngắn: đã đổi gì, ở tệp nào.\nKhông dán lại toàn bộ code vào câu trả lời nếu đã giao tệp. Công cụ báo lỗi thì đọc thông báo, chỉnh tham số rồi thử lại.';
 
 /* ---------- nén ngữ cảnh khi Build chạy dài ---------- */
 window.compactCtx=async msgs=>{

@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kiểm tra thẻ NFC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    color-scheme: dark light;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    --page-bg: #161618;
+    --card: #26262a;
+    --line: rgba(255, 255, 255, .08);
+    --bar-bg: #3a3a3d;
+    --bar-tint: rgba(64, 64, 68, .8);              /* màu kính của thanh nút */
+    --page-grid: rgba(255, 255, 255, .05);
+    --bar-edge: #313134;
+    --track-off: #4f4f57;            /* công tắc tắt */
+    --rail-off: #434248;             /* phần chưa kéo của thanh trượt */
+    --accent: #3bb54c;
+    --blue: #0477f8;
+    --accent-ink: #08290f;
+    --ink: #ffffff;
+    --text: #ffffff;
+    --ink-soft: #ececef;
+    --muted: #a9a9b1;
+    --font: "Google Sans Flex", "Google Sans", "Product Sans", "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) { --page-bg: #eceef2; --page-grid: rgba(0, 0, 0, .06); --text: #1c1c1e; --muted: #6c6c72; --line: rgba(0, 0, 0, .1); }
+  }
+  :root[data-theme="light"] { --page-bg: #eceef2; --page-grid: rgba(0, 0, 0, .06); --text: #1c1c1e; --muted: #6c6c72; --line: rgba(0, 0, 0, .1); }
+  :root[data-theme="dark"]  { --page-bg: #161618; }
+
+  html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; min-height: 100%; padding: 24px 0; display: grid; place-items: center;
+    background-color: var(--page-bg);
+    background-image: linear-gradient(var(--page-grid) 1px, transparent 1px), linear-gradient(90deg, var(--page-grid) 1px, transparent 1px);
+    background-size: 16px 16px;
+    font-family: var(--font); color: var(--text);
+    -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+  *, *::before, *::after { box-sizing: border-box; }
+
+  .stage { width: min(92vw, 340px); display: grid; gap: 30px; }
+
+  /* ================= Ô kính dùng chung =================
+     .glass nằm trong một khung (.thumb hoặc chính control). Kích thước thật = kích thước lúc
+     phóng to (Kx, Ky lần); lúc nghỉ thu nhỏ bằng scale để bản đồ khúc xạ luôn khớp 1:1 khi nhấn. */
+  .glass {
+    position: absolute; z-index: 2; left: 50%; top: 50%;
+    width: calc(100% * var(--Kx)); height: calc(100% * var(--Ky));
+    translate: calc(-50% + var(--lx, 0px)) calc(-50% + var(--ly, 0px));
+    transform: scale(var(--sx, 1), var(--sy, 1));      /* biến dạng giãn/co kiểu chất lỏng (JS cập nhật) */
+    scale: calc(1 / var(--Kx)) calc(1 / var(--Ky));
+    border-radius: 999px; pointer-events: none;
+    overflow: hidden;
+    background: var(--g-rest, transparent);
+    box-shadow: var(--g-sh, 0 0 0 0 transparent);
+    transition: scale .45s cubic-bezier(.34, 1.45, .64, 1), background-color .3s, box-shadow .3s;
+  }
+  .glass::after {           /* viền phản chiếu */
+    content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.2px;
+    background: conic-gradient(from 130deg,
+      rgba(232,232,250,.8), rgba(200,200,224,.28) 25%,
+      rgba(232,232,250,.8) 50%, rgba(200,200,224,.28) 75%, rgba(232,232,250,.8));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+    opacity: 0; transition: opacity .3s;
+  }
+  /* Lớp khúc xạ lớn hơn ô kính 25% mỗi phía (để kính thu nhỏ lấy được nội dung ngoài rìa),
+     phần thừa bị cắt bởi overflow của .glass. Lớp phủ màu nằm TRÊN nội dung đã khúc xạ. */
+  .refract { position: absolute; inset: -25%; background: transparent; transition: background-color .3s; }
+  .pressed .glass { scale: 1; background-color: transparent; box-shadow: 0 6px 18px rgba(0,0,0,.4); }
+  .pressed .refract { background: var(--g-on, rgba(255,255,255,.14)); }
+  .pressed .glass::after { opacity: 1; }
+
+  /* Safari, Firefox: không có SVG backdrop-filter nên dùng kính "giả" nhẹ hơn */
+  .no-lens .pressed .refract { backdrop-filter: brightness(1.2) saturate(1.5); -webkit-backdrop-filter: brightness(1.2) saturate(1.5); }
+  .no-lens .tabs.pressed .tab[aria-selected="true"], .no-lens .btn.pressed .btn-label { transform: scale(1.12); }
+
+  /* ================= Thẻ chứa công tắc, thanh trượt, nút ================= */
+  .card { padding: 4px 8px 20px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; }
+  .row + .row { border-top: 1px solid var(--line); }
+  .row.col { display: block; padding: 16px 0 10px; }
+  .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .lbl { font-size: 16px; font-weight: 500; }
+  output { font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* ---------- Công tắc ---------- */
+  .switch {
+    --Kx: 1.4; --Ky: 1.42; --g-rest: #fff; --g-sh: 0 1px 4px rgba(0,0,0,.4);
+    --tw: 72px; --th: 30px; --pad: 2px; --thw: 40px; --thh: 26px; --p: 0;
+    position: relative; flex: none; width: var(--tw); height: var(--th); border-radius: 999px;
+    background: var(--track-off); cursor: pointer; touch-action: none; outline: none;
+    transition: background-color .3s;
+  }
+  .switch[aria-checked="true"] { background: var(--accent); }
+  .switch .thumb {
+    position: absolute; left: var(--pad); top: var(--pad); width: var(--thw); height: var(--thh);
+    translate: calc(var(--p) * (var(--tw) - 2 * var(--pad) - var(--thw))) 0;
+    pointer-events: none;
+  }
+  .switch.dragging .thumb { transition: none; }
+
+  /* ---------- Thanh trượt ---------- */
+  .slider {
+    --Kx: 1.54; --Ky: 1.54; --g-rest: #fff; --g-sh: 0 1px 4px rgba(0,0,0,.4);
+    --thw: 39px; --thh: 26px; --v: .7;
+    position: relative; height: 44px; cursor: pointer; touch-action: none; outline: none;
+  }
+  .rail { position: absolute; left: 0; right: 0; top: 50%; height: 9px; margin-top: -4.5px;
+    border-radius: 999px; background: var(--rail-off); overflow: hidden; }
+  .fill { display: block; height: 100%; border-radius: 999px; background: var(--blue);
+    width: calc(var(--thw) / 2 + var(--v) * (100% - var(--thw))); }
+  .slider .thumb { position: absolute; top: calc(50% - var(--thh) / 2); width: var(--thw); height: var(--thh);
+    left: calc(var(--v) * (100% - var(--thw))); pointer-events: none; }
+
+  /* ---------- Nút bấm ---------- */
+  .btn {
+    --Kx: 1; --Ky: 1; --g-on: rgba(73, 243, 96, .72);
+    position: relative; display: block; width: 100%; height: 52px; margin: 16px 0 0; padding: 0;
+    border: 0; border-radius: 999px; background: var(--accent); color: var(--accent-ink);
+    font: inherit; font-size: 17px; font-weight: 700; cursor: pointer; outline: none; touch-action: none;
+    transform: translate(var(--bx, 0px), var(--by, 0px)) scale(var(--bsx, 1), var(--bsy, 1));   /* giãn về phía ngón tay, neo ở phía đối diện */
+  }
+  /* Khi nhấn, chính cái nút biến thành kính: nền xanh đặc mờ dần, lớp kính trùng khít với nút (không có hình nào đè lên)
+     hiện ra màu xanh trong mờ + khúc xạ nền phía sau, viền sáng và chữ được phóng nhẹ. */
+  .btn { transition: background-color .25s; }
+  .btn.pressed { background-color: transparent; }
+  .btn-label { position: relative; z-index: 3; display: inline-block;
+    transform: translate(var(--lbx, 0px), var(--lby, 0px)) scale(var(--lbsx, 1), var(--lbsy, 1)); }
+
+  /* Kính của công tắc & thanh trượt đo theo ảnh gốc: lớp phủ trắng 10%, không đổ bóng, viền tím nhạt mảnh */
+  .switch, .slider { --g-on: rgba(255, 255, 255, .10); }
+  .switch .glass, .slider .glass { transition: scale .45s cubic-bezier(.34, 1.45, .64, 1), background-color .1s, box-shadow .2s; }
+  .switch.pressed .glass, .slider.pressed .glass { box-shadow: none; }
+  .switch .glass::after, .slider .glass::after {
+    padding: 1px;
+    background: conic-gradient(from 130deg, rgba(225,225,250,.34), rgba(200,200,230,.1) 25%, rgba(225,225,250,.34) 50%, rgba(200,200,230,.1) 75%, rgba(225,225,250,.34));
+  }
+  .switch:focus-visible, .slider:focus-visible, .btn:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+
+  /* ================= Thanh nút (thu nhỏ) ================= */
+  .wrap { container-type: inline-size; width: min(100%, 290px); margin-inline: auto; }
+  .tabs {
+    --i: 0; --pad: 1.7cqw; --Kx: 1.38; --Ky: 1.55;
+    --g-rest: rgba(255,255,255,.155); --g-on: rgba(255,255,255,.07);
+    --cell-w: calc((100cqw - 2 * var(--pad)) / 3); --cell-h: calc(24cqw - 2 * var(--pad));
+    position: relative; display: grid; grid-template-columns: repeat(3, 1fr);
+    height: 24cqw; padding: var(--pad); border-radius: 999px; background: transparent;
+    box-shadow: 0 2cqw 6cqw rgba(0,0,0,.35);
+    touch-action: none; user-select: none; -webkit-user-select: none;
+  }
+  .tabs > .thumb {
+    position: absolute; z-index: 2; left: var(--pad); top: var(--pad); width: var(--cell-w); height: var(--cell-h);
+    translate: calc(var(--i) * 100%) 0; pointer-events: none;
+  }
+  .tabs.dragging > .thumb { transition: none; }
+  /* Thanh nền của thanh nút cũng là kính: khúc xạ lưới phía sau ở hai đầu và mép, có viền sáng */
+  .bar-glass { position: absolute; inset: 0; z-index: 0; border-radius: inherit; overflow: hidden; pointer-events: none; }
+  .bar-glass .refract { background: var(--bar-tint); }
+  .bar-glass::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.1px;
+    background: conic-gradient(from 130deg, rgba(232,232,250,.6), rgba(200,200,224,.12) 25%, rgba(232,232,250,.6) 50%, rgba(200,200,224,.12) 75%, rgba(232,232,250,.6));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask-composite: exclude;
+  }
+  .no-lens .bar-glass .refract { backdrop-filter: blur(8px) saturate(1.5); -webkit-backdrop-filter: blur(8px) saturate(1.5); }
+
+  .tab {
+    position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2cqw; margin: 0; padding: 0; border: 0; border-radius: 999px; background: none; color: var(--ink-soft);
+    font: inherit; font-size: 4.1cqw; line-height: 1.2; font-weight: 400; cursor: pointer;
+    transition: color .2s, font-weight .25s, transform .3s cubic-bezier(.34, 1.45, .64, 1);
+  }
+  .tab[aria-selected="true"] { color: var(--ink); font-weight: 700; cursor: grab; }
+  .tabs.pressed, .tabs.pressed .tab { cursor: grabbing; }
+  .tab:focus-visible { outline: .5cqw solid var(--ink); outline-offset: -.8cqw; }
+  .tab svg { width: 7.6cqw; height: 7.6cqw; display: block; overflow: visible; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glass, .glass::after, .tab, .tabs > .thumb, .switch, .switch .thumb, .btn-label { transition: none; }
+  }
+
+  /* ================= Trang kiểm tra NFC ================= */
+  :root { --panel: rgba(44,44,48,.62); --panel-line: rgba(232,232,250,.16); --val: rgba(0,0,0,.28); --ok: #3bb54c; --bad: #ff5a4f; }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) { --panel: rgba(255,255,255,.66); --panel-line: rgba(0,0,0,.1); --val: rgba(0,0,0,.06); --ok: #1f8a31; --bad: #d63a2f; }
+  }
+  body { place-items: start center; padding: 22px 0 48px; }
+  .stage { width: min(94vw, 440px); gap: 18px; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 6px; }
+  h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -.01em; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 13px; border-radius: 999px; font-size: 13px; font-weight: 600; white-space: nowrap;
+    background: var(--panel); border: 1px solid var(--panel-line); backdrop-filter: blur(14px) saturate(1.5); -webkit-backdrop-filter: blur(14px) saturate(1.5); }
+  .pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .pill[data-s="ok"] i { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .pill[data-s="bad"] i { background: var(--bad); box-shadow: 0 0 8px var(--bad); }
+
+  .panel { padding: 6px 16px 14px; border-radius: 28px; background: var(--panel); border: 1px solid var(--panel-line);
+    backdrop-filter: blur(18px) saturate(1.6); -webkit-backdrop-filter: blur(18px) saturate(1.6);
+    box-shadow: 0 2px 24px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.12); }
+  .kv { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-top: 1px solid var(--line); font-size: 15px; }
+  .panel > .kv:first-child { border-top: 0; }
+  .kv span { color: var(--muted); flex: none; }
+  .kv b { font-weight: 500; text-align: right; word-break: break-word; font-variant-numeric: tabular-nums; }
+  .ok { color: var(--ok); } .bad { color: var(--bad); }
+  .note { margin: 6px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 14px; line-height: 1.5; color: var(--muted); }
+  .hint { margin: 14px 4px 0; min-height: 2.9em; font-size: 14px; line-height: 1.45; text-align: center; color: var(--muted); }
+
+  .btn[data-scan="on"] { --g-on: rgba(255,92,80,.72); }
+  .btn[data-scan="on"]:not(.pressed) { background: #ff453a; color: #fff; }
+
+  .uid { padding: 18px 0 12px; text-align: center; }
+  .uid small { display: block; margin-bottom: 6px; font-size: 13px; color: var(--muted); }
+  .uid b { font-size: 25px; font-weight: 700; letter-spacing: .03em; word-break: break-all; font-variant-numeric: tabular-nums; }
+  .rec { margin-top: 12px; padding: 2px 14px 10px; border-radius: 20px; background: rgba(255,255,255,.05); border: 1px solid var(--line); }
+  .rec:first-child { margin-top: 8px; }
+  .rec h3 { margin: 12px 0 2px; font-size: 15px; font-weight: 700; }
+  .rec .kv:first-of-type { border-top: 0; }
+  .val { margin: 8px 0 2px; padding: 10px 12px; border-radius: 14px; background: var(--val); font-size: 14px; line-height: 1.45; white-space: pre-wrap; word-break: break-word; }
+  .val small { display: block; margin-bottom: 2px; color: var(--muted); }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
+  .empty { padding: 26px 6px 14px; text-align: center; color: var(--muted); font-size: 15px; line-height: 1.6; }
+  .ghost { margin-top: 14px; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--panel-line); background: rgba(255,255,255,.08);
+    color: var(--text); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .ghost:focus-visible, .hist:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+  .acts { display: flex; gap: 10px; justify-content: center; }
+  .hist { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 0; border: 0; border-top: 1px solid var(--line);
+    background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+  .panel > .hist:first-child { border-top: 0; }
+  .hist b { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .hist span { color: var(--muted); font-size: 13px; text-align: right; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs id="lg-defs"></defs></svg>
+
+<main class="stage">
+
+  <header class="top">
+    <h1>Kiểm tra thẻ NFC</h1>
+    <span class="pill" id="pill" data-s="bad"><i></i><b id="pill-t">Đang kiểm tra</b></span>
+  </header>
+
+  <section class="panel" id="support" aria-label="Hỗ trợ NFC"></section>
+
+  <section class="card">
+    <div class="row">
+      <span class="lbl" id="l1">Rung khi đọc được thẻ</span>
+      <div class="switch" id="sw1" role="switch" aria-checked="false" aria-labelledby="l1" tabindex="0">
+        <span class="thumb"><span class="glass" aria-hidden="true"></span></span>
+      </div>
+    </div>
+    <div class="row">
+      <span class="lbl" id="l2">Luôn hiện dữ liệu hex</span>
+      <div class="switch" id="sw2" role="switch" aria-checked="false" aria-labelledby="l2" tabindex="0">
+        <span class="thumb"><span class="glass" aria-hidden="true"></span></span>
+      </div>
+    </div>
+    <button class="btn" id="btn" type="button" data-scan="off"><span class="btn-label">Bắt đầu quét</span><span class="glass" aria-hidden="true"></span></button>
+    <p class="hint" id="hint" role="status">Bật NFC trên điện thoại, bấm quét rồi đưa thẻ sát mặt lưng máy.</p>
+  </section>
+
+  <div class="wrap">
+    <div class="tabs" id="tabs" role="tablist" aria-label="Thông tin thẻ">
+      <span class="bar-glass" aria-hidden="true"></span>
+      <span class="thumb" aria-hidden="true"><span class="glass"></span></span>
+
+      <button class="tab" role="tab" aria-selected="true" tabindex="0" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5" width="18" height="14" rx="3.2"/><path d="M8.2 10.2c1.1 1.1 1.1 2.5 0 3.6M11.6 8.8c2.2 2 2.2 4.4 0 6.4"/>
+        </svg>
+        <span>Thẻ</span>
+      </button>
+      <button class="tab" role="tab" aria-selected="false" tabindex="-1" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9.5 6.5H20M9.5 12H20M9.5 17.5H20M4.5 6.5h.01M4.5 12h.01M4.5 17.5h.01" stroke-width="2.2"/>
+        </svg>
+        <span>Bản ghi</span>
+      </button>
+      <button class="tab" role="tab" aria-selected="false" tabindex="-1" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>
+        </svg>
+        <span>Lịch sử</span>
+      </button>
+    </div>
+  </div>
+
+  <section class="panel" id="view" aria-live="polite"></section>
+
+</main>
+
+<script>
+(() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const $ = (s, r = document) => r.querySelector(s);
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const defs = $('#lg-defs');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // SVG filter làm backdrop-filter chỉ chạy trong Chrome/Edge/Chromium
+  const ua = navigator.userAgent;
+  const lensOK = /Chrome\/|Chromium\//.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
+  document.documentElement.classList.add(lensOK ? 'lens' : 'no-lens');
+
+  /* ---------- Bản đồ dịch chuyển: khúc xạ theo Snell + phóng đại ở giữa ---------- */
+  function buildMap(W, H, W0, H0, o) {          // W×H: cả vùng lấy mẫu; W0×H0: hình viên thuốc nằm giữa
+    const S = 2, cw = Math.round(W * S), ch = Math.round(H * S);
+    const R = Math.min(W0, H0) / 2, B = Math.min(R, H0 * o.bezel), T = B * o.thick;
+    const zk = 1 - 1 / o.zoom;
+    const conv = x => Math.pow(1 - Math.pow(1 - x, 4), .25);       // lồi "squircle"
+    const ss = x => x * x * x * (x * (x * 6 - 15) + 10);           // smootherstep
+    // lip: lồi ở ngoài, lõm ở giữa (công tắc) -> phần giữa nhìn như bị thu nhỏ
+    const hf = o.profile === 'lip' ? (x => conv(x) * (1 - ss(x)) + (1 - conv(x)) * ss(x)) : conv;
+
+    const N = 128, prof = new Float32Array(N + 1);
+    for (let i = 0; i <= N; i++) {
+      const x = i / N, e = .002, a = Math.max(0, x - e), b = Math.min(1, x + e);
+      const slope = (hf(b) - hf(a)) / (b - a) * T / B;
+      const t1 = Math.atan(slope), t2 = Math.asin(Math.sin(t1) / o.ior);
+      prof[i] = T * hf(x) * Math.tan(t1 - t2);
+    }
+
+    const cx = W / 2, cy = H / 2, ix = Math.max(W0 / 2 - R, 0), iy = Math.max(H0 / 2 - R, 0);
+    const ux = new Float32Array(cw * ch), uy = new Float32Array(cw * ch);
+    let D = 1e-6;
+    for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) {
+      const dx = (x + .5) / S - cx, dy = (y + .5) / S - cy;
+      const qx = Math.abs(dx) - ix, qy = Math.abs(dy) - iy;
+      const ox = Math.max(qx, 0), oy = Math.max(qy, 0), len = Math.hypot(ox, oy);
+      const depth = R - (len + Math.min(Math.max(qx, qy), 0));
+      if (depth < 0) continue;
+      let nx, ny;
+      if (len > 1e-6) { nx = ox / len * (dx < 0 ? -1 : 1); ny = oy / len * (dy < 0 ? -1 : 1); }
+      else if (qx > qy) { nx = dx < 0 ? -1 : 1; ny = 0; }
+      else { nx = 0; ny = dy < 0 ? -1 : 1; }
+      let vx = -dx * zk, vy = -dy * zk;
+      if (depth < B) {
+        const t = depth / B * N, i = t | 0, f = t - i;
+        const m = prof[i] * (1 - f) + prof[Math.min(i + 1, N)] * f;
+        vx -= nx * m; vy -= ny * m;
+      }
+      const k = y * cw + x;
+      ux[k] = vx; uy[k] = vy;
+      D = Math.max(D, Math.abs(vx), Math.abs(vy));
+    }
+    const cvs = document.createElement('canvas');
+    cvs.width = cw; cvs.height = ch;
+    const ctx = cvs.getContext('2d');
+    const img = ctx.createImageData(cw, ch), d = img.data;
+    for (let k = 0; k < cw * ch; k++) {
+      d[k * 4] = 128 + 127 * ux[k] / D;
+      d[k * 4 + 1] = 128 + 127 * uy[k] / D;
+      d[k * 4 + 2] = 128;
+      d[k * 4 + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    return { url: cvs.toDataURL('image/png'), D };
+  }
+
+  /* ---------- Mỗi ô kính có bộ lọc riêng; cường độ 0 → 1 chuyển mượt bằng rAF ---------- */
+  let uid = 0;
+  function createLens(glass, o) {
+    let D = 1, built = '', strength = 0, target = 0, raf = 0, filt, feMap, feDis;
+    const refract = document.createElement('span');
+    refract.className = 'refract';
+    glass.prepend(refract);
+    const mk = (tag, attrs) => {
+      const el = document.createElementNS(NS, tag);
+      for (const k in attrs) el.setAttribute(k, attrs[k]);
+      return el;
+    };
+    const apply = () => feDis && feDis.setAttribute('scale', (D * 2.008 * strength).toFixed(2));  // scale = 2 × độ lệch tối đa
+    function rebuild() {
+      const W0 = glass.offsetWidth, H0 = glass.offsetHeight;
+      const W = refract.offsetWidth, H = refract.offsetHeight;
+      if (!W || !H || built === W + 'x' + H) return;
+      built = W + 'x' + H;
+      const m = buildMap(W, H, W0, H0, o);
+      D = m.D;
+      [filt, feMap].forEach(el => { el.setAttribute('width', W); el.setAttribute('height', H); });
+      feMap.setAttribute('href', m.url);
+      apply();
+    }
+    if (lensOK) {
+      const id = 'lg' + (++uid);
+      filt = mk('filter', { id, filterUnits: 'userSpaceOnUse', x: 0, y: 0, width: 10, height: 10, 'color-interpolation-filters': 'sRGB' });
+      feMap = mk('feImage', { x: 0, y: 0, width: 10, height: 10, preserveAspectRatio: 'none', result: 'map' });
+      feDis = mk('feDisplacementMap', { in: 'SourceGraphic', in2: 'map', scale: 0, xChannelSelector: 'R', yChannelSelector: 'G' });
+      filt.append(feMap, feDis);
+      defs.appendChild(filt);
+      refract.style.backdropFilter = refract.style.webkitBackdropFilter = 'url(#' + id + ')';
+      let rq = 0;
+      new ResizeObserver(() => { cancelAnimationFrame(rq); rq = requestAnimationFrame(rebuild); }).observe(glass);
+      rebuild();
+    }
+    function tick() {
+      const diff = target - strength;
+      strength = Math.abs(diff) < .003 ? target : strength + diff * .2;
+      apply();
+      raf = strength === target ? 0 : requestAnimationFrame(tick);
+    }
+    return {
+      set(v) {
+        if (!lensOK) return;
+        target = v;
+        if (reduceMotion) { strength = v; apply(); }
+        else if (!raf) raf = requestAnimationFrame(tick);
+      }
+    };
+  }
+
+  /* Lò xo "chất lỏng": vị trí bám theo mục tiêu có độ nảy; thêm lò xo thứ hai làm ô giãn ra theo hướng
+     di chuyển khi đang chạy nhanh, rồi co lại và rung nhẹ khi dừng. apply(vị trí, scaleX, scaleY) */
+  function liquid(apply, o) {
+    const k = o.k || 300, c = o.c || 24;
+    let target = 0, x = 0, vx = 0, d = 0, dv = 0, raf = 0, last = 0;
+    function frame(t) {
+      const dt = Math.min(.032, (t - last) / 1000 || .016);
+      last = t;
+      vx += (k * (target - x) - c * vx) * dt; x += vx * dt;
+      const m = Math.min(.32, Math.abs(vx) * o.unit() / 1500);          // độ giãn mong muốn theo vận tốc (px/giây)
+      dv += (230 * (m - d) - 12 * dv) * dt; d += dv * dt;
+      apply(x, 1 + d, 1 - .7 * d);
+      const calm = Math.abs(target - x) < 5e-4 && Math.abs(vx) < 5e-3 && Math.abs(d) < 1e-3 && Math.abs(dv) < 1e-2;
+      if (calm) { x = target; vx = d = dv = 0; apply(x, 1, 1); raf = 0; }
+      else raf = requestAnimationFrame(frame);
+    }
+    return {
+      to(v, instant) {
+        target = v;
+        if (instant || reduceMotion) { x = v; vx = d = dv = 0; apply(x, 1, 1); return; }
+        if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); }
+      },
+      get value() { return target; }
+    };
+  }
+
+  /* Bản 2 chiều của lò xo chất lỏng (cho nút bấm): theo tay theo cả x và y, giãn theo hướng kéo */
+  function liquid2(apply, o) {
+    const k = o.k, c = o.c;
+    let tx = 0, ty = 0, x = 0, y = 0, vx = 0, vy = 0, dx = 0, dy = 0, dvx = 0, dvy = 0, raf = 0, last = 0;
+    function frame(t) {
+      const dt = Math.min(.032, (t - last) / 1000 || .016);
+      last = t;
+      vx += (k * (tx - x) - c * vx) * dt; x += vx * dt;
+      vy += (k * (ty - y) - c * vy) * dt; y += vy * dt;
+      const mx = Math.min(o.max, Math.abs(vx) * o.gain), my = Math.min(o.max, Math.abs(vy) * o.gain);
+      dvx += (230 * (mx - dx) - 12 * dvx) * dt; dx += dvx * dt;
+      dvy += (230 * (my - dy) - 12 * dvy) * dt; dy += dvy * dt;
+      apply(x, y, 1 + (dx - .5 * dy) / o.w(), 1 + (dy - .5 * dx) / o.h());
+      const calm = Math.abs(tx - x) + Math.abs(ty - y) < 1e-2 && Math.abs(vx) + Math.abs(vy) < 1e-1 &&
+                   Math.abs(dx) + Math.abs(dy) < 1e-2 && Math.abs(dvx) + Math.abs(dvy) < 1e-1;
+      if (calm) { x = tx; y = ty; vx = vy = dx = dy = dvx = dvy = 0; apply(x, y, 1, 1); raf = 0; }
+      else raf = requestAnimationFrame(frame);
+    }
+    return {
+      to(px, py) {
+        tx = px; ty = py;
+        if (reduceMotion) { x = px; y = py; vx = vy = dx = dy = dvx = dvy = 0; apply(x, y, 1, 1); return; }
+        if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); }
+      }
+    };
+  }
+
+  /* Nhấn = thêm class .pressed (phóng to) + bật khúc xạ; nhấn nhanh vẫn giữ kính ~0,25 giây */
+  function createPress(root, lens) {
+    let t0 = 0, timer = 0;
+    return {
+      down() { clearTimeout(timer); t0 = performance.now(); root.classList.add('pressed'); lens.set(1); },
+      up() {
+        const wait = Math.max(0, 240 - (performance.now() - t0));
+        timer = setTimeout(() => { root.classList.remove('pressed'); lens.set(0); }, wait);
+      },
+      pulse() { this.down(); this.up(); }
+    };
+  }
+
+  /* ================= Điều khiển kính (từ template) ================= */
+  function initSwitch(sw, onChange) {
+    const glass = $('.glass', sw), thumb = $('.thumb', sw);
+    const press = createPress(sw, createLens(glass, { profile: 'lip', bezel: .5, thick: .72, zoom: .86, ior: 1.5 }));
+    let on = false, drag = null;
+    const pad = () => parseFloat(getComputedStyle(sw).getPropertyValue('--pad')) || 2;
+    const travel = () => sw.offsetWidth - 2 * pad() - thumb.offsetWidth;
+    const anim = liquid((x, sx, sy) => {
+      sw.style.setProperty('--p', x);
+      glass.style.setProperty('--sx', sx); glass.style.setProperty('--sy', sy);
+    }, { unit: travel, k: 320, c: 23 });
+    function setOn(v) {
+      on = v;
+      sw.setAttribute('aria-checked', v ? 'true' : 'false');
+      anim.to(v ? 1 : 0);
+      if (onChange) onChange(v);
+    }
+    sw.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      drag = { id: e.pointerId, x0: e.clientX, p0: anim.value, moved: false };
+      press.down();
+      try { sw.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    sw.addEventListener('pointermove', e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.x0;
+      if (!drag.moved && Math.abs(dx) < 3) return;
+      drag.moved = true;
+      const p = clamp(drag.p0 + dx / travel(), 0, 1);
+      anim.to(p);
+      sw.setAttribute('aria-checked', p > .5 ? 'true' : 'false');
+    });
+    const end = e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const moved = drag.moved;
+      drag = null;
+      setOn(moved ? anim.value > .5 : !on);
+      press.up();
+    };
+    sw.addEventListener('pointerup', end);
+    sw.addEventListener('pointercancel', end);
+    sw.addEventListener('keydown', e => {
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setOn(!on); press.pulse(); }
+    });
+  return { set: setOn, get on() { return on; } };
+  }
+
+  function initButton(btn, onClick) {
+    const glass = $('.glass', btn);
+    const press = createPress(btn, createLens(glass, { bezel: .35, thick: 1.4, zoom: 1.08, ior: 1.5 }));
+    // Nút đứng yên. Lớp kính nghiêng về phía ngón tay và giãn ra theo hướng đó bằng lò xo:
+    // lệch tâm (x, y) + giãn tỉ lệ với độ lệch + giãn thêm theo vận tốc, thả tay thì nảy về và rung nhẹ.
+    const anim = liquid2((x, y, sx, sy) => {
+      const W = btn.offsetWidth, H = btn.offsetHeight, st = btn.style;
+      // Thân nút: giãn ra về phía ngón tay, neo ở cạnh đối diện (dịch nửa phần giãn), co nhẹ chiều còn lại cho đỡ phình
+      const dX = .8 * Math.abs(x), dY = .7 * Math.abs(y);
+      const bsx = sx * (1 + dX / W), bsy = sy * (1 + dY / H) * (1 - .35 * dX / W);
+      st.setProperty('--bx', (Math.sign(x) * dX / 2).toFixed(2) + 'px');
+      st.setProperty('--by', (Math.sign(y) * dY / 2).toFixed(2) + 'px');
+      st.setProperty('--bsx', bsx.toFixed(4));
+      st.setProperty('--bsy', bsy.toFixed(4));
+      // Chữ giữ nguyên hình dạng (bù lại độ giãn) và trôi nhẹ theo hướng ngón tay
+      st.setProperty('--lbsx', (1 / bsx).toFixed(4));
+      st.setProperty('--lbsy', (1 / bsy).toFixed(4));
+      st.setProperty('--lbx', (x * .3).toFixed(2) + 'px');
+      st.setProperty('--lby', (y * .3).toFixed(2) + 'px');
+    }, { k: 230, c: 14, gain: .012, max: 14, w: () => btn.offsetWidth, h: () => btn.offsetHeight });
+    const lean = e => {                                       // ngón tay đang ở đâu trên nút -> kính nghiêng về đó
+      const r = btn.getBoundingClientRect();
+      const fx = clamp(e.clientX - r.left - r.width / 2, -r.width / 2, r.width / 2);
+      const fy = clamp(e.clientY - r.top - r.height / 2, -r.height * .9, r.height * .9);
+      return { x: fx * .18, y: fy * .3 };
+    };
+    let drag = null, timer = 0, suppress = false;
+
+    btn.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      drag = { id: e.pointerId };
+      const p = lean(e);
+      anim.to(p.x, p.y);
+      press.down();
+      try { btn.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    btn.addEventListener('pointermove', e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const p = lean(e);
+      anim.to(p.x, p.y);
+    });
+    const end = e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const r = btn.getBoundingClientRect();
+      const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top - 20 && e.clientY <= r.bottom + 20;
+      if (!inside || e.type === 'pointercancel') { suppress = true; setTimeout(() => { suppress = false; }, 0); }
+      drag = null;
+      press.up();
+      anim.to(0, 0);                                          // thả tay: kính nảy về giữa rồi thu lại
+    };
+    btn.addEventListener('pointerup', end);
+    btn.addEventListener('pointercancel', end);
+    btn.addEventListener('click', e => {
+      if (suppress) { e.preventDefault(); return; }           // thả ra ngoài nút thì không tính là bấm
+      if (e.detail === 0) press.pulse();                      // kích hoạt bằng bàn phím
+      onClick();
+    });
+  }
+
+  function initTabs(bar, onSelect) {
+    const tabs = Array.from(bar.querySelectorAll('[role="tab"]')), glass = $('.glass', bar);
+    const press = createPress(bar, createLens(glass, { bezel: .14, thick: 1.3, zoom: 1.08, ior: 1.5 }));
+    createLens($('.bar-glass', bar), { bezel: .35, thick: 1.4, zoom: 1, ior: 1.5 }).set(1);   // thanh nền luôn là kính
+    let cur = 0, drag = null, suppress = false;
+    const geom = () => {
+      const r = bar.getBoundingClientRect();
+      const pad = parseFloat(getComputedStyle(bar).paddingLeft) || 0;
+      return { left: r.left, pad, cell: (r.width - 2 * pad) / tabs.length };
+    };
+    const anim = liquid((x, sx, sy) => {
+      bar.style.setProperty('--i', x);
+      glass.style.setProperty('--sx', sx); glass.style.setProperty('--sy', sy);
+    }, { unit: () => geom().cell, k: 250, c: 21 });
+
+    function mark(i) {
+      tabs.forEach((t, k) => {
+        const on = k === i;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+      });
+    }
+    function select(i, focus) {
+      cur = i; mark(i); anim.to(i);
+      if (onSelect) onSelect(i);
+      if (focus) tabs[i].focus();
+    }
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(i));
+      tab.addEventListener('keydown', e => {
+        const n = tabs.length;
+        let j = null;
+        if (e.key === 'ArrowRight') j = (i + 1) % n;
+        else if (e.key === 'ArrowLeft') j = (i - 1 + n) % n;
+        else if (e.key === 'Home') j = 0;
+        else if (e.key === 'End') j = n - 1;
+        if (j !== null) { e.preventDefault(); select(j, true); press.pulse(); }
+      });
+    });
+
+    bar.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      const g = geom(), x = e.clientX - g.left - g.pad;
+      const idx = clamp(Math.floor(x / g.cell), 0, tabs.length - 1);
+      drag = { id: e.pointerId, x0: e.clientX, grab: x - idx * g.cell, g, moved: false, f: idx };
+      if (idx !== cur) select(idx);          // nhấn tab khác: ô trượt sang ngay
+      press.down();
+      try { bar.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    bar.addEventListener('pointermove', e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      if (!drag.moved) {
+        if (Math.abs(e.clientX - drag.x0) < 4) return;
+        drag.moved = true;
+      }
+      const { g } = drag;
+      drag.f = clamp((e.clientX - g.left - g.pad - drag.grab) / g.cell, 0, tabs.length - 1);
+      anim.to(drag.f);
+      mark(Math.round(drag.f));
+    });
+    const end = e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const { moved, f } = drag;
+      drag = null;
+      if (moved) {
+        suppress = true;
+        setTimeout(() => { suppress = false; }, 0);
+        select(Math.round(f));               // thả tay: ô bật vào tab gần nhất, nảy nhẹ
+      }
+      press.up();
+    };
+    bar.addEventListener('pointerup', end);
+    bar.addEventListener('pointercancel', end);
+    bar.addEventListener('click', e => { if (suppress) { e.stopPropagation(); e.preventDefault(); } }, true);
+  return { select };
+  }
+
+  /* ================= Kiểm tra NFC (Web NFC) ================= */
+  const UA = navigator.userAgent;
+  const platform = /Android/i.test(UA) ? 'Android' : /iPhone|iPad|iPod/i.test(UA) ? 'iOS' : 'Máy tính / khác';
+  let inFrame = false; try { inFrame = window.top !== window.self; } catch (_) { inFrame = true; }
+  const sup = { api: 'NDEFReader' in window, secure: window.isSecureContext, top: !inFrame, perm: '' };
+  const ready = () => sup.api && sup.secure && sup.top;
+
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const hexOf = b => Array.from(b, x => x.toString(16).padStart(2, '0').toUpperCase());
+  const bytesOf = dv => new Uint8Array(dv.buffer, dv.byteOffset, dv.byteLength);
+
+  let hist = [], curTag = null, tab = 0, scanning = false, ctrl = null, rumble = false, showHex = false;
+  try { hist = JSON.parse(localStorage.getItem('nfc-hist') || '[]'); } catch (_) {}
+  const save = () => { try { localStorage.setItem('nfc-hist', JSON.stringify(hist)); } catch (_) {} };
+
+  const view = $('#view'), hint = $('#hint'), pill = $('#pill'), btn = $('#btn'), btnLabel = $('.btn-label', btn);
+  const setHint = m => { hint.textContent = m; };
+
+  /* ---------- Giải mã bản ghi NDEF ---------- */
+  const URI = ['', 'http://www.', 'https://www.', 'http://', 'https://', 'tel:', 'mailto:'];
+  function parseNdef(b) {                       // dùng cho bản ghi lồng nhau (Smart Poster)
+    const out = []; let i = 0;
+    while (i < b.length) {
+      const f = b[i++], sr = f & 16, il = f & 8, tl = b[i++];
+      let pl; if (sr) pl = b[i++]; else { pl = b[i] * 16777216 + (b[i + 1] << 16) + (b[i + 2] << 8) + b[i + 3]; i += 4; }
+      const idl = il ? b[i++] : 0;
+      const ty = String.fromCharCode(...b.slice(i, i + tl)); i += tl + idl;
+      out.push({ ty, p: b.slice(i, i + pl) }); i += pl;
+      if (f & 64) break;
+    }
+    return out;
+  }
+  function nested(x) {
+    const d = new TextDecoder();
+    if (x.ty === 'U') return (URI[x.p[0]] || '') + d.decode(x.p.slice(1));
+    if (x.ty === 'T') return d.decode(x.p.slice(1 + (x.p[0] & 63)));
+    return hexOf(x.p).join(' ');
+  }
+  function parseRecord(r) {
+    const b = r.data ? bytesOf(r.data) : new Uint8Array(0), t = r.recordType;
+    const o = { type: t, mime: r.mediaType || '', id: r.id || '', enc: r.encoding || '', lang: r.lang || '', len: b.length, hex: hexOf(b).join(' ') };
+    const dec = enc => { try { return new TextDecoder(enc || 'utf-8').decode(b); } catch (_) { return new TextDecoder().decode(b); } };
+    try {
+      if (t === 'text') o.text = dec(r.encoding);
+      else if (t === 'url' || t === 'absolute-url') o.text = dec();
+      else if (t === 'mime' && /^(text\/|application\/(json|xml))/.test(o.mime)) o.text = dec();
+      else if (t === 'smart-poster') o.sub = parseNdef(b).map(x => ({ ty: x.ty, v: nested(x) }));
+      else if (/^[\w.-]+:[\w.-]+$/.test(t)) o.text = dec();        // loại ngoài, ví dụ android.com:pkg
+    } catch (_) {}
+    return o;
+  }
+
+  /* ---------- Hỗ trợ NFC ---------- */
+  function unsupportedMsg() {
+    if (!sup.api) return platform === 'iOS' ? 'iPhone/iPad không hỗ trợ Web NFC. Hãy mở trang này bằng Chrome trên điện thoại Android có NFC.'
+      : platform === 'Android' ? 'Trình duyệt này chưa có Web NFC. Hãy dùng Chrome bản mới trên Android.'
+      : 'Máy tính không đọc được thẻ NFC qua trình duyệt. Hãy mở trang này bằng Chrome trên điện thoại Android.';
+    if (!sup.secure) return 'Web NFC chỉ chạy trên trang https:// (hoặc localhost). Hãy đưa file này lên một địa chỉ HTTPS.';
+    if (!sup.top) return 'Trang đang nằm trong khung nhúng nên NFC bị chặn. Hãy mở file ở một tab riêng.';
+    return '';
+  }
+  function renderSupport() {
+    const row = (k, v, c) => `<div class="kv"><span>${k}</span><b class="${c || ''}">${esc(v)}</b></div>`;
+    const permTxt = { granted: 'Đã cấp', denied: 'Bị chặn', prompt: 'Hỏi khi quét' }[sup.perm] || 'Chưa rõ';
+    $('#support').innerHTML =
+      row('Thiết bị', platform) +
+      row('Web NFC (NDEFReader)', sup.api ? 'Có' : 'Không', sup.api ? 'ok' : 'bad') +
+      row('Kết nối bảo mật (HTTPS)', sup.secure ? 'Có' : 'Không', sup.secure ? 'ok' : 'bad') +
+      row('Chạy ở cửa sổ chính', sup.top ? 'Có' : 'Không', sup.top ? 'ok' : 'bad') +
+      row('Quyền NFC', permTxt, sup.perm === 'granted' ? 'ok' : sup.perm === 'denied' ? 'bad' : '') +
+      `<p class="note">${esc(ready() ? 'Trình duyệt sẵn sàng đọc NFC. Nếu quét báo lỗi, hãy kiểm tra NFC đã bật trong Cài đặt điện thoại.' : unsupportedMsg())}</p>`;
+    sync();
+  }
+  function sync() {
+    btn.dataset.scan = scanning ? 'on' : 'off';
+    btnLabel.textContent = scanning ? 'Dừng quét' : 'Bắt đầu quét';
+    pill.dataset.s = scanning || ready() ? 'ok' : 'bad';
+    $('#pill-t').textContent = scanning ? 'Đang quét' : ready() ? 'Sẵn sàng' : 'Không hỗ trợ';
+  }
+  if (navigator.permissions) navigator.permissions.query({ name: 'nfc' }).then(p => {
+    sup.perm = p.state; p.onchange = () => { sup.perm = p.state; renderSupport(); }; renderSupport();
+  }).catch(() => {});
+
+  /* ---------- Quét ---------- */
+  const why = e => ({
+    NotAllowedError: 'Trang chưa được cấp quyền NFC. Hãy cho phép NFC trong cài đặt trang rồi thử lại.',
+    NotSupportedError: 'Thiết bị hoặc trình duyệt này không hỗ trợ NFC.',
+    NotReadableError: 'Không truy cập được NFC. Hãy bật NFC trong Cài đặt điện thoại.',
+    SecurityError: 'Web NFC chỉ chạy trên trang HTTPS.',
+    AbortError: 'Đã dừng quét.'
+  }[e.name] || 'Lỗi: ' + (e.message || e.name));
+
+  async function startScan() {
+    if (!ready()) { setHint(unsupportedMsg()); return; }
+    try {
+      ctrl = new AbortController();
+      const r = new NDEFReader();
+      await r.scan({ signal: ctrl.signal });
+      r.addEventListener('reading', onRead);
+      r.addEventListener('readingerror', () => setHint('Phát hiện thẻ nhưng không đọc được: thẻ có thể không dùng định dạng NDEF (như Mifare Classic) hoặc bị lỗi. Hãy đặt lại thẻ cho chắc.'));
+      scanning = true; sync();
+      setHint('Đang quét. Đưa mặt lưng điện thoại sát thẻ NFC.');
+    } catch (e) { scanning = false; ctrl = null; sync(); setHint(why(e)); }
+  }
+  function stopScan() { if (ctrl) ctrl.abort(); ctrl = null; scanning = false; sync(); setHint('Đã dừng quét.'); }
+
+  function onRead(ev) {
+    addTag({ t: Date.now(), serial: (ev.serialNumber || '').toUpperCase(), records: Array.from(ev.message ? ev.message.records : [], parseRecord) });
+  }
+  function addTag(tag) {
+    if (!tag.demo) {
+      tag.n = hist.filter(h => h.serial === tag.serial).length + 1;
+      hist.unshift(tag); hist = hist.slice(0, 30); save();
+    }
+    curTag = tag;
+    if (rumble && navigator.vibrate) navigator.vibrate(60);
+    setHint('Đã đọc thẻ ' + (tag.serial || '(không có UID)') + '.');
+    tabCtl.select(0);
+  }
+  function demo() {
+    const mk = (type, text, o) => { const b = new TextEncoder().encode(text); return Object.assign({ type, mime: '', id: '', enc: '', lang: '', len: b.length, hex: hexOf(b).join(' '), text }, o); };
+    addTag({ demo: true, t: Date.now(), serial: '04:A3:2B:7C:19:5E:80', records: [
+      mk('text', 'Xin chào NFC', { enc: 'utf-8', lang: 'vi' }), mk('url', 'https://example.com/the-mau'), mk('android.com:pkg', 'com.example.app') ] });
+  }
+
+  /* ---------- Hiển thị ---------- */
+  const kv = (k, v) => `<div class="kv"><span>${k}</span><b>${esc(v)}</b></div>`;
+  const LABEL = { text: 'Văn bản', url: 'Liên kết', 'absolute-url': 'Liên kết tuyệt đối', mime: 'MIME', 'smart-poster': 'Smart Poster', empty: 'Trống', unknown: 'Không rõ' };
+  const label = t => LABEL[t] || (t.includes(':') ? 'Loại ngoài' : t);
+  const when = t => new Date(t).toLocaleString('vi-VN');
+  const NONE = '<div class="empty">Chưa có thẻ nào.<br>Bấm “Bắt đầu quét” rồi đưa thẻ sát mặt lưng điện thoại.<br><button class="ghost" data-act="demo">Xem thử với thẻ mẫu</button></div>';
+
+  function tagView() {
+    if (!curTag) return NONE;
+    const t = curTag, by = t.serial ? t.serial.split(':').map(h => parseInt(h, 16)) : [], n = by.length;
+    const num = a => BigInt('0x' + a.map(b => b.toString(16).padStart(2, '0')).join('')).toString();
+    const kind = n === 4 ? (by[0] === 8 ? '4 byte, UID ngẫu nhiên' : '4 byte, thường là Mifare Classic hoặc một số NTAG')
+      : n === 7 ? '7 byte, thường là NTAG, Ultralight, DESFire' : n === 10 ? '10 byte (triple)' : n ? n + ' byte' : '—';
+    const types = [...new Set(t.records.map(r => label(r.type)))].join(', ') || '—';
+    return `<div class="uid"><small>Số serial (UID)</small><b>${esc(t.serial || 'Không có')}</b></div>` +
+      (t.demo ? kv('Nguồn', 'Thẻ mẫu, không phải thẻ thật') : '') +
+      kv('Độ dài UID', n ? n + ' byte' : '—') + kv('Dạng UID', kind) +
+      kv('UID thập phân (big-endian)', n ? num(by) : '—') + kv('UID thập phân (little-endian)', n ? num(by.slice().reverse()) : '—') +
+      kv('Số bản ghi NDEF', String(t.records.length)) + kv('Loại bản ghi', types) +
+      kv('Tổng dữ liệu bản ghi', t.records.reduce((s, r) => s + r.len, 0) + ' byte') +
+      kv('Đọc lúc', when(t.t)) + (t.n ? kv('Số lần đọc thẻ này', String(t.n)) : '') +
+      '<p class="note">Web NFC chỉ trả về UID và nội dung NDEF. Các thông số như ATQA, SAK, công nghệ thẻ hay dung lượng chip không thể đọc từ trình duyệt.</p>' +
+      '<div class="acts"><button class="ghost" data-act="copy">Sao chép JSON</button></div>';
+  }
+  function recView() {
+    if (!curTag) return NONE;
+    if (!curTag.records.length) return '<div class="empty">Thẻ trống: không có bản ghi NDEF nào.</div>';
+    return curTag.records.map((r, i) => `<div class="rec"><h3>Bản ghi ${i + 1}: ${esc(label(r.type))}</h3>` +
+      kv('recordType', r.type) + kv('mediaType', r.mime || '—') + kv('id', r.id || '—') +
+      kv('Mã hóa', r.enc || '—') + kv('Ngôn ngữ', r.lang || '—') + kv('Độ dài', r.len + ' byte') +
+      (r.text != null ? `<div class="val">${esc(r.text)}</div>` : '') +
+      (r.sub ? r.sub.map(s => `<div class="val"><small>${esc(s.ty)}</small>${esc(s.v)}</div>`).join('') : '') +
+      (showHex || (r.text == null && !r.sub && r.len) ? `<div class="val mono">${esc(r.hex || '(rỗng)')}</div>` : '') + '</div>').join('');
+  }
+  function histView() {
+    if (!hist.length) return '<div class="empty">Lịch sử trống. Các thẻ đã quét sẽ hiện ở đây.</div>';
+    return hist.map((h, i) => `<button class="hist" data-act="open" data-i="${i}"><b>${esc(h.serial || 'Không có UID')}</b><span>${h.records.length} bản ghi<br>${esc(when(h.t))}</span></button>`).join('') +
+      '<div class="acts"><button class="ghost" data-act="clear">Xóa lịch sử</button></div>';
+  }
+  function render() { view.innerHTML = [tagView, recView, histView][tab](); }
+
+  async function copy(text) {
+    try { await navigator.clipboard.writeText(text); }
+    catch (_) { const a = document.createElement('textarea'); a.value = text; document.body.append(a); a.select(); try { document.execCommand('copy'); } catch (_) {} a.remove(); }
+    setHint('Đã sao chép JSON của thẻ.');
+  }
+  view.addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const a = b.dataset.act;
+    if (a === 'demo') demo();
+    else if (a === 'copy' && curTag) copy(JSON.stringify({ serial: curTag.serial, readAt: new Date(curTag.t).toISOString(), records: curTag.records }, null, 2));
+    else if (a === 'open') { curTag = hist[+b.dataset.i]; tabCtl.select(0); }
+    else if (a === 'clear') { hist = []; save(); render(); }
+  });
+
+  /* ---------- Khởi động ---------- */
+  const sw1 = initSwitch($('#sw1'), v => { rumble = v; });
+  initSwitch($('#sw2'), v => { showHex = v; render(); });
+  initButton(btn, () => (scanning ? stopScan() : startScan()));
+  const tabCtl = initTabs($('#tabs'), i => { tab = i; render(); });
+  sw1.set(true);
+  renderSupport(); render();
+})();
+</script>
+</body>
+</html>

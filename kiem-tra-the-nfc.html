@@ -99,7 +99,7 @@
   /* ---------- Công tắc ---------- */
   .switch {
     --Kx: 1.5375; --Ky: 1.4935; --g-rest: #fff; --g-sh: 0 1px 4px rgba(0,0,0,.4);
-    --tw: 72px; --th: 30px; --pad: 2px; --thw: 40px; --thh: 26px;
+    --tw: 72px; --th: 30px; --pad: 2px; --thw: 40px; --thh: 26px; --p: 0;
     position: relative; flex: none; width: var(--tw); height: var(--th); border-radius: 999px;
     background: var(--track-off); cursor: pointer; touch-action: none; outline: none;
     transition: background-color .3s;
@@ -107,9 +107,10 @@
   .switch[aria-checked="true"] { background: var(--accent); }
   .switch .thumb {
     position: absolute; left: var(--pad); top: var(--pad); width: var(--thw); height: var(--thh);
-    translate: 0 0;                                    /* JS ghi vị trí (px) trực tiếp, không đụng layout */
+    translate: calc(var(--p) * (var(--tw) - 2 * var(--pad) - var(--thw))) 0;
     pointer-events: none;
   }
+  .switch.dragging .thumb { transition: none; }
 
   /* ---------- Thanh trượt ---------- */
   .slider {
@@ -119,9 +120,10 @@
   }
   .rail { position: absolute; left: 0; right: 0; top: 50%; height: 9px; margin-top: -4.5px;
     border-radius: 999px; background: var(--rail-off); overflow: hidden; }
-  .fill { display: block; width: 100%; height: 100%; border-radius: 999px; background: var(--blue); }   /* dài bằng rãnh, JS dịch trái bằng transform: đầu bo tròn giữ nguyên */
-  .slider .thumb { position: absolute; top: calc(50% - var(--thh) / 2); left: 0; width: var(--thw); height: var(--thh);
-    translate: 0 0; pointer-events: none; }
+  .fill { display: block; height: 100%; border-radius: 999px; background: var(--blue);
+    width: calc(var(--thw) / 2 + var(--v) * (100% - var(--thw))); }
+  .slider .thumb { position: absolute; top: calc(50% - var(--thh) / 2); width: var(--thw); height: var(--thh);
+    left: calc(var(--v) * (100% - var(--thw))); pointer-events: none; }
 
   /* ---------- Nút bấm ---------- */
   .btn {
@@ -142,17 +144,9 @@
   .switch, .slider { --g-on: rgba(255, 255, 255, .10); }
   .switch .glass, .slider .glass { transition: scale .45s cubic-bezier(.34, 1.45, .64, 1), background-color .1s, box-shadow .2s; }
   .switch.pressed .glass, .slider.pressed .glass { box-shadow: none; }
-  .slider .glass::after {
+  .switch .glass::after, .slider .glass::after {
     padding: 1px;
     background: conic-gradient(from 130deg, rgba(225,225,250,.34), rgba(200,200,230,.1) 25%, rgba(225,225,250,.34) 50%, rgba(200,200,230,.1) 75%, rgba(225,225,250,.34));
-  }
-  /* Viền công tắc đo theo ảnh mẫu: mảnh ~0,8px, sáng ở mép trên và mép dưới, gần như tắt ở hai đầu */
-  .switch .glass::after {
-    padding: .8px;
-    background: conic-gradient(from 0deg,
-      rgba(226,226,252,.36) 0deg, rgba(226,226,252,.32) 28deg, rgba(226,226,252,.10) 60deg, rgba(226,226,252,.04) 90deg,
-      rgba(226,226,252,.10) 120deg, rgba(226,226,252,.32) 152deg, rgba(226,226,252,.36) 180deg, rgba(226,226,252,.32) 208deg,
-      rgba(226,226,252,.12) 240deg, rgba(226,226,252,.05) 270deg, rgba(226,226,252,.12) 300deg, rgba(226,226,252,.32) 332deg, rgba(226,226,252,.36) 360deg);
   }
   .switch:focus-visible, .slider:focus-visible, .btn:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
 
@@ -169,8 +163,9 @@
   }
   .tabs > .thumb {
     position: absolute; z-index: 2; left: var(--pad); top: var(--pad); width: var(--cell-w); height: var(--cell-h);
-    translate: 0 0; pointer-events: none;
+    translate: calc(var(--i) * 100%) 0; pointer-events: none;
   }
+  .tabs.dragging > .thumb { transition: none; }
   /* Thanh nền của thanh nút cũng là kính: khúc xạ lưới phía sau ở hai đầu và mép, có viền sáng */
   .bar-glass { position: absolute; inset: 0; z-index: 0; border-radius: inherit; overflow: hidden; pointer-events: none; }
   .bar-glass .refract { background: var(--bar-tint); }
@@ -196,7 +191,6 @@
   @media (prefers-reduced-motion: reduce) {
     .glass, .glass::after, .tab, .tabs > .thumb, .switch, .switch .thumb, .btn-label { transition: none; }
   }
-
 
   /* ================= Trang kiểm tra NFC ================= */
   :root { --panel: rgba(44,44,48,.46); --panel-line: rgba(232,232,250,.16); --val: rgba(0,0,0,.28); --ok: #3bb54c; --bad: #ff5a4f; }
@@ -273,6 +267,15 @@
       linear-gradient(var(--page-grid) 1px, transparent 1px),
       linear-gradient(90deg, var(--page-grid) 1px, transparent 1px);
     background-size: 100% 760px, 100% 760px, 100% 760px, 16px 16px, 16px 16px; }
+
+  /* Viền kính công tắc đo theo ảnh mẫu: mảnh ~0,8px, sáng ở mép trên và mép dưới, gần như tắt ở hai đầu */
+  .switch .glass::after {
+    padding: .8px;
+    background: conic-gradient(from 0deg,
+      rgba(226,226,252,.36) 0deg, rgba(226,226,252,.32) 28deg, rgba(226,226,252,.10) 60deg, rgba(226,226,252,.04) 90deg,
+      rgba(226,226,252,.10) 120deg, rgba(226,226,252,.32) 152deg, rgba(226,226,252,.36) 180deg, rgba(226,226,252,.32) 208deg,
+      rgba(226,226,252,.12) 240deg, rgba(226,226,252,.05) 270deg, rgba(226,226,252,.12) 300deg, rgba(226,226,252,.32) 332deg, rgba(226,226,252,.36) 360deg);
+  }
 </style>
 </head>
 <body>
@@ -342,41 +345,24 @@
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const defs = $('#lg-defs');
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const idle = window.requestIdleCallback ? f => requestIdleCallback(f, { timeout: 400 }) : f => setTimeout(f, 16);
 
   // SVG filter làm backdrop-filter chỉ chạy trong Chrome/Edge/Chromium
   const ua = navigator.userAgent;
   const lensOK = /Chrome\/|Chromium\//.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
   document.documentElement.classList.add(lensOK ? 'lens' : 'no-lens');
 
-  /* ---------- Một vòng requestAnimationFrame duy nhất cho mọi hiệu ứng ----------
-     Mỗi tác vụ trả về true nếu còn chạy. Không còn tác vụ thì vòng lặp tự dừng, CPU nghỉ hoàn toàn.
-     Quy ước: trong tác vụ chỉ GHI (transform, translate, attribute), không đọc kích thước → không ép layout. */
-  const tasks = new Set();
-  let rafId = 0;
-  function loop(t) {
-    rafId = 0;
-    for (const fn of tasks) if (!fn(t)) tasks.delete(fn);
-    if (tasks.size) rafId = requestAnimationFrame(loop);
-  }
-  const ticker = { add(fn) { tasks.add(fn); if (!rafId) rafId = requestAnimationFrame(loop); } };
-
-  /* ---------- Đo kích thước một lần, cập nhật khi đổi cỡ (thay cho đọc offsetWidth mỗi khung hình) ---------- */
-  function measure(el, fn) {
-    fn();
-    new ResizeObserver(fn).observe(el);
-  }
-
-  /* ---------- Bản đồ dịch chuyển: khúc xạ theo Snell + phóng đại ở giữa ----------
-     Hàm thuần, không dùng biến ngoài → chạy được trong Web Worker (dựng bản đồ ngoài luồng chính).
-     W×H: cả vùng lấy mẫu; W0×H0: hình viên thuốc nằm giữa.
-     o.mprof (tuỳ chọn): các mốc [độ sâu, độ lệch] (px CSS) đo từ ảnh mẫu, nội suy PCHIP; độ lệch > 0 lấy mẫu vào trong,
-     < 0 lấy mẫu ra ngoài. Không có thì dùng mô hình khúc xạ Snell như cũ. */
-  function computeMap(W, H, W0, H0, o) {
-    const S = o.S || 2, cw = Math.round(W * S), ch = Math.round(H * S);
+  /* ---------- Bản đồ dịch chuyển: khúc xạ theo Snell + phóng đại ở giữa ---------- */
+  function buildMap(W, H, W0, H0, o) {          // W×H: cả vùng lấy mẫu; W0×H0: hình viên thuốc nằm giữa
+    const S = o.S || Math.min(2, Math.sqrt(250000 / (W * H))), cw = Math.round(W * S), ch = Math.round(H * S);
     const R = Math.min(Math.min(W0, H0) / 2, o.radius || 1e9);
+    let B = Math.min(R, H0 * (o.bezel || 0)), T = B * (o.thick || 0);
+    let zk = 1 - 1 / o.zoom;
+    const conv = x => Math.pow(1 - Math.pow(1 - x, 4), .25);       // lồi "squircle"
+    const ss = x => x * x * x * (x * (x * 6 - 15) + 10);           // smootherstep
+    // lip: lồi ở ngoài, lõm ở giữa (công tắc) -> phần giữa nhìn như bị thu nhỏ
+    const hf = o.profile === 'lip' ? (x => conv(x) * (1 - ss(x)) + (1 - conv(x)) * ss(x)) : conv;
+
     const N = 128, prof = new Float32Array(N + 1);
-    let B, zk;
     if (o.mprof) {
       const xs = o.mprof.map(p => p[0]), ys = o.mprof.map(p => p[1]), n = xs.length;
       const h = [], dl = [], d = new Array(n).fill(0);
@@ -404,13 +390,6 @@
                   (-2 * t3 + 3 * t2) * ys[k + 1] + (t3 - t2) * h[k] * d[k + 1];
       }
     } else {
-      B = Math.min(R, H0 * o.bezel);
-      const T = B * o.thick;
-      zk = 1 - 1 / o.zoom;
-      const conv = x => Math.pow(1 - Math.pow(1 - x, 4), .25);       // lồi "squircle"
-      const ss = x => x * x * x * (x * (x * 6 - 15) + 10);           // smootherstep
-      // lip: lồi ở ngoài, lõm ở giữa (công tắc) -> phần giữa nhìn như bị thu nhỏ
-      const hf = o.profile === 'lip' ? (x => conv(x) * (1 - ss(x)) + (1 - conv(x)) * ss(x)) : conv;
       for (let i = 0; i <= N; i++) {
         const x = i / N, e = .002, a = Math.max(0, x - e), b = Math.min(1, x + e);
         const slope = (hf(b) - hf(a)) / (b - a) * T / B;
@@ -422,79 +401,44 @@
     const cx = W / 2, cy = H / 2, ix = Math.max(W0 / 2 - R, 0), iy = Math.max(H0 / 2 - R, 0);
     const ux = new Float32Array(cw * ch), uy = new Float32Array(cw * ch);
     let D = 1e-6;
-    for (let y = 0; y < ch; y++) {
-      const dy = (y + .5) / S - cy, qy = Math.abs(dy) - iy, oy = Math.max(qy, 0), sy = dy < 0 ? -1 : 1;
-      for (let x = 0; x < cw; x++) {
-        const dx = (x + .5) / S - cx, qx = Math.abs(dx) - ix;
-        const ox = Math.max(qx, 0), len = Math.sqrt(ox * ox + oy * oy);
-        const depth = R - (len + Math.min(Math.max(qx, qy), 0));
-        if (depth < 0) continue;
-        let nx, ny;
-        if (len > 1e-6) { nx = ox / len * (dx < 0 ? -1 : 1); ny = oy / len * sy; }
-        else if (qx > qy) { nx = dx < 0 ? -1 : 1; ny = 0; }
-        else { nx = 0; ny = sy; }
-        let vx = -dx * zk, vy = -dy * zk;
-        if (depth < B) {
-          const t = depth / B * N, i = t | 0, f = t - i;
-          const m = prof[i] * (1 - f) + prof[Math.min(i + 1, N)] * f;
-          vx -= nx * m; vy -= ny * m;
-        }
-        const k = y * cw + x;
-        ux[k] = vx; uy[k] = vy;
-        const a = Math.abs(vx), b = Math.abs(vy);
-        if (a > D) D = a;
-        if (b > D) D = b;
+    for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) {
+      const dx = (x + .5) / S - cx, dy = (y + .5) / S - cy;
+      const qx = Math.abs(dx) - ix, qy = Math.abs(dy) - iy;
+      const ox = Math.max(qx, 0), oy = Math.max(qy, 0), len = Math.hypot(ox, oy);
+      const depth = R - (len + Math.min(Math.max(qx, qy), 0));
+      if (depth < 0) continue;
+      let nx, ny;
+      if (len > 1e-6) { nx = ox / len * (dx < 0 ? -1 : 1); ny = oy / len * (dy < 0 ? -1 : 1); }
+      else if (qx > qy) { nx = dx < 0 ? -1 : 1; ny = 0; }
+      else { nx = 0; ny = dy < 0 ? -1 : 1; }
+      let vx = -dx * zk, vy = -dy * zk;
+      if (depth < B) {
+        const t = depth / B * N, i = t | 0, f = t - i;
+        const m = prof[i] * (1 - f) + prof[Math.min(i + 1, N)] * f;
+        vx -= nx * m; vy -= ny * m;
       }
+      const k = y * cw + x;
+      ux[k] = vx; uy[k] = vy;
+      D = Math.max(D, Math.abs(vx), Math.abs(vy));
     }
-    const rgba = new Uint8ClampedArray(cw * ch * 4);
-    for (let k = 0, j = 0; k < cw * ch; k++, j += 4) {
-      rgba[j] = 128 + 127 * ux[k] / D;
-      rgba[j + 1] = 128 + 127 * uy[k] / D;
-      rgba[j + 2] = 128;
-      rgba[j + 3] = 255;
+    const cvs = document.createElement('canvas');
+    cvs.width = cw; cvs.height = ch;
+    const ctx = cvs.getContext('2d');
+    const img = ctx.createImageData(cw, ch), d = img.data;
+    for (let k = 0; k < cw * ch; k++) {
+      d[k * 4] = 128 + 127 * ux[k] / D;
+      d[k * 4 + 1] = 128 + 127 * uy[k] / D;
+      d[k * 4 + 2] = 128;
+      d[k * 4 + 3] = 255;
     }
-    return { rgba, cw, ch, D };
+    ctx.putImageData(img, 0, 0);
+    return { url: cvs.toDataURL('image/png'), D };
   }
 
-  /* Dựng bản đồ + mã hoá PNG trong Web Worker để luồng chính không bị chặn. Không có Worker (hoặc bị chặn) thì
-     chạy ở luồng chính lúc rảnh. Kết quả là blob URL ngắn gọn thay cho chuỗi base64 dài hàng trăm KB. */
-  const workerSrc =
-    'const computeMap = ' + computeMap.toString() + ';\n' +
-    'onmessage = async e => { const { id, args } = e.data; const r = computeMap(...args);\n' +
-    '  try { const c = new OffscreenCanvas(r.cw, r.ch); c.getContext("2d").putImageData(new ImageData(r.rgba, r.cw, r.ch), 0, 0);\n' +
-    '    postMessage({ id, blob: await c.convertToBlob(), D: r.D });\n' +
-    '  } catch (err) { postMessage({ id, rgba: r.rgba, cw: r.cw, ch: r.ch, D: r.D }, [r.rgba.buffer]); } };';
-  let worker = null, reqId = 0;
-  const pending = new Map();
-  if (lensOK) {
-    try {
-      worker = new Worker(URL.createObjectURL(new Blob([workerSrc], { type: 'text/javascript' })));
-      worker.onmessage = e => { const p = pending.get(e.data.id); if (p) { pending.delete(e.data.id); p.res(e.data); } };
-      worker.onerror = () => { worker = null; pending.forEach(p => p.rej()); pending.clear(); };
-    } catch (_) { worker = null; }
-  }
-  function toBlobURL(r) {                                     // luồng chính: canvas.toBlob mã hoá PNG bất đồng bộ
-    return new Promise(res => {
-      const cvs = document.createElement('canvas');
-      cvs.width = r.cw; cvs.height = r.ch;
-      cvs.getContext('2d').putImageData(new ImageData(r.rgba, r.cw, r.ch), 0, 0);
-      cvs.toBlob(b => res({ url: URL.createObjectURL(b), D: r.D }), 'image/png');
-    });
-  }
-  function buildMap(args) {
-    const onMain = () => new Promise(res => idle(() => res(toBlobURL(computeMap(...args)))));
-    if (!worker) return onMain();
-    return new Promise((res, rej) => { const id = ++reqId; pending.set(id, { res, rej }); worker.postMessage({ id, args }); })
-      .then(m => m.blob ? { url: URL.createObjectURL(m.blob), D: m.D } : toBlobURL(m))
-      .catch(onMain);
-  }
-
-  /* ---------- Mỗi ô kính có bộ lọc riêng; cường độ 0 → 1 chuyển mượt ----------
-     Bộ lọc SVG (backdrop-filter) chỉ được gắn khi ô kính đang được nhấn hoặc đang chuyển động. Lúc nghỉ, ô kính
-     là nền đặc/trong suốt nên kết quả giống hệt nhưng GPU không phải giữ và chạy bộ lọc nữa. */
+  /* ---------- Mỗi ô kính có bộ lọc riêng; cường độ 0 → 1 chuyển mượt bằng rAF ---------- */
   let uid = 0;
   function createLens(glass, o) {
-    let D = 1, built = '', strength = 0, target = 0, filt, feMap, feDis, url = '', ready = false, on = false, running = false, token = 0, rt = 0;
+    let D = 1, built = '', strength = 0, target = 0, raf = 0, filt, feMap, feDis;
     const refract = document.createElement('span');
     refract.className = 'refract';
     glass.prepend(refract);
@@ -503,57 +447,44 @@
       for (const k in attrs) el.setAttribute(k, attrs[k]);
       return el;
     };
-    const fid = 'lg' + (++uid);
     const apply = () => feDis && feDis.setAttribute('scale', (D * 2.008 * strength).toFixed(2));  // scale = 2 × độ lệch tối đa
-    const setFilter = v => {
-      if (v === on) return;
-      on = v;
-      refract.style.backdropFilter = refract.style.webkitBackdropFilter = v ? 'url(#' + fid + ')' : '';
-    };
-    async function rebuild() {
-      const size = el => { const cs = getComputedStyle(el); return [parseFloat(cs.width) || 0, parseFloat(cs.height) || 0]; };   // kích thước layout thật, không làm tròn và không bị scale/transform ảnh hưởng
+    function rebuild() {
+      const size = el => { const cs = getComputedStyle(el); return [parseFloat(cs.width) || 0, parseFloat(cs.height) || 0]; };
       const [W0, H0] = size(glass), [W, H] = size(refract);
-      if (!W || !H || built === W + 'x' + H + ':' + W0 + 'x' + H0) return;
-      built = W + 'x' + H + ':' + W0 + 'x' + H0;
-      const my = ++token;
-      const r = await buildMap([W, H, W0, H0, o]);
-      if (my !== token) { URL.revokeObjectURL(r.url); return; }
-      D = r.D;
+      if (!W || !H || built === W + 'x' + H) return;
+      built = W + 'x' + H;
+      const m = buildMap(W, H, W0, H0, o);
+      D = m.D;
       [filt, feMap].forEach(el => { el.setAttribute('width', W); el.setAttribute('height', H); });
-      feMap.setAttribute('href', r.url);
-      if (o.dy) feMap.setAttribute('y', o.dy);                // bù độ lệch dọc ~0,4px mà Chrome đặt bản đồ so với ô kính
-      if (url) URL.revokeObjectURL(url);
-      url = r.url; ready = true;
+      feMap.setAttribute('href', m.url);
+      if (o.dy) feMap.setAttribute('y', o.dy);
       apply();
-      if (target > 0 || strength > 0) setFilter(true);
     }
     if (lensOK) {
-      filt = mk('filter', { id: fid, filterUnits: 'userSpaceOnUse', x: 0, y: 0, width: 10, height: 10, 'color-interpolation-filters': 'sRGB' });
+      const id = 'lg' + (++uid);
+      filt = mk('filter', { id, filterUnits: 'userSpaceOnUse', x: 0, y: 0, width: 10, height: 10, 'color-interpolation-filters': 'sRGB' });
       feMap = mk('feImage', { x: 0, y: 0, width: 10, height: 10, preserveAspectRatio: 'none', result: 'map' });
       feDis = mk('feDisplacementMap', { in: 'SourceGraphic', in2: 'map', scale: 0, xChannelSelector: 'R', yChannelSelector: 'G' });
       filt.append(feMap, feDis);
       defs.appendChild(filt);
-      // đổi cỡ liên tục (kéo cửa sổ) thì chờ ngừng hẳn rồi mới dựng lại một lần
-      new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(rebuild, 150); }).observe(glass);
+      refract.style.backdropFilter = refract.style.webkitBackdropFilter = 'url(#' + id + ')';
+      let rq = 0;
+      new ResizeObserver(() => { cancelAnimationFrame(rq); rq = requestAnimationFrame(rebuild); }).observe(glass);
       rebuild();
     }
-    const tick = () => {
+    function tick() {
       const diff = target - strength;
       strength = Math.abs(diff) < .003 ? target : strength + diff * .2;
       apply();
-      if (strength !== target) return true;
-      if (target === 0) setFilter(false);                     // về nghỉ: gỡ bộ lọc
-      running = false;
-      return false;
-    };
+      raf = strength === target ? 0 : requestAnimationFrame(tick);
+    }
     return {
-      destroy() { token++; clearTimeout(rt); if (filt) filt.remove(); if (url) URL.revokeObjectURL(url); },
+      destroy() { if (filt) filt.remove(); },
       set(v) {
         if (!lensOK) return;
         target = v;
-        if (v > 0 && ready) setFilter(true);                  // bật ngay trong khung hình nhấn
-        if (reduceMotion) { strength = v; apply(); if (v === 0) setFilter(false); }
-        else if (!running) { running = true; ticker.add(tick); }
+        if (reduceMotion) { strength = v; apply(); }
+        else if (!raf) raf = requestAnimationFrame(tick);
       }
     };
   }
@@ -562,7 +493,7 @@
      di chuyển khi đang chạy nhanh, rồi co lại và rung nhẹ khi dừng. apply(vị trí, scaleX, scaleY) */
   function liquid(apply, o) {
     const k = o.k || 300, c = o.c || 24;
-    let target = 0, x = 0, vx = 0, d = 0, dv = 0, on = false, last = 0;
+    let target = 0, x = 0, vx = 0, d = 0, dv = 0, raf = 0, last = 0;
     function frame(t) {
       const dt = Math.min(.032, (t - last) / 1000 || .016);
       last = t;
@@ -571,14 +502,14 @@
       dv += (230 * (m - d) - 12 * dv) * dt; d += dv * dt;
       apply(x, 1 + d, 1 - .7 * d);
       const calm = Math.abs(target - x) < 5e-4 && Math.abs(vx) < 5e-3 && Math.abs(d) < 1e-3 && Math.abs(dv) < 1e-2;
-      if (calm) { x = target; vx = d = dv = 0; apply(x, 1, 1); on = false; return false; }
-      return true;
+      if (calm) { x = target; vx = d = dv = 0; apply(x, 1, 1); raf = 0; }
+      else raf = requestAnimationFrame(frame);
     }
     return {
       to(v, instant) {
         target = v;
         if (instant || reduceMotion) { x = v; vx = d = dv = 0; apply(x, 1, 1); return; }
-        if (!on) { on = true; last = performance.now(); ticker.add(frame); }
+        if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); }
       },
       get value() { return target; }
     };
@@ -587,7 +518,7 @@
   /* Bản 2 chiều của lò xo chất lỏng (cho nút bấm): theo tay theo cả x và y, giãn theo hướng kéo */
   function liquid2(apply, o) {
     const k = o.k, c = o.c;
-    let tx = 0, ty = 0, x = 0, y = 0, vx = 0, vy = 0, dx = 0, dy = 0, dvx = 0, dvy = 0, on = false, last = 0;
+    let tx = 0, ty = 0, x = 0, y = 0, vx = 0, vy = 0, dx = 0, dy = 0, dvx = 0, dvy = 0, raf = 0, last = 0;
     function frame(t) {
       const dt = Math.min(.032, (t - last) / 1000 || .016);
       last = t;
@@ -599,14 +530,14 @@
       apply(x, y, 1 + (dx - .5 * dy) / o.w(), 1 + (dy - .5 * dx) / o.h());
       const calm = Math.abs(tx - x) + Math.abs(ty - y) < 1e-2 && Math.abs(vx) + Math.abs(vy) < 1e-1 &&
                    Math.abs(dx) + Math.abs(dy) < 1e-2 && Math.abs(dvx) + Math.abs(dvy) < 1e-1;
-      if (calm) { x = tx; y = ty; vx = vy = dx = dy = dvx = dvy = 0; apply(x, y, 1, 1); on = false; return false; }
-      return true;
+      if (calm) { x = tx; y = ty; vx = vy = dx = dy = dvx = dvy = 0; apply(x, y, 1, 1); raf = 0; }
+      else raf = requestAnimationFrame(frame);
     }
     return {
       to(px, py) {
         tx = px; ty = py;
         if (reduceMotion) { x = px; y = py; vx = vy = dx = dy = dvx = dvy = 0; apply(x, y, 1, 1); return; }
-        if (!on) { on = true; last = performance.now(); ticker.add(frame); }
+        if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); }
       }
     };
   }
@@ -624,25 +555,17 @@
     };
   }
 
-  const f2 = v => v.toFixed(2), f4 = v => v.toFixed(4);
-  const squash = (glass, sx, sy) => { glass.style.transform = 'scale(' + f4(sx) + ',' + f4(sy) + ')'; };
-
-
   /* ================= Điều khiển kính (từ template) ================= */
   function initSwitch(sw, onChange) {
     const glass = $('.glass', sw), thumb = $('.thumb', sw);
-    // Hồ sơ khúc xạ đo từ ảnh mẫu: mép ngoài kéo nội dung từ trong ra (viền xanh/sáng mảnh), dải giữa lấy mẫu ra ngoài
-    // (vòng tối), rồi tắt dần vào phần phẳng ở giữa. Dựng ở độ phân giải 4 điểm/px cho nét đuôi móc ở góc.
     const press = createPress(sw, createLens(glass, { S: 4, dy: .4, mprof: [[0.000, 7.171], [0.250, 6.333], [0.500, 5.417], [0.750, 4.417], [1.000, 3.000], [1.333, 1.161], [1.833, -0.023], [2.333, -1.059], [3.333, -1.796], [4.333, -2.022], [5.333, -1.639], [6.333, -0.628], [7.333, 0.352], [8.667, 0.657], [10.333, 0.379], [12.667, 0.000], [16.667, 0.000]] }));
-    let on = false, drag = null, tr = 0;
-    measure(sw, () => {                                       // quãng đường thumb, đo một lần thay vì mỗi khung hình
-      const pad = parseFloat(getComputedStyle(sw).getPropertyValue('--pad')) || 2;
-      tr = sw.offsetWidth - 2 * pad - thumb.offsetWidth;
-    });
+    let on = false, drag = null;
+    const pad = () => parseFloat(getComputedStyle(sw).getPropertyValue('--pad')) || 2;
+    const travel = () => sw.offsetWidth - 2 * pad() - thumb.offsetWidth;
     const anim = liquid((x, sx, sy) => {
-      thumb.style.translate = f2(x * tr) + 'px 0';
-      squash(glass, sx, sy);
-    }, { unit: () => tr, k: 320, c: 23 });
+      sw.style.setProperty('--p', x);
+      glass.style.setProperty('--sx', sx); glass.style.setProperty('--sy', sy);
+    }, { unit: travel, k: 320, c: 23 });
     function setOn(v) {
       on = v;
       sw.setAttribute('aria-checked', v ? 'true' : 'false');
@@ -660,11 +583,10 @@
       const dx = e.clientX - drag.x0;
       if (!drag.moved && Math.abs(dx) < 3) return;
       drag.moved = true;
-      const p = clamp(drag.p0 + dx / tr, 0, 1);
+      const p = clamp(drag.p0 + dx / travel(), 0, 1);
       anim.to(p);
-      const chk = p > .5 ? 'true' : 'false';
-      if (sw.getAttribute('aria-checked') !== chk) sw.setAttribute('aria-checked', chk);
-    }, { passive: true });
+      sw.setAttribute('aria-checked', p > .5 ? 'true' : 'false');
+    });
     const end = e => {
       if (!drag || e.pointerId !== drag.id) return;
       const moved = drag.moved;
@@ -677,28 +599,33 @@
     sw.addEventListener('keydown', e => {
       if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setOn(!on); press.pulse(); }
     });
-  return { set: setOn };
+  return { set: setOn, get on() { return on; } };
   }
 
   function initButton(btn, onClick) {
-    const label = $('.btn-label', btn), glass = $('.glass', btn);
+    const glass = $('.glass', btn);
     const press = createPress(btn, createLens(glass, { bezel: .35, thick: 1.4, zoom: 1.08, ior: 1.5 }));
-    let bw = 0, bh = 0;
-    measure(btn, () => { bw = btn.offsetWidth; bh = btn.offsetHeight; });
     // Nút đứng yên. Lớp kính nghiêng về phía ngón tay và giãn ra theo hướng đó bằng lò xo:
     // lệch tâm (x, y) + giãn tỉ lệ với độ lệch + giãn thêm theo vận tốc, thả tay thì nảy về và rung nhẹ.
     const anim = liquid2((x, y, sx, sy) => {
+      const W = btn.offsetWidth, H = btn.offsetHeight, st = btn.style;
       // Thân nút: giãn ra về phía ngón tay, neo ở cạnh đối diện (dịch nửa phần giãn), co nhẹ chiều còn lại cho đỡ phình
       const dX = .8 * Math.abs(x), dY = .7 * Math.abs(y);
-      const bsx = sx * (1 + dX / bw), bsy = sy * (1 + dY / bh) * (1 - .35 * dX / bw);
-      btn.style.transform = 'translate(' + f2(Math.sign(x) * dX / 2) + 'px,' + f2(Math.sign(y) * dY / 2) + 'px) scale(' + f4(bsx) + ',' + f4(bsy) + ')';
+      const bsx = sx * (1 + dX / W), bsy = sy * (1 + dY / H) * (1 - .35 * dX / W);
+      st.setProperty('--bx', (Math.sign(x) * dX / 2).toFixed(2) + 'px');
+      st.setProperty('--by', (Math.sign(y) * dY / 2).toFixed(2) + 'px');
+      st.setProperty('--bsx', bsx.toFixed(4));
+      st.setProperty('--bsy', bsy.toFixed(4));
       // Chữ giữ nguyên hình dạng (bù lại độ giãn) và trôi nhẹ theo hướng ngón tay
-      label.style.transform = 'translate(' + f2(x * .3) + 'px,' + f2(y * .3) + 'px) scale(' + f4(1 / bsx) + ',' + f4(1 / bsy) + ')';
-    }, { k: 230, c: 14, gain: .012, max: 14, w: () => bw, h: () => bh });
+      st.setProperty('--lbsx', (1 / bsx).toFixed(4));
+      st.setProperty('--lbsy', (1 / bsy).toFixed(4));
+      st.setProperty('--lbx', (x * .3).toFixed(2) + 'px');
+      st.setProperty('--lby', (y * .3).toFixed(2) + 'px');
+    }, { k: 230, c: 14, gain: .012, max: 14, w: () => btn.offsetWidth, h: () => btn.offsetHeight });
     const lean = e => {                                       // ngón tay đang ở đâu trên nút -> kính nghiêng về đó
-      const rect = btn.getBoundingClientRect();               // chỉ transform thay đổi nên layout luôn sạch, đọc không tốn
-      const fx = clamp(e.clientX - rect.left - rect.width / 2, -rect.width / 2, rect.width / 2);
-      const fy = clamp(e.clientY - rect.top - rect.height / 2, -rect.height * .9, rect.height * .9);
+      const r = btn.getBoundingClientRect();
+      const fx = clamp(e.clientX - r.left - r.width / 2, -r.width / 2, r.width / 2);
+      const fy = clamp(e.clientY - r.top - r.height / 2, -r.height * .9, r.height * .9);
       return { x: fx * .18, y: fy * .3 };
     };
     let drag = null, timer = 0, suppress = false;
@@ -715,7 +642,7 @@
       if (!drag || e.pointerId !== drag.id) return;
       const p = lean(e);
       anim.to(p.x, p.y);
-    }, { passive: true });
+    });
     const end = e => {
       if (!drag || e.pointerId !== drag.id) return;
       const r = btn.getBoundingClientRect();
@@ -735,25 +662,25 @@
   }
 
   function initTabs(bar, onSelect) {
-    const tabs = Array.from(bar.querySelectorAll('[role="tab"]')), glass = $('.glass', bar), thumb = $('.thumb', bar);
+    const tabs = Array.from(bar.querySelectorAll('[role="tab"]')), glass = $('.glass', bar);
     const press = createPress(bar, createLens(glass, { bezel: .14, thick: 1.3, zoom: 1.08, ior: 1.5 }));
     createLens($('.bar-glass', bar), { bezel: .35, thick: 1.4, zoom: 1, ior: 1.5 }).set(1);   // thanh nền luôn là kính
-    let cur = 0, drag = null, suppress = false, pad = 0, cell = 0;
-    measure(bar, () => {                                      // bề rộng ô: đo khi đổi cỡ, không đo mỗi khung hình
-      pad = parseFloat(getComputedStyle(bar).paddingLeft) || 0;
-      cell = (bar.getBoundingClientRect().width - 2 * pad) / tabs.length;
-    });
-    const geom = () => ({ left: bar.getBoundingClientRect().left, pad, cell });
+    let cur = 0, drag = null, suppress = false;
+    const geom = () => {
+      const r = bar.getBoundingClientRect();
+      const pad = parseFloat(getComputedStyle(bar).paddingLeft) || 0;
+      return { left: r.left, pad, cell: (r.width - 2 * pad) / tabs.length };
+    };
     const anim = liquid((x, sx, sy) => {
-      thumb.style.translate = (x * 100).toFixed(3) + '% 0';
-      squash(glass, sx, sy);
-    }, { unit: () => cell, k: 250, c: 21 });
+      bar.style.setProperty('--i', x);
+      glass.style.setProperty('--sx', sx); glass.style.setProperty('--sy', sy);
+    }, { unit: () => geom().cell, k: 250, c: 21 });
 
     function mark(i) {
       tabs.forEach((t, k) => {
         const on = k === i;
-        const sel = on ? 'true' : 'false';
-        if (t.getAttribute('aria-selected') !== sel) { t.setAttribute('aria-selected', sel); t.tabIndex = on ? 0 : -1; }
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
       });
     }
     function select(i, focus) {
@@ -793,7 +720,7 @@
       drag.f = clamp((e.clientX - g.left - g.pad - drag.grab) / g.cell, 0, tabs.length - 1);
       anim.to(drag.f);
       mark(Math.round(drag.f));
-    }, { passive: true });
+    });
     const end = e => {
       if (!drag || e.pointerId !== drag.id) return;
       const { moved, f } = drag;
@@ -999,8 +926,7 @@
   });
 
   /* ---------- Khởi động ---------- */
-  document.querySelectorAll('.panel > .bar-glass').forEach(g => createLens(g, { radius: 28, thick: 1.4, zoom: 1, ior: 1.5, get bezel() { return Math.min(.35, 22 / (g.offsetHeight || 1)); },
-    get S() { return Math.min(2, Math.sqrt(250000 / (2.25 * (g.offsetWidth || 1) * (g.offsetHeight || 1)))); } }).set(1));
+  document.querySelectorAll('.panel > .bar-glass').forEach(g => createLens(g, { radius: 28, thick: 1.4, zoom: 1, ior: 1.5, get bezel() { return Math.min(.35, 22 / (g.offsetHeight || 1)); } }).set(1));
   createLens($('#pill > .bar-glass'), { bezel: .35, thick: 1.4, zoom: 1, ior: 1.5 }).set(1);
   const sw1 = initSwitch($('#sw1'), v => { rumble = v; });
   initSwitch($('#sw2'), v => { showHex = v; render(); });
